@@ -1,0 +1,5 @@
+build:
+    stage: build
+    image: node:20-bookworm
+    script: 
+        - npm run ext:build
