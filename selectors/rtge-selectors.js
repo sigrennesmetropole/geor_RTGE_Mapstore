@@ -10,4 +10,6 @@ export const getRtgeState = createSelector(
     (selector) => selector
 );
 
-export const isOpen = (state) => get(state, 'controls.RTGE.enabled');
+export const isOpen = (state) => get(state, 'controls.rtge.enabled');
+
+export const  getActiveTab = (state) => get(state, 'rtge.activeTab');
