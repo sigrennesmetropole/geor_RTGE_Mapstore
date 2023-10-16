@@ -1,10 +1,108 @@
 #SAMPLE_EXTENSION {
-    background-color: rgba(255,255,255,.9);
-    border-radius: 10px;
+    /* background-color: rgba(255,255,255,.9); */
+    /* border-radius: 10px; */
     max-width: 550px;
+    max-height: 700px;
     padding: 10px;
-    margin: 10px;
+    margin-top: 50px;
     position: absolute;
     top: 50px;
     z-index: 1000;
+}
+
+.rowTabs{
+    padding: 10px;
+}
+
+.homeButton, .selectButton, .sendButton {
+    /* margin: 20px; */
+    width: 100px;
+    background-color: inherit;
+    border: none;
+    margin-top: 10px;
+    height: 40px;
+    color: #078aa3;
+    width: 100%;
+}
+
+.active{
+    border-bottom: 0px solid white;
+    background-color: white;
+    color: black;
+}
+
+button.active{
+    border-bottom: 1px solid white;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    background-color: white;
+    color: black;
+}
+
+.formGlobal{
+    margin: 10px;
+}
+
+.formUnit{
+    margin: 5px;
+}
+
+.formUnit label{
+    margin-right: 10px;
+    font-weight: bold;
+    width: 20%;
+}
+
+.buttonForm{
+    /* border: 1px solid lightgrey; */
+    background-color: lightgray;
+    border-radius: 7px;
+}
+
+.formUnit input{
+    padding: 12px;
+}
+
+.title{
+    font-weight: bold;
+    font-size: 15px;
+}
+
+p {
+    font-size: 12px;
+}
+
+.mainTitle{
+    font-size: 18px;
+}
+
+.paragraphs{
+    margin: 10px;
+    max-width: 500px;
+}
+
+/*Section sélection du plugin*/
+
+.selectTitle{
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    background: lightgray;
+    height: 40px;
+}
+
+.selectorButton{
+    background-color: #078aa3;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.tableOffset{
+    margin-right: 5px;
+    margin-left: 5px;
 }

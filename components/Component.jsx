@@ -2,11 +2,12 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
-import src from "../assets/markers_default.png";
 import { RTGE_PANEL_WIDTH } from "../constants/rtge-constants.js";
 import { tabTypes } from "../actions/rtge-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
-import {setControlProperties, setControlProperty, toggleControl} from "@mapstore/actions/controls";
+// import {setControlProperties, setControlProperty, toggleControl} from "@mapstore/actions/controls";
+import { Glyphicon } from 'react-bootstrap';
+// import { totalCountSelector } from "@mapstore/selectors/contextmanager";
 export class RTGEComponent extends React.Component {
 
     static propTypes= {
@@ -20,7 +21,17 @@ export class RTGEComponent extends React.Component {
         onIncrease: PropTypes.func,
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
-        changeTab: PropTypes.func
+        changeTab: PropTypes.func,
+        selectedTiles: PropTypes.object,
+        prenom: PropTypes.string,
+        nom: PropTypes.string,
+        collectivite: PropTypes.string,
+        service: PropTypes.string,
+        courriel: PropTypes.string,
+        telephone: PropTypes.string,
+        motivation: PropTypes.string,
+        dataSurf: PropTypes.bool,
+        dataUnderSurf: PropTypes.bool
     }
 
     static defaultProps= {
@@ -31,6 +42,16 @@ export class RTGEComponent extends React.Component {
         panelClassName: 'rtge-panel',
         width: RTGE_PANEL_WIDTH,
         activeTab: tabTypes.HOME,
+        selectedTiles: {id: 'toto', lastUpdate: 'yesterday', objectSurf: '75', objectUnderSurf: '52'},
+        prenom: 'Benoit',
+        nom: 'DAVID',
+        collectivite: 'Rennes Metropole',
+        service: 'Service Information Géographique',
+        courriel: 'b.david@rennesmetropole.fr',
+        telephone: '12345',
+        motivation: '',
+        dataSurf: true,
+        dataUnderSurf: false,
         onIncrease: ()=>{},
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
@@ -51,26 +72,173 @@ export class RTGEComponent extends React.Component {
         // return setControlProperty('rtge', 'enabled', false, 'true' );
     }
 
+    getHomeTab() {
+        return (
+            <div id="SAMPLE_EXTENSION" >
+                <div className="paragraphs">
+                    <p className="title mainTitle">Outil d'extraction de dalles du Référentiel Métropolitain Topographique et Réseaux.</p>
+
+                    <p className="title">Limites et conditions d'utilisation</p>
+                    <p>Les données du RMTR consultables ici le sont à titre informatif uniquement. Il n'est pas possible de garantir sur cet outil des mesures de précision topographique sur les données. Il faut se reporter sur les outils spécialisés pour ce genre d'exploitation (AutoCAD, TopStation).</p>
+
+                    <p>Les données concernant les réseaux sont en accès restreint. La possibilité de consulter ces données ne vous dispense pas de faire toutes les démarches nécessaires à un projet, notamment les demandes de DT/DICT. Contacter le service Information Géographique si vous avez besoin de consulter les données de réseaux du sous-sol.</p>
+
+                    <p className="title">Principe d'utilisation</p>
+                    <p>Les données du RMTR sont découpées en dalle de 140x200m qui couvre Rennes Métropole.<br />
+                        Une demande d'extraction se formule donc sous la forme d'une liste de dalles.<br />
+                        La demande sera traitée par le service Information Géographique qui vous renverra 1 fichier DXF.<br />
+                        La limite du nombre de dalles maximum par demande est de 50.</p>
+
+                    <p className="title">Mode d'emploi</p>
+                    <p>1. Utiliser 1 des 3 outils de sélection pour sélectionner les dalles dont vous avez besoin. Affiner votre sélection si nécessaire (ajouter / supprimer).<br />
+                        2. Cliquer sur le bouton 'Envoi'<br />
+                        3. Remplir les champs et motiver votre demande en indiquant le projet d'aménagement ou le besoin.<br />
+                        4. Préciser si cela concerne les données de surface et/ou de sous-sol<br />
+                        5. Valider la demande</p>
+                </div>
+            </div>
+        );
+    }
+
+    getSelectionTab() {
+        return (
+            <div id="SAMPLE_EXTENSION" >
+                <div className="row text-center">
+                    <button className="selectorButton"><Glyphicon glyph="map-marker"/></button>
+                    <button className="selectorButton"><Glyphicon glyph="polyline"/></button>
+                    <button className="selectorButton"><Glyphicon glyph="polygon"/></button>
+                </div>
+                <div className="row">
+                    <div className="row tableOffset">
+                        <div className="col-sm-3 text-center selectTitle">Identifiant</div>
+                        <div className="col-sm-3 text-center selectTitle">Date mise à jour</div>
+                        <div className="col-sm-3 text-center selectTitle">Nb objets surface</div>
+                        <div className="col-sm-3 text-center selectTitle">nb objets sous sol</div>
+                    </div>
+                    <div className="row tableOffset">
+                        <div className="col-sm-3 text-center">{this.props.selectedTiles.id}</div>
+                        <div className="col-sm-3 text-center">{this.props.selectedTiles.lastUpdate}</div>
+                        <div className="col-sm-3 text-center">{this.props.selectedTiles.objectSurf}</div>
+                        <div className="col-sm-3 text-center">{this.props.selectedTiles.objectUnderSurf}</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    getSendTab() {
+        return (
+            <div className="formGlobal">
+                <div className="formUnit">
+                    <label htmlFor="prenom">Prenom :</label>
+                    <input
+                        type="text"
+                        value={this.props.prenom}
+                        onChange={this.setPrenom}
+                        id="prenom"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="nom">Nom : </label>
+                    <input
+                        type="text"
+                        value={this.props.nom}
+                        onChange={this.setNom}
+                        id="nom"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="collectivite">Collectivité : </label>
+                    <input
+                        type="text"
+                        value={this.props.collectivite}
+                        onChange={this.setCollectivite}
+                        id="collectivite"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="service">Service : </label>
+                    <input
+                        type="text"
+                        value={this.props.service}
+                        onChange={this.setService}
+                        id="service"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="courriel">Courriel : </label>
+                    <input
+                        type="text"
+                        value={this.props.courriel}
+                        onChange={this.setCourriel}
+                        id="courriel"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="courriel">Téléphone : </label>
+                    <input
+                        type="text"
+                        value={this.props.telephone}
+                        onChange={this.setTelephone}
+                        id="courriel"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="mp">Motivation - Projet : </label>
+                    <textarea
+                        type="text"
+                        value={this.props.motivation}
+                        onChange={this.setMotivation}
+                        rows="4"
+                        cols="50"
+                        id="mp"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="isSurface">Données de surface : </label>
+                    <input
+                        type="checkbox"
+                        value={this.props.dataSurf}
+                        onChange={this.setDataSurf}
+                        id="isSurface"
+                    />
+                </div>
+                <div className="formUnit">
+                    <label htmlFor="isSousSol">Données de sous-sol : </label>
+                    <input
+                        type="checkbox"
+                        value={this.props.dataUnderSurf}
+                        onChange={this.setDataUnderSurf}
+                        id="isSousSol"
+                    />
+                </div>
+                <button className="buttonForm" onClick={this.getForm}>Envoyer</button>
+            </div>
+        );
+    }
+
+    getForm(form) {
+        console.log(form);
+    }
+
     renderTabMenu() {
         return (
-            <div className="row">
-                <div className="col-sm-3"></div>
-                <div className="col-sm-2">
-                    <button onClick={() => this.props.changeTab(tabTypes.HOME)}>
+            <div className="row rowTabs">
+                <div className="col-sm-4 text-center">
+                    <button className="homeButton active" onClick={() => this.props.changeTab(tabTypes.HOME)}>
                         Accueil
                     </button>
                 </div>
-                <div className="col-sm-2">
-                    <button onClick={() => this.props.changeTab(tabTypes.SELECT)}>
+                <div className="col-sm-4 text-center">
+                    <button className="selectButton" onClick={() => this.props.changeTab(tabTypes.SELECT)}>
                         Selection
                     </button>
                 </div>
-                <div className="col-sm-2">
-                    <button onClick={() => this.props.changeTab(tabTypes.SEND)}>
+                <div className="col-sm-4 text-center">
+                    <button className="sendButton" onClick={() => this.props.changeTab(tabTypes.SEND)}>
                         Envoi
                     </button>
                 </div>
-                <div className="col-sm-3"></div>
             </div>
         );
     }
@@ -79,19 +247,13 @@ export class RTGEComponent extends React.Component {
         var content;
         switch (this.props.activeTab) {
         case tabTypes.HOME:
-            content = (
-                <p>accueil</p>
-            );
+            content = this.getHomeTab();
             break;
         case tabTypes.SELECT:
-            content = (
-                <p>selection</p>
-            );
+            content = this.getSelectionTab();
             break;
         case tabTypes.SEND:
-            content = (
-                <p>envoi</p>
-            );
+            content = this.getSendTab();
             break;
         default:
             break;
@@ -100,7 +262,6 @@ export class RTGEComponent extends React.Component {
     }
 
     render() {
-        var content;
         if (this.props.active) {
             return (
                 <ResponsivePanel
@@ -120,152 +281,56 @@ export class RTGEComponent extends React.Component {
                     {this.renderContent()}
                 </ResponsivePanel>
             );
+        // eslint-disable-next-line no-else-return
         } else {
             return null;
         }
     }
 
+    setPrenom(e) {
+        console.log(this);
+        this.props.prenom = e.target.value;
+        this.setState(this.state);
+    }
+
+    setNom(e) {
+        this.props.nom = e.target.value;
+        this.setState(this.state);
+    }
+
+    setCollectivite(e) {
+        this.props.collectivite = e.target.value;
+        this.setState(this.state);
+    }
+
+    setService(e) {
+        this.props.service = e.target.value;
+        this.setState(this.state);
+    }
+
+    setCourriel(e) {
+        this.props.courriel = e.target.value;
+        this.setState(this.state);
+    }
+
+    setTelephone(e) {
+        this.props.telephone = e.target.value;
+        this.setState(this.state);
+    }
+
+    setMotivation(e) {
+        this.props.motivation = e.target.value;
+        this.setState(this.state);
+    }
+
+    setDataSurf(e) {
+        this.props.dataSurf = e.target.value;
+        this.setState(this.state);
+    }
+
+    setDataUnderSurf(e) {
+        this.props.dataUnderSurf = e.target.value;
+        this.setState(this.state);
+    }
+
 }
-
-// export default Extension;
-
-// switch (this.props.element) {
-// case 'RTGE:WELCOME':
-//     content = (
-//         <div id="SAMPLE_EXTENSION" >
-//             <div className="paragraphs">
-//                 <p className="title">Outil d'extraction de dalles du Référentiel Métropolitain Topographique et Réseaux.</p>
-
-//                 <p className="title">Limites et conditions d'utilisation</p>
-//                 <p>Les données du RMTR consultables ici le sont à titre informatif uniquement. Il n'est pas possible de garantir sur cet outil des mesures de précision topographique sur les données. Il faut se reporter sur les outils spécialisés pour ce genre d'exploitation (AutoCAD, TopStation).</p>
-
-//                 <p>Les données concernant les réseaux sont en accès restreint. La possibilité de consulter ces données ne vous dispense pas de faire toutes les démarches nécessaires à un projet, notamment les demandes de DT/DICT. Contacter le service Information Géographique si vous avez besoin de consulter les données de réseaux du sous-sol.</p>
-
-//                 <p className="title">Principe d'utilisation</p>
-//                 <p>Les données du RMTR sont découpées en dalle de 140x200m qui couvre Rennes Métropole.<br />
-//             Une demande d'extraction se formule donc sous la forme d'une liste de dalles.<br />
-//             La demande sera traitée par le service Information Géographique qui vous renverra 1 fichier DXF.<br />
-//             La limite du nombre de dalles maximum par demande est de 50.</p>
-
-//                 <p className="title">Mode d'emploi</p>
-//                 <p>1. Utiliser 1 des 3 outils de sélection pour sélectionner les dalles dont vous avez besoin. Affiner votre sélection si nécessaire (ajouter / supprimer).<br />
-//             2. Cliquer sur le bouton 'Envoi'<br />
-//             3. Remplir les champs et motiver votre demande en indiquant le projet d'aménagement ou le besoin.<br />
-//             4. Préciser si cela concerne les données de surface et/ou de sous-sol<br />
-//             5. Valider la demande</p>
-//             </div>
-//         </div>
-//     );
-//     break;
-// case 'RTGE:SELECT':
-//     content = (
-//         <div id="SAMPLE_EXTENSION" >
-//             <h2>Extension Sample</h2>
-//             <div>This is a sample extension plugin. The following tools demonstrate the correct binding inside MapStore</div>
-//             <h3>State and epics</h3>
-//             <div>A button like this should be visualized also in the toolbar: <br /><button onClick={this.props.onIncrease} className="btn-primary square-button btn">INC</button><br /> </div>
-//             <div>Clicking on that button (or on the button above) should increase this counter value: <b>{this.props.value}</b>. <br />The counter value updates should be logged in console by an epic</div>
-//             <i>note: the button in the toolbar can be hidden, in this case click on the "..." button</i>
-//             <h3>Localization</h3>
-//         The following text should be localized: <b><Message msgId="extension.message" /></b><br /> (you should see something like "Message!" if your language is set to en-US)
-//             <h3>Core action</h3>
-//         This button should change the zoom level to "1"
-//             <button onClick={() => { this.props.changeZoomLevel(1); }}>zoom to level 1</button>
-//         Here a sample image with several markers:
-//             <img src={src}/>
-//         </div>
-//     );
-//     break;
-// case 'RTGE:SEND':
-//     content = (
-//         <div className="formGlobal">
-//             <div className="formUnit">
-//                 <label htmlFor="prenom">Prenom :</label>
-//                 <input
-//                     type="text"
-//                     value="prenom"
-//                     // onChange={(e) => setPrenom(e.target.value)}
-//                     id="prenom"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="nom">Nom : </label>
-//                 <input
-//                     type="text"
-//                     value="nom"
-//                     // onChange={(e) => setNom(e.target.value)}
-//                     id="nom"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="collectivite">Collectivité : </label>
-//                 <input
-//                     type="text"
-//                     value="collectivite"
-//                     // onChange={(e) => setCollectivite(e.target.value)}
-//                     id="collectivite"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="service">Service : </label>
-//                 <input
-//                     type="text"
-//                     value="service"
-//                     // onChange={(e) => setService(e.target.value)}
-//                     id="service"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="courriel">Courriel : </label>
-//                 <input
-//                     type="text"
-//                     value="courriel"
-//                     // onChange={(e) => setCourriel(e.target.value)}
-//                     id="courriel"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="courriel">Téléphone : </label>
-//                 <input
-//                     type="text"
-//                     value="telephone"
-//                     // onChange={(e) => setTelephone(e.target.value)}
-//                     id="courriel"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="mp">Motivation - Projet : </label>
-//                 <textarea
-//                     type="text"
-//                     value="mp"
-//                     // onChange={(e) => setMP(e.target.value)}
-//                     rows="4"
-//                     cols="50"
-//                     id="mp"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="isSurface">Données de surface : </label>
-//                 <input
-//                     type="checkbox"
-//                     value="isSurface"
-//                     // onChange={(e) => {setSurface(e.target.checked)}}
-//                     id="isSurface"
-//                 />
-//             </div>
-//             <div className="formUnit">
-//                 <label htmlFor="isSousSol">Données de sous-sol : </label>
-//                 <input
-//                     type="checkbox"
-//                     value="isSousSol"
-//                     // onChange={(e) => setSousSol(e.target.checked)}
-//                     id="isSousSol"
-//                 />
-//             </div>
-//             <button className="buttonForm" /* onClick={getForm}*/>Envoyer</button>
-//         </div>
-//     );
-//     break;
-// default:
-//     return null;
-// }
