@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export const actions = {
     INCREASE_COUNTER: 'RTGE:INCREASE_COUNTER',
     OPEN_PANEL: 'RTGE:OPEN_PANEL',
@@ -31,6 +32,33 @@ export function onIncrease() {
 // }
 
 export function changeTab(tab) {
+
+    switch (tab) {
+    case tabTypes.HOME:
+        document.getElementsByClassName('homeButton')[0].classList.add('active');
+        document.getElementsByClassName('selectButton')[0].classList.remove('active');
+        document.getElementsByClassName('sendButton')[0].classList.remove('active');
+        break;
+
+    case tabTypes.SELECT:
+        document.getElementsByClassName('homeButton')[0].classList.remove('active');
+        document.getElementsByClassName('selectButton')[0].classList.add('active');
+        document.getElementsByClassName('sendButton')[0].classList.remove('active');
+        break;
+
+    case tabTypes.SEND:
+        document.getElementsByClassName('homeButton')[0].classList.remove('active');
+        document.getElementsByClassName('selectButton')[0].classList.remove('active');
+        document.getElementsByClassName('sendButton')[0].classList.add('active');
+        break;
+
+    default:
+        document.getElementsByClassName('homeButton')[0].classList.add('active');
+        document.getElementsByClassName('selectButton')[0].classList.remove('active');
+        document.getElementsByClassName('sendButton')[0].classList.remove('active');
+        break;
+    }
+
     return {
         type: actions.CHANGE_TAB,
         tab

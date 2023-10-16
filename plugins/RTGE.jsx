@@ -16,7 +16,6 @@ import {
     isOpen,
     getActiveTab
 } from "../selectors/rtge-selectors";
-
 import '../assets/style.css';
 
 export default createPlugin(name, {
@@ -25,7 +24,17 @@ export default createPlugin(name, {
         value: state.rtge && state.rtge.value,
         element: 'RTGE:WELCOME',
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
-        activeTab: getActiveTab(state)
+        activeTab: getActiveTab(state),
+        selectedTiles: {id: 'toto', lastUpdate: 'yesterday', objectSurf: '75', objectUnderSurf: '52'},
+        prenom: 'Benoit',
+        nom: 'DAVID',
+        collectivite: 'Rennes Metropole',
+        service: 'Service Information Géographique',
+        courriel: 'b.david@rennesmetropole.fr',
+        telephone: '12345',
+        motivation: '',
+        dataSurf: true,
+        dataUnderSurf: false
     }), {
         onIncrease: onIncrease,
         changeZoomLevel: changeZoomLevel,
