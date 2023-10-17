@@ -1,3 +1,8 @@
+trigger_job:
+  trigger:
+    - project: RTGE/MapStoreExtension
+    - ref: rm/CI
+
 build:
     stage: build
     image: node:20-bookworm
