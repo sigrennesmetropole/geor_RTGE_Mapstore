@@ -1,6 +1,6 @@
 trigger_job:
   trigger:
-    project: RTGE/MapStoreExtension
+    project: sig/ed/rtge/MapStoreExtension
     branch: rm/CI
 
 #build:
