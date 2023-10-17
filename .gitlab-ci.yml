@@ -3,8 +3,8 @@ trigger_job:
     project: RTGE/MapStoreExtension
     branch: rm/CI
 
-build:
-    stage: build
-    image: node:20-bookworm
-    script: 
-        - npm run ext:build
+#build:
+#    stage: build
+#    image: node:20-bookworm
+#    script: 
+#        - npm run ext:build
