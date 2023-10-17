@@ -1,3 +1,10 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      variables:
+        PREVENT_PIPELINES: "1"
+    - if: $CI_PIPELINE_SOURCE != 'merge_request_event' && $PREVENT_PIPELINES != '1'
+
 trigger_job:
   trigger:
     project: sig/ed/rtge/MapStoreExtension
