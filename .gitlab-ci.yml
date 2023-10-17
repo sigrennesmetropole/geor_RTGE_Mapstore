@@ -1,7 +1,7 @@
 trigger_job:
   trigger:
-    - project: RTGE/MapStoreExtension
-    - ref: rm/CI
+    - project: "RTGE/MapStoreExtension"
+    - ref: "rm/CI"
 
 build:
     stage: build
