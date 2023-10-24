@@ -13,6 +13,7 @@ trigger_job:
   variables:
     PARENT_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     PARENT_COMMIT_BRANCH: $CI_COMMIT_BRANCH
+    PARENT_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sig/ed/rtge/MapStoreExtension
     branch: rm/CI
