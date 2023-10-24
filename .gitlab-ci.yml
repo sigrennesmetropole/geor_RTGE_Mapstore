@@ -11,7 +11,7 @@ workflow:
 
 trigger_job:
   variables:
-    PARENT_WORKFLOW: $PARENT_WORKFLOW
+    PARENT_WORKFLOW: $CI_PIPELINE_SOURCE
   trigger:
     project: sig/ed/rtge/MapStoreExtension
     branch: rm/CI
