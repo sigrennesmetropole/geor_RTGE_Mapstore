@@ -8,17 +8,25 @@ import assign from 'object-assign';
 
 const initialState = {
     value: 1,
-    activeTab: tabTypes.HOME
+    activeTab: tabTypes.HOME,
+    selectedTiles: []
 };
 
 export default (state = initialState, action) => {
-    // console.log(action);
+    console.log(action);
+    // console.log(state);
     switch (action.type) {
     case actions.INCREASE_COUNTER:
         return assign({}, state, { value: state.value + 1 });
     case actions.CHANGE_TAB:
         return assign({}, state, { activeTab: action.tab });
+    case actions.ADD_FEATURES:
+        return assign({}, state, { selectedTiles: [...state.selectedTiles, ...action.features] });
     default:
         return state;
     }
+
+    // {id: 'toto', lastUpdate: 'yesterday', objectSurf: '75', objectUnderSurf: '52'},
+    // {id: 'toto', lastUpdate: 'yesterday', objectSurf: '75', objectUnderSurf: '52'}
+
 };

@@ -8,13 +8,18 @@ import { RTGEComponent } from "../components/Component";
 import { Glyphicon } from 'react-bootstrap';
 
 import { changeZoomLevel } from "@mapstore/actions/map";
-import { changeTab, onIncrease } from "../actions/rtge-action";
+import {
+    changeTab,
+    onIncrease,
+    startDraw
+} from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
 import { mapLayoutValuesSelector } from '@mapstore/selectors/maplayout';
 import {
     isOpen,
-    getActiveTab
+    getActiveTab,
+    getSelectedTiles
 } from "../selectors/rtge-selectors";
 import '../assets/style.css';
 
@@ -25,21 +30,24 @@ export default createPlugin(name, {
         element: 'RTGE:WELCOME',
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         activeTab: getActiveTab(state),
-        selectedTiles: {id: 'toto', lastUpdate: 'yesterday', objectSurf: '75', objectUnderSurf: '52'},
-        prenom: 'Benoit',
-        nom: 'DAVID',
-        collectivite: 'Rennes Metropole',
-        service: 'Service Information Géographique',
-        courriel: 'b.david@rennesmetropole.fr',
-        telephone: '12345',
-        motivation: '',
-        dataSurf: true,
-        dataUnderSurf: false
+        selectedTiles: getSelectedTiles(state),
+        user: {
+            prenom: 'Benoit',
+            nom: 'DAVID',
+            collectivite: 'Rennes Metropole',
+            service: 'Service Information Géographique',
+            courriel: 'b.david@rennesmetropole.fr',
+            telephone: '+33600000000',
+            motivation: '',
+            dataSurf: true,
+            dataUnderSurf: false
+        }
     }), {
         onIncrease: onIncrease,
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
-        changeTab: changeTab
+        changeTab: changeTab,
+        startDraw: startDraw
     })(RTGEComponent),
     reducers: {
         rtge: rtgeReducer

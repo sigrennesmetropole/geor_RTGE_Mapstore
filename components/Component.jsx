@@ -6,8 +6,25 @@ import { RTGE_PANEL_WIDTH } from "../constants/rtge-constants.js";
 import { tabTypes } from "../actions/rtge-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 // import {setControlProperties, setControlProperty, toggleControl} from "@mapstore/actions/controls";
-import { Glyphicon } from 'react-bootstrap';
 // import { totalCountSelector } from "@mapstore/selectors/contextmanager";
+import {
+    // Button,
+    // Col,
+    // ControlLabel,
+    Form,
+    FormControl,
+    FormGroup,
+    Glyphicon,
+    // Grid,
+    // HelpBlock,
+    InputGroup,
+    // Radio,
+    // Row,
+    Label,
+    Checkbox
+} from 'react-bootstrap';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
 export class RTGEComponent extends React.Component {
 
     static propTypes= {
@@ -22,16 +39,9 @@ export class RTGEComponent extends React.Component {
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
         changeTab: PropTypes.func,
-        selectedTiles: PropTypes.object,
-        prenom: PropTypes.string,
-        nom: PropTypes.string,
-        collectivite: PropTypes.string,
-        service: PropTypes.string,
-        courriel: PropTypes.string,
-        telephone: PropTypes.string,
-        motivation: PropTypes.string,
-        dataSurf: PropTypes.bool,
-        dataUnderSurf: PropTypes.bool
+        selectedTiles: PropTypes.array,
+        user: PropTypes.object,
+        startDraw: PropTypes.func
     }
 
     static defaultProps= {
@@ -42,24 +52,38 @@ export class RTGEComponent extends React.Component {
         panelClassName: 'rtge-panel',
         width: RTGE_PANEL_WIDTH,
         activeTab: tabTypes.HOME,
-        selectedTiles: {id: 'toto', lastUpdate: 'yesterday', objectSurf: '75', objectUnderSurf: '52'},
-        prenom: 'Benoit',
-        nom: 'DAVID',
-        collectivite: 'Rennes Metropole',
-        service: 'Service Information Géographique',
-        courriel: 'b.david@rennesmetropole.fr',
-        telephone: '12345',
-        motivation: '',
-        dataSurf: true,
-        dataUnderSurf: false,
+        selectedTiles: [],
+        user: {
+            prenom: 'Benoit',
+            nom: 'DAVID',
+            collectivite: 'Rennes Metropole',
+            service: 'Service Information Géographique',
+            courriel: 'b.david@rennesmetropole.fr',
+            telephone: '+33600000000',
+            motivation: '',
+            dataSurf: false,
+            dataUnderSurf: false
+        },
         onIncrease: ()=>{},
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
-        changeTab: ()=>{}
+        changeTab: ()=>{},
+        startDraw: ()=>{}
     }
 
     constructor(props) {
         super(props);
+        this.state = {
+            prenom: this.props.user.prenom,
+            nom: this.props.user.nom,
+            collectivite: this.props.user.collectivite,
+            service: this.props.user.service,
+            courriel: this.props.user.courriel,
+            telephone: this.props.user.telephone,
+            motivation: this.props.user.motivation,
+            dataSurf: this.props.user.dataSurf,
+            dataUnderSurf: this.props.user.dataUnderSurf
+        };
     }
 
     // TODO
@@ -67,12 +91,194 @@ export class RTGEComponent extends React.Component {
     // pareil pour le componentDidUpdate(prevProp,prevState) mais pour mettre à jour la vue une fois déjà montée
 
     onClose() {
-        // TODO FINIR CETTE FONCTION QUI MARCHE PO
         return this.props.toggleControl();
-        // return setControlProperty('rtge', 'enabled', false, 'true' );
     }
 
-    getHomeTab() {
+    getForm() {
+        var formContent = {
+            prenom: this.state.prenom,
+            nom: this.state.nom,
+            collectivite: this.state.collectivite,
+            service: this.state.service,
+            courriel: this.state.courriel,
+            telephone: this.state.telephone,
+            motivation: this.state.motivation,
+            dataSurf: this.state.dataSurf,
+            dataUnderSurf: this.state.dataUnderSurf
+        };
+        console.log(formContent);
+    }
+
+    getPrenomField() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.prenom">
+                    <InputGroup>
+                        <Label>
+                            <Message msgId="RTGE.prenom" />
+                        </Label>
+                        <FormControl
+                            type="text"
+                            value={this.state.prenom}
+                            onChange={(e) => this.handleTextFieldChange(e, 'prenom')}
+                        />
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getNomField() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.nom">
+                    <InputGroup>
+                        <Label>
+                            <Message msgId="RTGE.nom" />
+                        </Label>
+                        <FormControl
+                            type="text"
+                            value={this.state.nom}
+                            onChange={(e) => this.handleTextFieldChange(e, 'nom')}
+                        />
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getCollectiviteField() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.collectivite">
+                    <InputGroup>
+                        <Label>
+                            <Message msgId="RTGE.collectivite" />
+                        </Label>
+                        <FormControl
+                            type="text"
+                            value={this.state.collectivite}
+                            onChange={(e) => this.handleTextFieldChange(e, 'collectivites')}
+                        />
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getService() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.service">
+                    <InputGroup>
+                        <Label>
+                            <Message msgId="RTGE.service" />
+                        </Label>
+                        <FormControl
+                            type="text"
+                            value={this.state.service}
+                            onChange={(e) => this.handleTextFieldChange(e, 'service')}
+                        />
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getCourriel() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.courriel">
+                    <InputGroup>
+                        <Label>
+                            <Message msgId="RTGE.courriel" />
+                        </Label>
+                        <FormControl
+                            type="text"
+                            value={this.state.courriel}
+                            onChange={(e) => this.handleTextFieldChange(e, 'courriel')}
+                        />
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getTelephone() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.telephone">
+                    <InputGroup>
+                        <Label>
+                            <Message msgId="RTGE.telephone" />
+                        </Label>
+                        <PhoneInput
+                            defaultCountry="FR"
+                            placeholder="Entrez un numéro de téléphone"
+                            value={this.state.telephone}
+                            onChange={(e) => this.handlePhoneFieldChange(e, 'telephone')}/>
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getMotivation() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.motivation">
+                    <InputGroup>
+                        <Label>
+                            <Message msgId="RTGE.motivation" />
+                        </Label>
+                        <FormControl
+                            componentClass="textarea"
+                            value={this.state.motivation}
+                            onChange={(e) => this.handleTextFieldChange(e, 'motivation')}
+                            rows={4}
+                            cols={50}
+                        />
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getDataSurf() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.dataSurf">
+                    <InputGroup>
+                        <Checkbox
+                            onChange={() => this.handleBooleanFieldChange('dataSurf')}
+                        />
+                        <Label>
+                            <Message msgId="RTGE.dataSurf" />
+                        </Label>
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    getDataUnderSurf() {
+        return (
+            <div className="formUnit">
+                <FormGroup controlId="rtgeForm.dataUnderSurf">
+                    <InputGroup>
+                        <Checkbox
+                            onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
+                        />
+                        <Label>
+                            <Message msgId="RTGE.dataUnderSurf" />
+                        </Label>
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    renderHomeTab() {
         return (
             <div id="SAMPLE_EXTENSION" >
                 <div className="paragraphs">
@@ -100,13 +306,32 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getSelectionTab() {
+    renderSendTab() {
+        return (
+            <div className="formGlobal">
+                <Form>
+                    {this.getPrenomField()}
+                    {this.getNomField()}
+                    {this.getCollectiviteField()}
+                    {this.getService()}
+                    {this.getCourriel()}
+                    {this.getTelephone()}
+                    {this.getMotivation()}
+                    {this.getDataSurf()}
+                    {this.getDataUnderSurf()}
+                </Form>
+                <button className="buttonForm" onClick={this.getForm()}>Envoyer</button>
+            </div>
+        );
+    }
+
+    renderSelectionTab() {
         return (
             <div id="SAMPLE_EXTENSION" >
                 <div className="row text-center">
-                    <button className="selectorButton"><Glyphicon glyph="map-marker"/></button>
-                    <button className="selectorButton"><Glyphicon glyph="polyline"/></button>
-                    <button className="selectorButton"><Glyphicon glyph="polygon"/></button>
+                    <button className="selectorButton" onClick={() => this.props.startDraw('Point')}><Glyphicon glyph="map-marker"/></button>
+                    <button className="selectorButton" onClick={() => this.props.startDraw('LineString')}><Glyphicon glyph="polyline"/></button>
+                    <button className="selectorButton" onClick={() => this.props.startDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
                 </div>
                 <div className="row">
                     <div className="row tableOffset">
@@ -115,110 +340,21 @@ export class RTGEComponent extends React.Component {
                         <div className="col-sm-3 text-center selectTitle">Nb objets surface</div>
                         <div className="col-sm-3 text-center selectTitle">nb objets sous sol</div>
                     </div>
-                    <div className="row tableOffset">
-                        <div className="col-sm-3 text-center">{this.props.selectedTiles.id}</div>
-                        <div className="col-sm-3 text-center">{this.props.selectedTiles.lastUpdate}</div>
-                        <div className="col-sm-3 text-center">{this.props.selectedTiles.objectSurf}</div>
-                        <div className="col-sm-3 text-center">{this.props.selectedTiles.objectUnderSurf}</div>
-                    </div>
+                    {
+                        this.props.selectedTiles.map((val, key) => {
+                            return (
+                                <div className="row tableOffset" key={key}>
+                                    <div className="col-sm-3 text-center">{val.properties.id_case}</div>
+                                    <div className="col-sm-3 text-center">{val.properties.date_der_maj}</div>
+                                    <div className="col-sm-3 text-center">{val.properties.nb_donnees_surf}</div>
+                                    <div className="col-sm-3 text-center">{val.properties.nb_donnees_ssol}</div>
+                                </div>
+                            );
+                        })
+                    }
                 </div>
             </div>
         );
-    }
-
-    getSendTab() {
-        return (
-            <div className="formGlobal">
-                <div className="formUnit">
-                    <label htmlFor="prenom">Prenom :</label>
-                    <input
-                        type="text"
-                        value={this.props.prenom}
-                        onChange={this.setPrenom}
-                        id="prenom"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="nom">Nom : </label>
-                    <input
-                        type="text"
-                        value={this.props.nom}
-                        onChange={this.setNom}
-                        id="nom"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="collectivite">Collectivité : </label>
-                    <input
-                        type="text"
-                        value={this.props.collectivite}
-                        onChange={this.setCollectivite}
-                        id="collectivite"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="service">Service : </label>
-                    <input
-                        type="text"
-                        value={this.props.service}
-                        onChange={this.setService}
-                        id="service"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="courriel">Courriel : </label>
-                    <input
-                        type="text"
-                        value={this.props.courriel}
-                        onChange={this.setCourriel}
-                        id="courriel"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="courriel">Téléphone : </label>
-                    <input
-                        type="text"
-                        value={this.props.telephone}
-                        onChange={this.setTelephone}
-                        id="courriel"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="mp">Motivation - Projet : </label>
-                    <textarea
-                        type="text"
-                        value={this.props.motivation}
-                        onChange={this.setMotivation}
-                        rows="4"
-                        cols="50"
-                        id="mp"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="isSurface">Données de surface : </label>
-                    <input
-                        type="checkbox"
-                        value={this.props.dataSurf}
-                        onChange={this.setDataSurf}
-                        id="isSurface"
-                    />
-                </div>
-                <div className="formUnit">
-                    <label htmlFor="isSousSol">Données de sous-sol : </label>
-                    <input
-                        type="checkbox"
-                        value={this.props.dataUnderSurf}
-                        onChange={this.setDataUnderSurf}
-                        id="isSousSol"
-                    />
-                </div>
-                <button className="buttonForm" onClick={this.getForm}>Envoyer</button>
-            </div>
-        );
-    }
-
-    getForm(form) {
-        console.log(form);
     }
 
     renderTabMenu() {
@@ -247,13 +383,13 @@ export class RTGEComponent extends React.Component {
         var content;
         switch (this.props.activeTab) {
         case tabTypes.HOME:
-            content = this.getHomeTab();
+            content = this.renderHomeTab();
             break;
         case tabTypes.SELECT:
-            content = this.getSelectionTab();
+            content = this.renderSelectionTab();
             break;
         case tabTypes.SEND:
-            content = this.getSendTab();
+            content = this.renderSendTab();
             break;
         default:
             break;
@@ -287,50 +423,22 @@ export class RTGEComponent extends React.Component {
         }
     }
 
-    setPrenom(e) {
-        console.log(this);
-        this.props.prenom = e.target.value;
+    // valuesSetter(data) {
+    //     this.setSelectedTiles(values => [...values, data]);
+    // }
+
+    handleTextFieldChange(e, fieldName) {
+        this.state[fieldName] = e.target.value;
         this.setState(this.state);
     }
 
-    setNom(e) {
-        this.props.nom = e.target.value;
+    handlePhoneFieldChange(e, fieldName) {
+        this.state[fieldName] = e;
         this.setState(this.state);
     }
 
-    setCollectivite(e) {
-        this.props.collectivite = e.target.value;
+    handleBooleanFieldChange(fieldName) {
+        this.state[fieldName] = !this.state[fieldName];
         this.setState(this.state);
     }
-
-    setService(e) {
-        this.props.service = e.target.value;
-        this.setState(this.state);
-    }
-
-    setCourriel(e) {
-        this.props.courriel = e.target.value;
-        this.setState(this.state);
-    }
-
-    setTelephone(e) {
-        this.props.telephone = e.target.value;
-        this.setState(this.state);
-    }
-
-    setMotivation(e) {
-        this.props.motivation = e.target.value;
-        this.setState(this.state);
-    }
-
-    setDataSurf(e) {
-        this.props.dataSurf = e.target.value;
-        this.setState(this.state);
-    }
-
-    setDataUnderSurf(e) {
-        this.props.dataUnderSurf = e.target.value;
-        this.setState(this.state);
-    }
-
 }
