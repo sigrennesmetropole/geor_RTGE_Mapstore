@@ -1,7 +1,7 @@
 #SAMPLE_EXTENSION {
     /* background-color: rgba(255,255,255,.9); */
     /* border-radius: 10px; */
-    max-width: 550px;
+    max-width: 555px;
     max-height: 700px;
     padding: 10px;
     margin-top: 50px;
@@ -40,28 +40,10 @@ button.active{
     color: black;
 }
 
-.formGlobal{
-    margin: 10px;
-}
-
-.formUnit{
-    margin: 5px;
-}
-
-.formUnit label{
-    margin-right: 10px;
-    font-weight: bold;
-    width: 20%;
-}
-
 .buttonForm{
     /* border: 1px solid lightgrey; */
     background-color: lightgray;
     border-radius: 7px;
-}
-
-.formUnit input{
-    padding: 12px;
 }
 
 .title{
@@ -89,6 +71,7 @@ p {
     border-bottom: 1px solid #ddd;
     background: lightgray;
     height: 40px;
+    font-size: small;
 }
 
 .selectorButton{
@@ -102,18 +85,40 @@ p {
     padding: 5px;
 }
 
-.tableOffset{
-    margin-right: 5px;
-    margin-left: 5px;
+.selectorButton.active {
+    background-color: #05505F;
+    color: white;
+    border: none;
 }
 
 label {
     min-width: 28%;
 }
 
+.tableOffset{
+    margin-left: 5px;
+    margin-right: 15px;
+}
+
+/* ==== Form Area ==== */
+
+.formGlobal{
+    margin: 10px;
+}
+
+.formUnit{
+    margin: 5px;
+}
+
+.formUnit span{
+    font-weight: bold;
+    font-size: inherit;
+}
+
 .formUnit input {
     padding: 3px;
     width: 69%;
+    /* padding: 12px; */
 }
 
 .formUnit input[type='checkbox']{
@@ -126,4 +131,16 @@ label {
     width: 100%;
     height: 175px;
     cursor: pointer;
+}
+
+.checkbox{
+    margin-top: -20px;
+    margin-left: 20px;
+}
+
+/* ==== End of Form ==== */
+
+.scrollBar{
+    overflow-y: scroll;
+    max-height: 505px;
 }

@@ -10,8 +10,8 @@ import { Glyphicon } from 'react-bootstrap';
 import { changeZoomLevel } from "@mapstore/actions/map";
 import {
     changeTab,
-    onIncrease,
-    startDraw
+    switchDraw,
+    removeSelectedTiles
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
@@ -19,7 +19,8 @@ import { mapLayoutValuesSelector } from '@mapstore/selectors/maplayout';
 import {
     isOpen,
     getActiveTab,
-    getSelectedTiles
+    getSelectedTiles,
+    getActiveSelection
 } from "../selectors/rtge-selectors";
 import '../assets/style.css';
 
@@ -41,13 +42,14 @@ export default createPlugin(name, {
             motivation: '',
             dataSurf: true,
             dataUnderSurf: false
-        }
+        },
+        activeSelection: getActiveSelection(state)
     }), {
-        onIncrease: onIncrease,
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
         changeTab: changeTab,
-        startDraw: startDraw
+        switchDraw: switchDraw,
+        removeSelectedTiles: removeSelectedTiles
     })(RTGEComponent),
     reducers: {
         rtge: rtgeReducer

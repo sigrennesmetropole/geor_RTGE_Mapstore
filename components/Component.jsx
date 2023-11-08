@@ -35,13 +35,14 @@ export class RTGEComponent extends React.Component {
         panelClassName: PropTypes.string,
         width: PropTypes.number,
         activeTab: PropTypes.string,
-        onIncrease: PropTypes.func,
+        activeSelection: PropTypes.string,
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
         changeTab: PropTypes.func,
         selectedTiles: PropTypes.array,
         user: PropTypes.object,
-        startDraw: PropTypes.func
+        switchDraw: PropTypes.func,
+        removeSelectedTiles: PropTypes.func
     }
 
     static defaultProps= {
@@ -64,11 +65,12 @@ export class RTGEComponent extends React.Component {
             dataSurf: false,
             dataUnderSurf: false
         },
-        onIncrease: ()=>{},
+        activeSelection: '',
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
         changeTab: ()=>{},
-        startDraw: ()=>{}
+        switchDraw: ()=>{},
+        removeSelectedTiles: ()=>{}
     }
 
     constructor(props) {
@@ -95,18 +97,18 @@ export class RTGEComponent extends React.Component {
     }
 
     getForm() {
-        var formContent = {
-            prenom: this.state.prenom,
-            nom: this.state.nom,
-            collectivite: this.state.collectivite,
-            service: this.state.service,
-            courriel: this.state.courriel,
-            telephone: this.state.telephone,
-            motivation: this.state.motivation,
-            dataSurf: this.state.dataSurf,
-            dataUnderSurf: this.state.dataUnderSurf
-        };
-        console.log(formContent);
+        // var formContent = {
+        //     prenom: this.state.prenom,
+        //     nom: this.state.nom,
+        //     collectivite: this.state.collectivite,
+        //     service: this.state.service,
+        //     courriel: this.state.courriel,
+        //     telephone: this.state.telephone,
+        //     motivation: this.state.motivation,
+        //     dataSurf: this.state.dataSurf,
+        //     dataUnderSurf: this.state.dataUnderSurf
+        // };
+        // console.log(formContent);
     }
 
     getPrenomField() {
@@ -248,14 +250,12 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.dataSurf">
-                    <InputGroup>
-                        <Checkbox
-                            onChange={() => this.handleBooleanFieldChange('dataSurf')}
-                        />
-                        <Label>
-                            <Message msgId="RTGE.dataSurf" />
-                        </Label>
-                    </InputGroup>
+                    <Label>
+                        <Message msgId="RTGE.dataSurf" />
+                    </Label>
+                    <Checkbox
+                        onChange={() => this.handleBooleanFieldChange('dataSurf')}
+                    />
                 </FormGroup>
             </div>
         );
@@ -265,14 +265,12 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.dataUnderSurf">
-                    <InputGroup>
-                        <Checkbox
-                            onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
-                        />
-                        <Label>
-                            <Message msgId="RTGE.dataUnderSurf" />
-                        </Label>
-                    </InputGroup>
+                    <Label>
+                        <Message msgId="RTGE.dataUnderSurf" />
+                    </Label>
+                    <Checkbox
+                        onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
+                    />
                 </FormGroup>
             </div>
         );
@@ -327,31 +325,34 @@ export class RTGEComponent extends React.Component {
 
     renderSelectionTab() {
         return (
-            <div id="SAMPLE_EXTENSION" >
+            <div>
                 <div className="row text-center">
-                    <button className="selectorButton" onClick={() => this.props.startDraw('Point')}><Glyphicon glyph="map-marker"/></button>
-                    <button className="selectorButton" onClick={() => this.props.startDraw('LineString')}><Glyphicon glyph="polyline"/></button>
-                    <button className="selectorButton" onClick={() => this.props.startDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
+                    <button className={this.props.activeSelection === 'Point' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
+                    <button className={this.props.activeSelection === 'LineString' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
+                    <button className={this.props.activeSelection === 'Polygon' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
+                    <button className="selectorButton" onClick={() => this.props.removeSelectedTiles()}><Glyphicon glyph="trash"/></button>
                 </div>
                 <div className="row">
                     <div className="row tableOffset">
                         <div className="col-sm-3 text-center selectTitle">Identifiant</div>
-                        <div className="col-sm-3 text-center selectTitle">Date mise à jour</div>
+                        <div className="col-sm-3 text-center selectTitle">Date MAJ</div>
                         <div className="col-sm-3 text-center selectTitle">Nb objets surface</div>
                         <div className="col-sm-3 text-center selectTitle">nb objets sous sol</div>
                     </div>
-                    {
-                        this.props.selectedTiles.map((val, key) => {
-                            return (
-                                <div className="row tableOffset" key={key}>
-                                    <div className="col-sm-3 text-center">{val.properties.id_case}</div>
-                                    <div className="col-sm-3 text-center">{val.properties.date_der_maj}</div>
-                                    <div className="col-sm-3 text-center">{val.properties.nb_donnees_surf}</div>
-                                    <div className="col-sm-3 text-center">{val.properties.nb_donnees_ssol}</div>
-                                </div>
-                            );
-                        })
-                    }
+                    <div className="scrollBar">
+                        {
+                            this.props.selectedTiles.map((val, key) => {
+                                return (
+                                    <div className="row tableOffset" key={key} onClick={() => this.props.switchDraw('Table')}>
+                                        <div className="col-sm-3 text-center">{val.properties.id_case}</div>
+                                        <div className="col-sm-3 text-center">{val.properties.date_der_maj}</div>
+                                        <div className="col-sm-3 text-center">{val.properties.nb_donnees_surf}</div>
+                                        <div className="col-sm-3 text-center">{val.properties.nb_donnees_ssol}</div>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
                 </div>
             </div>
         );
@@ -361,17 +362,17 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="row rowTabs">
                 <div className="col-sm-4 text-center">
-                    <button className="homeButton active" onClick={() => this.props.changeTab(tabTypes.HOME)}>
+                    <button className={this.props.activeTab === "RTGE:HOME" ? "homeButton active" : "homeButton"} onClick={() => this.props.changeTab(tabTypes.HOME)}>
                         Accueil
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
-                    <button className="selectButton" onClick={() => this.props.changeTab(tabTypes.SELECT)}>
+                    <button className={this.props.activeTab === "RTGE:SELECT" ? "selectButton active" : "selectButton"} onClick={() => this.props.changeTab(tabTypes.SELECT)}>
                         Selection
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
-                    <button className="sendButton" onClick={() => this.props.changeTab(tabTypes.SEND)}>
+                    <button className={this.props.activeTab === "RTGE:SEND" ? "sendButton active" : "sendButton"} onClick={() => this.props.changeTab(tabTypes.SEND)}>
                         Envoi
                     </button>
                 </div>
