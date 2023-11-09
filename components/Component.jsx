@@ -89,13 +89,23 @@ export class RTGEComponent extends React.Component {
     }
 
     // TODO
-    // ajouter componentDidMount() pour ajouter tout les éléments à mettre ne place une fois le composant monté
+    // ajouter componentDidMount() pour ajouter tout les éléments à mettre en place une fois le composant monté
     // pareil pour le componentDidUpdate(prevProp,prevState) mais pour mettre à jour la vue une fois déjà montée
 
+    /**
+     * onClose closes the plugins Panel
+     * @memberof rtge.component
+     * @returns - toggleControl action
+     */
     onClose() {
         return this.props.toggleControl();
     }
 
+    /**
+     * getForm get data from plugins form
+     * @memberof rtge.component
+     * @returns - form values as json
+     */
     getForm() {
         // var formContent = {
         //     prenom: this.state.prenom,
@@ -111,7 +121,12 @@ export class RTGEComponent extends React.Component {
         // console.log(formContent);
     }
 
-    getPrenomField() {
+    /**
+     * renderPrenomField Renders prenom field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the prenom field
+     */
+    renderPrenomField() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.prenom">
@@ -130,7 +145,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getNomField() {
+    /**
+     * renderNomField Renders nom field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the nom field
+     */
+    renderNomField() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.nom">
@@ -149,7 +169,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getCollectiviteField() {
+    /**
+     * renderCollectiviteField Renders collectivites field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the collectivites field
+     */
+    renderCollectiviteField() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.collectivite">
@@ -168,7 +193,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getService() {
+    /**
+     * renderService Renders service field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the service field
+     */
+    renderService() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.service">
@@ -187,7 +217,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getCourriel() {
+    /**
+     * renderCourriel Renders courriel field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the courriel field
+     */
+    renderCourriel() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.courriel">
@@ -206,7 +241,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getTelephone() {
+    /**
+     * renderTelephone Renders phone field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the phone field
+     */
+    renderTelephone() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.telephone">
@@ -225,7 +265,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getMotivation() {
+    /**
+     * renderMotivation Renders motivation field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the motivation field
+     */
+    renderMotivation() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.motivation">
@@ -246,7 +291,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getDataSurf() {
+    /**
+     * renderDataSurf Renders data surface checkbox field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the data surface checkbox field
+     */
+    renderDataSurf() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.dataSurf">
@@ -261,7 +311,12 @@ export class RTGEComponent extends React.Component {
         );
     }
 
-    getDataUnderSurf() {
+    /**
+     * renderDataUnderSurf Renders data under surface checkbox field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the data under surface checkbox field
+     */
+    renderDataUnderSurf() {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.dataUnderSurf">
@@ -276,6 +331,11 @@ export class RTGEComponent extends React.Component {
         );
     }
 
+    /**
+     * renderHomeTab home tab content
+     * @memberof rtge.component
+     * @returns - dom of the home tab content
+     */
     renderHomeTab() {
         return (
             <div id="SAMPLE_EXTENSION" >
@@ -304,25 +364,35 @@ export class RTGEComponent extends React.Component {
         );
     }
 
+    /**
+     * renderSendTab renders all the form elements in one place
+     * @memberof rtge.component
+     * @returns - organise the plugins form
+     */
     renderSendTab() {
         return (
             <div className="formGlobal">
                 <Form>
-                    {this.getPrenomField()}
-                    {this.getNomField()}
-                    {this.getCollectiviteField()}
-                    {this.getService()}
-                    {this.getCourriel()}
-                    {this.getTelephone()}
-                    {this.getMotivation()}
-                    {this.getDataSurf()}
-                    {this.getDataUnderSurf()}
+                    {this.renderPrenomField()}
+                    {this.renderNomField()}
+                    {this.renderCollectiviteField()}
+                    {this.renderService()}
+                    {this.renderCourriel()}
+                    {this.renderTelephone()}
+                    {this.renderMotivation()}
+                    {this.renderDataSurf()}
+                    {this.renderDataUnderSurf()}
                 </Form>
                 <button className="buttonForm" onClick={this.getForm()}>Envoyer</button>
             </div>
         );
     }
 
+    /**
+     * renderSelectionTab renders the selection tab
+     * @memberof rtge.component
+     * @returns - selection tab dom content
+     */
     renderSelectionTab() {
         return (
             <div>
@@ -358,6 +428,11 @@ export class RTGEComponent extends React.Component {
         );
     }
 
+    /**
+     * renderTabMenu renders the selection tabs to get all plkugins sub parts
+     * @memberof rtge.component
+     * @returns - navbar like for the plugin
+     */
     renderTabMenu() {
         return (
             <div className="row rowTabs">
@@ -380,6 +455,11 @@ export class RTGEComponent extends React.Component {
         );
     }
 
+    /**
+     * renderContent organise which tab is active
+     * @memberof rtge.component
+     * @returns - tab dom content
+     */
     renderContent() {
         var content;
         switch (this.props.activeTab) {
@@ -398,6 +478,11 @@ export class RTGEComponent extends React.Component {
         return content;
     }
 
+    /**
+     * render component
+     * @memberof rtge.component
+     * @returns - Mapstore ResponsivePanel with our data inside
+     */
     render() {
         if (this.props.active) {
             return (
@@ -418,26 +503,44 @@ export class RTGEComponent extends React.Component {
                     {this.renderContent()}
                 </ResponsivePanel>
             );
-        // eslint-disable-next-line no-else-return
-        } else {
-            return null;
         }
+        return null;
     }
 
     // valuesSetter(data) {
     //     this.setSelectedTiles(values => [...values, data]);
     // }
 
+    /**
+     * handleTextFieldChange when a text field change, it updates the state
+     * @memberof rtge.component
+     * @param e - javascript event object
+     * @param fieldName - name of the field which is to update
+     * @returns - nothing
+     */
     handleTextFieldChange(e, fieldName) {
         this.state[fieldName] = e.target.value;
         this.setState(this.state);
     }
 
+    /**
+     * handlePhoneFieldChange when the phone field change, it updates the state
+     * @memberof rtge.component
+     * @param e - javascript event object
+     * @param fieldName - name of the field which is to update
+     * @returns - nothing
+     */
     handlePhoneFieldChange(e, fieldName) {
         this.state[fieldName] = e;
         this.setState(this.state);
     }
 
+    /**
+     * handleBooleanFieldChange when the booleans fields change, it updates their state
+     * @memberof rtge.component
+     * @param fieldName - name of the field which is to update
+     * @returns - nothing
+     */
     handleBooleanFieldChange(fieldName) {
         this.state[fieldName] = !this.state[fieldName];
         this.setState(this.state);
