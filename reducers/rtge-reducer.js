@@ -9,7 +9,8 @@ import assign from 'object-assign';
 const initialState = {
     value: 1,
     activeTab: tabTypes.HOME,
-    selectedTiles: []
+    selectedTiles: [],
+    selectedRow: []
 };
 
 /**

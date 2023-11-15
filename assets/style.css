@@ -64,6 +64,13 @@ p {
     max-width: 500px;
 }
 
+
+/* ==== SelectedTiles Array ==== */
+
+.arraySelected{
+    background-color: lightgray;
+}
+
 /*Section sélection du plugin*/
 
 .selectTitle{

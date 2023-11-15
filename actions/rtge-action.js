@@ -14,7 +14,8 @@ export const actions = {
     INIT_PROJECTIONS: 'RTGE:INIT_PROJECTIONS',
     ADD_FEATURES: 'RTGE:ADD_FEATURES',
     SWITCH_DRAW: 'RTGE:SWITCH_DRAW',
-    REMOVE_SELECTED_TILES: 'RTGE:REMOVE_SELECTED_TILES'
+    REMOVE_SELECTED_TILES: 'RTGE:REMOVE_SELECTED_TILES',
+    CLICK_TABLE: 'RTGE:CLICK_TABLE'
 };
 
 export const tabTypes = {
@@ -140,5 +141,19 @@ export function switchDraw(geometryType) {
 export function removeSelectedTiles() {
     return {
         type: actions.REMOVE_SELECTED_TILES
+    };
+}
+
+/**
+ * clickTable actions when table is clicked
+ * @memberof rtge.actions
+ * @param row - row id of the clicked row
+ * @returns - action click table
+ */
+export function clickTable(feature, control) {
+    return {
+        type: actions.CLICK_TABLE,
+        feature,
+        control
     };
 }

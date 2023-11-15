@@ -5,21 +5,13 @@ import Message from "@mapstore/components/I18N/Message";
 import { RTGE_PANEL_WIDTH } from "../constants/rtge-constants.js";
 import { tabTypes } from "../actions/rtge-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
-// import {setControlProperties, setControlProperty, toggleControl} from "@mapstore/actions/controls";
-// import { totalCountSelector } from "@mapstore/selectors/contextmanager";
+
 import {
-    // Button,
-    // Col,
-    // ControlLabel,
     Form,
     FormControl,
     FormGroup,
     Glyphicon,
-    // Grid,
-    // HelpBlock,
     InputGroup,
-    // Radio,
-    // Row,
     Label,
     Checkbox
 } from 'react-bootstrap';
@@ -42,7 +34,8 @@ export class RTGEComponent extends React.Component {
         selectedTiles: PropTypes.array,
         user: PropTypes.object,
         switchDraw: PropTypes.func,
-        removeSelectedTiles: PropTypes.func
+        removeSelectedTiles: PropTypes.func,
+        clickTable: PropTypes.func
     }
 
     static defaultProps= {
@@ -70,7 +63,8 @@ export class RTGEComponent extends React.Component {
         toggleControl: ()=>{},
         changeTab: ()=>{},
         switchDraw: ()=>{},
-        removeSelectedTiles: ()=>{}
+        removeSelectedTiles: ()=>{},
+        clickTable: ()=>{}
     }
 
     constructor(props) {
@@ -413,8 +407,8 @@ export class RTGEComponent extends React.Component {
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
-                                    <div className="row tableOffset" key={key} onClick={() => this.props.switchDraw('Table')}>
-                                        <div className="col-sm-3 text-center">{val.properties.id_case}</div>
+                                    <div className={val.properties.selected ? "row tableOffset arraySelected" : "row tableOffset"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
+                                        <div className="col-sm-3 text-center">{val.properties.cases_200}</div>
                                         <div className="col-sm-3 text-center">{val.properties.date_der_maj}</div>
                                         <div className="col-sm-3 text-center">{val.properties.nb_donnees_surf}</div>
                                         <div className="col-sm-3 text-center">{val.properties.nb_donnees_ssol}</div>

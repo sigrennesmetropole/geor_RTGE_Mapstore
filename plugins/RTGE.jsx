@@ -11,7 +11,8 @@ import { changeZoomLevel } from "@mapstore/actions/map";
 import {
     changeTab,
     switchDraw,
-    removeSelectedTiles
+    removeSelectedTiles,
+    clickTable
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
@@ -20,7 +21,8 @@ import {
     isOpen,
     getActiveTab,
     getSelectedTiles,
-    getActiveSelection
+    getActiveSelection,
+    getSelectedRow
 } from "../selectors/rtge-selectors";
 import '../assets/style.css';
 
@@ -43,13 +45,15 @@ export default createPlugin(name, {
             dataSurf: true,
             dataUnderSurf: false
         },
-        activeSelection: getActiveSelection(state)
+        activeSelection: getActiveSelection(state),
+        selectedRow: getSelectedRow(state)
     }), {
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
         changeTab: changeTab,
         switchDraw: switchDraw,
-        removeSelectedTiles: removeSelectedTiles
+        removeSelectedTiles: removeSelectedTiles,
+        clickTable
     })(RTGEComponent),
     reducers: {
         rtge: rtgeReducer

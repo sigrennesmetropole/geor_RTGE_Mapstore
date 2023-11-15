@@ -42,7 +42,10 @@ import { getLayerJSONFeature } from "@mapstore/observables/wfs";
 import Proj4js from 'proj4';
 import { updateAdditionalLayer } from "@mapstore/actions/additionallayers";
 import { show } from "@mapstore/actions/notifications";
-// import { CLICK_ON_MAP } from "@mapstore/actions/map";
+import {
+    CLICK_ON_MAP,
+    resizeMap
+} from "@mapstore/actions/map";
 
 const gridLayerId = "ref_topo:rmtr_carroyage";
 const backendURLPrefix = ""; // "https://portail-test.sig.rennesmetropole.fr/";
@@ -56,11 +59,11 @@ const GeometryType = {
 };
 const tileId = 'id_case';
 const styles = {
-    selected: {
+    "selected": {
         fillColor: "#18BEF7",
-        opacity: 0.6,
+        opacity: 1,
         fillOpacity: 0,
-        color: "#111111",
+        color: "#f5c42c",
         weight: 4
     },
     "default": {
@@ -68,10 +71,11 @@ const styles = {
         opacity: 0.6,
         fillOpacity: 0,
         color: "#18BEF7",
-        weight: 4
+        weight: 2
     }
 };
 const featuresLimit = 50;
+var gridLayer = {};
 
 export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
     // console.log(' PAS POMME DE TERRE');
@@ -138,46 +142,48 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
 export const displayRTGEGridEpic = (action$, store) =>
     action$.ofType(actions.SHOW_GRID)
         .switchMap(() => {
-            const gridLayer = head(store.getState().layers.flat.filter(l => l.id === gridLayerId ));
+            const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.id === gridLayerId ));
+            gridLayer = {
+                handleClickOnLayer: true,
+                hideLoading: true,
+                id: gridLayerId,
+                name: gridLayerName,
+                title: RTGE_GRID_LAYER_TITLE,
+                tiled: false,
+                type: "wms",
+                search: {
+                    type: "wfs",
+                    url: backendURLPrefix + "/geoserver/ref_topo/ows"
+                },
+                params: {
+                    exceptions: 'application/vnd.ogc.se_xml'
+                },
+                allowedSRS: RTGEGridLayerProjection,
+                format: "image/png",
+                singleTile: false,
+                url: backendURLPrefix + "/geoserver/ref_topo/wms",
+                visibility: true,
+                featureInfo: {
+                    format: "PROPERTIES"
+                }
+            };
             return Rx.Observable.from(
-                gridLayer
+                mapstoreGridLayer
                     ? [refreshLayerVersion(gridLayerId)]
-                    : [addLayer({
-                        handleClickOnLayer: true,
-                        hideLoading: true,
-                        id: gridLayerId,
-                        name: gridLayerName,
-                        title: RTGE_GRID_LAYER_TITLE,
-                        type: "wms",
-                        search: {
-                            type: "wfs",
-                            url: backendURLPrefix + "/geoserver/ref_topo/ows"
-                        },
-                        params: {
-                            exceptions: 'application/vnd.ogc.se_xml'
-                        },
-                        allowedSRS: RTGEGridLayerProjection,
-                        format: "image/png",
-                        singleTile: false,
-                        url: backendURLPrefix + "/geoserver/ref_topo/wms",
-                        visibility: true,
-                        featureInfo: {
-                            format: "PROPERTIES"
-                        }
-                    }),
-                    selectNode(gridLayerId, "layer", false),
-                    updateAdditionalLayer(
-                        selectedTilesLayerId,
-                        "RTGE",
-                        'overlay',
-                        {
-                            id: selectedTilesLayerId,
-                            features: [],
-                            type: "vector",
-                            name: "RTGESelectedTiles",
-                            visibility: true
-                        }
-                    )
+                    : [addLayer(gridLayer),
+                        selectNode(gridLayerId, "layer", false),
+                        updateAdditionalLayer(
+                            selectedTilesLayerId,
+                            "RTGE",
+                            'overlay',
+                            {
+                                id: selectedTilesLayerId,
+                                features: [],
+                                type: "vector",
+                                name: "RTGESelectedTiles",
+                                visibility: true
+                            }
+                        )
                     ]
             );
         });
@@ -302,13 +308,12 @@ const getLayerFeatures = (layer, filter) => {
 export const getFeaturesEpic = (action$, store) =>
     action$.ofType(actions.GET_FEATURES)
         .switchMap( (action) => {
-            const layer = head(store.getState().layers.flat.filter(l => l.id === gridLayerId ));
             const maxFeatures = featuresLimit - getSelectedTiles(store.getState()).length;
             // console.log(maxFeatures);
             const filter = {
                 filterType: "OGC",
-                featureTypeName: layer?.search?.name || layer?.name,
-                typeName: layer?.search?.name || layer?.name,
+                featureTypeName: gridLayer?.search?.name || gridLayer?.name,
+                typeName: gridLayer?.search?.name || gridLayer?.name,
                 ogcVersion: '1.1.0',
                 spatialField: {
                     attribute: "shape",
@@ -320,7 +325,7 @@ export const getFeaturesEpic = (action$, store) =>
                     maxFeatures: maxFeatures + 1 // le +1 est nécessaire pour le calcul du retour de cases, si 51 alors trop de cases sont sélectionnées
                 }
             };
-            return getLayerFeatures(layer, filter)
+            return getLayerFeatures(gridLayer, filter)
                 .map( ({features = [], ...rest} = {}) => {
                     return {
                         ...rest,
@@ -338,7 +343,7 @@ export const getFeaturesEpic = (action$, store) =>
                     finalElements = [...vectorLayer.options.features, ...finalElements];
                     finalElements = finalElements.map(
                         (feature) => {
-                            return {...feature, style: styles.default};
+                            return {...feature, style: styles.default, properties: {...feature.properties, selected: false}};
                         }
                     );
                     // console.log(finalElements.length);
@@ -368,37 +373,96 @@ export const getFeaturesEpic = (action$, store) =>
 export const switchDrawingEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
     // console.log(action);
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
-    if (action.geometryType === activeSelectionGeometryType || action.geometryType === 'Table') {
+    if (action.geometryType === activeSelectionGeometryType) {
         store.getState().rtge.activeSelection = "";
         return Rx.Observable.from([stopDraw()]);
     }
     return Rx.Observable.from([startDraw(action.geometryType)]);
 });
 
-// export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).switchMap((action) => {
-//     const layer = head(action.point.intersectedFeatures.find(l => l.id === selectedTilesLayerId));
-//     const features = getSelectedTiles(store.getState());
-//     const intersectedFeature = layer.features[0];
-//     const vectorLayer = getSelectedTilesLayer(store.getState());
-//     features.forEach((feature) => {
-//         if (intersectedFeature.properties.id_case === feature.properties.id_case) {
-//             feature.properties.selected = !feature.properties.selected;
-//         } else if (!action.point.modifiers.ctrl) {
-//             feature.properties.selected = false;
-//         }
-//         if (feature.properties.selected) {
-//             feature.style = styles.selected;
-//         } else {
-//             feature.style = styles.default;
-//         }
-//     });
-//     return Rx.Observable.from([updateAdditionalLayer(
-//         selectedTilesLayerId,
-//         "RTGE",
-//         "overlay",
-//         {
-//             ...vectorLayer.options,
-//             features
-//         }
-//     )]);
-// });
+function featureSelection(currentFeatures, control, intersectedFeature) {
+    return currentFeatures.map((feature) => {
+        if (intersectedFeature?.properties?.id_case === feature.properties.id_case) {
+            feature.properties.selected = !feature.properties.selected;
+        } else if (!control) {
+            feature.properties.selected = false;
+        }
+        if (feature.properties.selected) {
+            feature.style = styles.selected;
+        } else {
+            feature.style = styles.default;
+        }
+        return {
+            ...feature
+        };
+    });
+}
+
+export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).switchMap((action) => {
+    const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
+    const intersectedFeature = layer?.features[0];
+    const currentFeatures = getSelectedTiles(store.getState());
+    const vectorLayer = getSelectedTilesLayer(store.getState());
+    const features = featureSelection(currentFeatures, action.point.modifiers.ctrl, intersectedFeature);
+    return Rx.Observable.from([updateAdditionalLayer(
+        selectedTilesLayerId,
+        "RTGE",
+        "overlay",
+        {
+            ...vectorLayer.options,
+            features
+        }
+    ),
+    // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
+    resizeMap()]);
+});
+
+/**
+ * TODO: Revoir les commentaires de cette fonction
+ * clickTableEpic allows to switch between drawings
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which send start draw action
+ */
+export const clickTableEpic = (action$, store) => action$.ofType(actions.CLICK_TABLE).switchMap((action) => {
+    console.log(action);
+    const currentFeatures = getSelectedTiles(store.getState());
+    const features = featureSelection(currentFeatures, action.control, action.feature);
+    const vectorLayer = getSelectedTilesLayer(store.getState());
+    return Rx.Observable.from([updateAdditionalLayer(
+        selectedTilesLayerId,
+        "RTGE",
+        "overlay",
+        {
+            ...vectorLayer.options,
+            features
+        }
+    ),
+    // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
+    resizeMap()]);
+});
+
+/**
+ * TODO: Revoir les commentaires de cette fonction
+ * removeSelectedFeaturesEpic allows to switch between drawings
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which send start draw action
+ */
+export const removeSelectedFeaturesEpic = (action$, store) => action$.ofType(actions.REMOVE_SELECTED_TILES).switchMap(() => {
+    var currentFeatures = getSelectedTiles(store.getState());
+    const vectorLayer = getSelectedTilesLayer(store.getState());
+    var emptiedFeatures = currentFeatures.filter(l => l.properties.selected === false);
+    return Rx.Observable.from([updateAdditionalLayer(
+        selectedTilesLayerId,
+        "RTGE",
+        "overlay",
+        {
+            ...vectorLayer.options,
+            features: emptiedFeatures
+        }
+    ),
+    addFeatures(emptiedFeatures)]);
+});
