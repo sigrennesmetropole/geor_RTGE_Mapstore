@@ -151,3 +151,10 @@ label {
     overflow-y: scroll;
     max-height: 505px;
 }
+
+/* ==== survol des boutons ==== */
+
+.selectorButton:hover {
+    cursor:pointer;
+    background-color: gold;
+}
