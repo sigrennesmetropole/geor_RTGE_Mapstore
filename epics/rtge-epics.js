@@ -48,7 +48,7 @@ import {
 } from "@mapstore/actions/map";
 
 const gridLayerId = "ref_topo:rmtr_carroyage";
-const backendURLPrefix = ""; // "https://portail-test.sig.rennesmetropole.fr/";
+const backendURLPrefix = "";
 const gridLayerName = "rmtr_carroyage";
 const RTGE_GRID_LAYER_TITLE = "RMTR : Carroyage au 1/200";
 const RTGEGridLayerProjection = "EPSG:3948";
@@ -78,27 +78,14 @@ const featuresLimit = 50;
 var gridLayer = {};
 
 export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
-    // console.log(' PAS POMME DE TERRE');
-    // console.log(Proj4js.defs("EPSG:3948"));
     if (!Proj4js.defs("EPSG:3948")) {
-        // console.log('POMME DE TERRE');
         Proj4js.defs("EPSG:3948", "+proj=lcc +lat_0=48 +lon_0=3 +lat_1=47.25 +lat_2=48.75 +x_0=1700000 +y_0=7200000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs");
     }
     if (!Proj4js.defs("EPSG:4326")) {
-        // console.log('PATATE');
         Proj4js.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs +type=crs");
     }
     return Rx.Observable.empty();
 });
-
-// let currentLayout;
-// ici c'est pour le logging, les informations utiles pour les utilisateurs
-// export const logCounterValue = (action$, store) => action$.ofType(actions.INCREASE_COUNTER).switchMap(() => {
-//     /* eslint-disable */
-//     console.log('CURRENT VALUE: ' + store.getState().rtge.value);
-//     /* eslint-enable */
-//     return Rx.Observable.empty();
-// });
 
 /**
  * openRTGEPanelEpic opens the panel of this RTGE plugin
@@ -112,7 +99,6 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
     .switchMap(() => {
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT, boundingMapRect: {...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT}, boundingSidebarRect: layout.boundingSidebarRect};
-        // currentLayout = layout;
         return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout)]);
     });
 
@@ -128,7 +114,6 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
     .switchMap(() => {
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: layout.boundingSidebarRect.right, boundingMapRect: {...layout.boundingMapRect, right: layout.boundingSidebarRect.right}, boundingSidebarRect: layout.boundingSidebarRect};
-        // currentLayout = layout;
         return Rx.Observable.from([updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(layout)]);
     });
 
@@ -234,12 +219,7 @@ export const startDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).
         translateEnabled: false,
         useSelectedStyle: false
     };
-
-    // return Rx.Observable.from([
-    // changeDrawingStatus('drawOrEdit', action.geometryType, 'rtge', [feature], options)
-    // const startDrawingAction = changeDrawingStatus('drawOrEdit', action.geometryType, 'rtge', [feature], options);
     return Rx.Observable.from([changeDrawingStatus('drawOrEdit', action.geometryType, 'rtge', [feature], options)]);
-    // ]);
 });
 
 /**
@@ -254,7 +234,6 @@ export const geometryChangeEpic = (action$, store) =>
         .switchMap( (action) => {
             let geometrySelection = {};
             if (action.features && action.features.length > 0) {
-                // console.log(action);
                 const geometry = action.features[0].geometry;
                 if (GeometryType.POINT === geometry.type) {
                     // eslint-disable-next-line new-cap
@@ -272,7 +251,6 @@ export const geometryChangeEpic = (action$, store) =>
                     ...geometry,
                     projection: RTGEGridLayerProjection
                 };
-                // console.log(localisation);
                 return Rx.Observable.from([
                     startDraw(geometrySelection.type),
                     getFeatures(geometrySelection)
@@ -309,7 +287,6 @@ export const getFeaturesEpic = (action$, store) =>
     action$.ofType(actions.GET_FEATURES)
         .switchMap( (action) => {
             const maxFeatures = featuresLimit - getSelectedTiles(store.getState()).length;
-            // console.log(maxFeatures);
             const filter = {
                 filterType: "OGC",
                 featureTypeName: gridLayer?.search?.name || gridLayer?.name,
@@ -339,14 +316,12 @@ export const getFeaturesEpic = (action$, store) =>
                         return Rx.Observable.from([show({ title: "RTGE.alertMaxFeatures.title", message: "RTGE.alertMaxFeatures.message" }, "warning"), startDraw(getSelectionGeometryType(store.getState()))]);
                     }
                     const vectorLayer = getSelectedTilesLayer(store.getState());
-                    // console.log(vectorLayer);
                     finalElements = [...vectorLayer.options.features, ...finalElements];
                     finalElements = finalElements.map(
                         (feature) => {
                             return {...feature, style: styles.default, properties: {...feature.properties, selected: false}};
                         }
                     );
-                    // console.log(finalElements.length);
                     return Rx.Observable.from([
                         addFeatures(finalElements),
                         updateAdditionalLayer(
@@ -371,7 +346,6 @@ export const getFeaturesEpic = (action$, store) =>
  * @returns - observable which send start draw action
  */
 export const switchDrawingEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
-    // console.log(action);
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
     if (action.geometryType === activeSelectionGeometryType) {
         store.getState().rtge.activeSelection = "";
@@ -418,15 +392,13 @@ export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).s
 });
 
 /**
- * TODO: Revoir les commentaires de cette fonction
- * clickTableEpic allows to switch between drawings
+ * clickTableEpic on table click, selects the row selected and highlight it on the map
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which send start draw action
+ * @returns - observable which update the layer
  */
 export const clickTableEpic = (action$, store) => action$.ofType(actions.CLICK_TABLE).switchMap((action) => {
-    console.log(action);
     const currentFeatures = getSelectedTiles(store.getState());
     const features = featureSelection(currentFeatures, action.control, action.feature);
     const vectorLayer = getSelectedTilesLayer(store.getState());
@@ -444,12 +416,11 @@ export const clickTableEpic = (action$, store) => action$.ofType(actions.CLICK_T
 });
 
 /**
- * TODO: Revoir les commentaires de cette fonction
- * removeSelectedFeaturesEpic allows to switch between drawings
+ * removeSelectedFeaturesEpic removes the selected feature from table and map
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
- * @returns - observable which send start draw action
+ * @returns - observable which update the layer and who update the feature list
  */
 export const removeSelectedFeaturesEpic = (action$, store) => action$.ofType(actions.REMOVE_SELECTED_TILES).switchMap(() => {
     var currentFeatures = getSelectedTiles(store.getState());

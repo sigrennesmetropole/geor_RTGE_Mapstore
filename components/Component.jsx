@@ -112,7 +112,6 @@ export class RTGEComponent extends React.Component {
         //     dataSurf: this.state.dataSurf,
         //     dataUnderSurf: this.state.dataUnderSurf
         // };
-        // console.log(formContent);
     }
 
     /**
@@ -394,7 +393,7 @@ export class RTGEComponent extends React.Component {
                     <button className={this.props.activeSelection === 'Point' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
                     <button className={this.props.activeSelection === 'LineString' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
                     <button className={this.props.activeSelection === 'Polygon' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
-                    <button className="selectorButton" onClick={() => this.props.removeSelectedTiles()}><Glyphicon glyph="trash"/></button>
+                    <button className={this.props.selectedTiles.length === 0 ? "selectorButton empty" : "selectorButton"} onClick={() => this.props.selectedTiles.length === 0 ? '' : this.props.removeSelectedTiles()}><Glyphicon glyph="trash"/></button>
                 </div>
                 <div className="row">
                     <div className="row tableOffset">
@@ -407,7 +406,7 @@ export class RTGEComponent extends React.Component {
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
-                                    <div className={val.properties.selected ? "row tableOffset arraySelected" : "row tableOffset"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
+                                    <div className={val.properties.selected ? "row arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
                                         <div className="col-sm-3 text-center">{val.properties.cases_200}</div>
                                         <div className="col-sm-3 text-center">{val.properties.date_der_maj}</div>
                                         <div className="col-sm-3 text-center">{val.properties.nb_donnees_surf}</div>
@@ -500,10 +499,6 @@ export class RTGEComponent extends React.Component {
         }
         return null;
     }
-
-    // valuesSetter(data) {
-    //     this.setSelectedTiles(values => [...values, data]);
-    // }
 
     /**
      * handleTextFieldChange when a text field change, it updates the state
