@@ -35,7 +35,8 @@ export class RTGEComponent extends React.Component {
         user: PropTypes.object,
         switchDraw: PropTypes.func,
         removeSelectedTiles: PropTypes.func,
-        clickTable: PropTypes.func
+        clickTable: PropTypes.func,
+        sendMail: PropTypes.func
     }
 
     static defaultProps= {
@@ -64,7 +65,8 @@ export class RTGEComponent extends React.Component {
         changeTab: ()=>{},
         switchDraw: ()=>{},
         removeSelectedTiles: ()=>{},
-        clickTable: ()=>{}
+        clickTable: ()=>{},
+        sendMail: ()=>{}
     }
 
     constructor(props) {
@@ -93,25 +95,6 @@ export class RTGEComponent extends React.Component {
      */
     onClose() {
         return this.props.toggleControl();
-    }
-
-    /**
-     * getForm get data from plugins form
-     * @memberof rtge.component
-     * @returns - form values as json
-     */
-    getForm() {
-        // var formContent = {
-        //     prenom: this.state.prenom,
-        //     nom: this.state.nom,
-        //     collectivite: this.state.collectivite,
-        //     service: this.state.service,
-        //     courriel: this.state.courriel,
-        //     telephone: this.state.telephone,
-        //     motivation: this.state.motivation,
-        //     dataSurf: this.state.dataSurf,
-        //     dataUnderSurf: this.state.dataUnderSurf
-        // };
     }
 
     /**
@@ -297,6 +280,7 @@ export class RTGEComponent extends React.Component {
                         <Message msgId="RTGE.dataSurf" />
                     </Label>
                     <Checkbox
+                        defaultChecked={this.state.dataSurf}
                         onChange={() => this.handleBooleanFieldChange('dataSurf')}
                     />
                 </FormGroup>
@@ -317,6 +301,7 @@ export class RTGEComponent extends React.Component {
                         <Message msgId="RTGE.dataUnderSurf" />
                     </Label>
                     <Checkbox
+                        defaultChecked={this.state.dataUnderSurf}
                         onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
                     />
                 </FormGroup>
@@ -376,7 +361,7 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataSurf()}
                     {this.renderDataUnderSurf()}
                 </Form>
-                <button className="buttonForm" onClick={this.getForm()}>Envoyer</button>
+                <button className="buttonForm" onClick={() => this.props.sendMail(this.state)}>Envoyer</button>
             </div>
         );
     }
@@ -395,22 +380,22 @@ export class RTGEComponent extends React.Component {
                     <button className={this.props.activeSelection === 'Polygon' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
                     <button className={this.props.selectedTiles.length === 0 ? "selectorButton empty" : "selectorButton"} onClick={() => this.props.selectedTiles.length === 0 ? '' : this.props.removeSelectedTiles()}><Glyphicon glyph="trash"/></button>
                 </div>
-                <div className="row">
-                    <div className="row tableOffset">
-                        <div className="col-sm-3 text-center selectTitle">Identifiant</div>
-                        <div className="col-sm-3 text-center selectTitle">Date MAJ</div>
-                        <div className="col-sm-3 text-center selectTitle">Nb objets surface</div>
-                        <div className="col-sm-3 text-center selectTitle">nb objets sous sol</div>
+                <div className="row arrayOffset">
+                    <div className="row tableOffset selectTitle text-center">
+                        <div className="col-sm-3 v-align delimitor"><span>Identifiant</span></div>
+                        <div className="col-sm-3 v-align delimitor">Date MAJ</div>
+                        <div className="col-sm-3 v-align delimitor">Nb d'objets surf</div>
+                        <div className="col-sm-3 v-align">nb d'objets ssol</div>
                     </div>
-                    <div className="scrollBar">
+                    <div className="scrollBar text-center">
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
                                     <div className={val.properties.selected ? "row arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
-                                        <div className="col-sm-3 text-center">{val.properties.cases_200}</div>
-                                        <div className="col-sm-3 text-center">{val.properties.date_der_maj}</div>
-                                        <div className="col-sm-3 text-center">{val.properties.nb_donnees_surf}</div>
-                                        <div className="col-sm-3 text-center">{val.properties.nb_donnees_ssol}</div>
+                                        <div className="col-sm-3">{val.properties.cases_200}</div>
+                                        <div className="col-sm-3">{val.properties.date_der_maj}</div>
+                                        <div className="col-sm-3">{val.properties.nb_donnees_surf}</div>
+                                        <div className="col-sm-3">{val.properties.nb_donnees_ssol}</div>
                                     </div>
                                 );
                             })

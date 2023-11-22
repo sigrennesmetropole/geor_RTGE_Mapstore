@@ -68,14 +68,6 @@ p {
 
 /*Section sélection du plugin*/
 
-.selectTitle{
-    font-weight: bold;
-    border-bottom: 1px solid #ddd;
-    background: lightgray;
-    height: 40px;
-    font-size: small;
-}
-
 .selectorButton{
     background-color: #078aa3;
     color: white;
@@ -106,6 +98,15 @@ label {
 
 /* ==== Array selectedTiles ==== */
 
+.selectTitle{
+    /* font-weight: bold; */
+    border-bottom: 1px solid #ddd;
+    background: darkgray;
+    /* height: 40px; */
+    font-size: small;
+    color: white;
+}
+
 .tableOffset{
     margin-right: 15px;
 }
@@ -114,6 +115,7 @@ label {
     overflow-y: scroll;
     max-height: 499px;
     margin-right: 17px;
+    cursor: pointer;
 }
 
 .scrollBar div{
@@ -129,6 +131,24 @@ label {
 
 .arraySelected{
     background-color: lightgray;
+}
+
+.v-align{
+    display:grid;
+    align-items: center;
+    height: 40px;
+}
+
+.delimitor{
+    border-bottom: none;
+    border-top: none;
+    border-left: none;
+    border-right: 1px ridge;
+    border-color: lightgray;
+}
+
+.arrayOffset{
+    margin-left: 0px;
 }
 
 /* ==== Form Area ==== */

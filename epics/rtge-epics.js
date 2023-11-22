@@ -46,6 +46,8 @@ import {
     CLICK_ON_MAP,
     resizeMap
 } from "@mapstore/actions/map";
+import Xtemplate from 'xtemplate';
+import axios from 'axios';
 
 const gridLayerId = "ref_topo:rmtr_carroyage";
 const backendURLPrefix = "";
@@ -76,6 +78,7 @@ const styles = {
 };
 const featuresLimit = 50;
 var gridLayer = {};
+const emailUrl = "/console/emailProxy";
 
 export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
     if (!Proj4js.defs("EPSG:3948")) {
@@ -354,6 +357,16 @@ export const switchDrawingEpic = (action$, store) => action$.ofType(actions.SWIT
     return Rx.Observable.from([startDraw(action.geometryType)]);
 });
 
+// TODO: ajouter dans la doc l'explication du code à partir d'ici
+
+/**
+ * featureSelection tells us if the selected feature is already selected and gives styles according this state
+ * @memberof rtge.epics
+ * @param currentFeatures - current features
+ * @param control - is the user pressing control key
+ * @param intersectedFeature - all features clicked
+ * @returns - return one or more feature with their style updated... or not
+ */
 function featureSelection(currentFeatures, control, intersectedFeature) {
     return currentFeatures.map((feature) => {
         if (intersectedFeature?.properties?.id_case === feature.properties.id_case) {
@@ -372,6 +385,13 @@ function featureSelection(currentFeatures, control, intersectedFeature) {
     });
 }
 
+/**
+ * clickOnMapEpic set things up for when a click is done on the map
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable with tiles selected inside and their new styles
+ */
 export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).switchMap((action) => {
     const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
     const intersectedFeature = layer?.features[0];
@@ -436,4 +456,70 @@ export const removeSelectedFeaturesEpic = (action$, store) => action$.ofType(act
         }
     ),
     addFeatures(emptiedFeatures)]);
+});
+
+/**
+ * TODO: Modifier les commentaires de cette fonction
+ * removeSelectedFeaturesEpic removes the selected feature from table and map
+ * @memberof rtge.epics
+ * @param state - list of actions triggered in mapstore context
+ * @returns - observable which update the layer and who update the feature list
+ */
+function getFormattedTiles(state) {
+    var selectedTiles = getSelectedTiles(state);
+    var formattedTiles = '';
+    for (let index = 0; index < selectedTiles.length; index = index + 2) {
+        formattedTiles += selectedTiles[index]?.properties?.cases_200;
+        if (selectedTiles[index + 1]) {
+            formattedTiles += ", " + selectedTiles[index + 1]?.properties?.cases_200;
+            if (index + 1 < selectedTiles.length - 1) {
+                formattedTiles += ",\n";
+            }
+        }
+    }
+    return formattedTiles;
+}
+
+/**
+ * TODO: Modifier les commentaires de cette fonction
+ * removeSelectedFeaturesEpic removes the selected feature from table and map
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - observable which update the layer and who update the feature list
+ */
+export const sendMailEpic = (action$, store) => action$.ofType(actions.SEND_MAIL).switchMap((action) => {
+    let mailContent = {
+        "subject": "[RTGE] nouvelle demande concernant {count} dalles",
+        "to": ["sigsupport@rennesmetropole.fr"],
+        "cc": [],
+        "bcc": []
+    };
+    let template = "Bonjour,\n\n{{first_name}} {{last_name}} ({{email}} - {{tel}} - {{service}} - {{company}}) a effectué une demande d'extraction de données.\nSous-sol: {{underground}}\nSurface: {{aboveground}}\n\nMotivations: {{comments}}\n\nLes dalles concernées sont les suivantes:\n\n{{tiles}}";
+    let formatedTiles = getFormattedTiles(store.getState());
+    template = new Xtemplate(template).render({
+        first_name: action.form.prenom,
+        last_name: action.form.nom,
+        email: action.form.courriel,
+        tel: action.form.telephone,
+        service: action.form.service,
+        company: action.form.collectivite,
+        underground: action.form.dataUnderSurf,
+        aboveground: action.form.dataSurf,
+        comments: action.form.motivation,
+        tiles: formatedTiles
+    });
+    mailContent.body = template;
+    const params = {
+        timeout: 30000,
+        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
+    };
+    return Rx.Observable.defer(() => axios.post(emailUrl, mailContent, params))
+        .switchMap((response) => {
+            console.log(response);
+            return Rx.Observable.empty();
+        })
+        .catch((e) => {
+            console.log(e);
+            return Rx.Observable.empty();
+        });
 });

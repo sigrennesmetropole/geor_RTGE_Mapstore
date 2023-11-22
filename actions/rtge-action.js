@@ -15,6 +15,7 @@ export const actions = {
     ADD_FEATURES: 'RTGE:ADD_FEATURES',
     SWITCH_DRAW: 'RTGE:SWITCH_DRAW',
     REMOVE_SELECTED_TILES: 'RTGE:REMOVE_SELECTED_TILES',
+    SEND_MAIL: 'RTGE:SEND_MAIL',
     CLICK_TABLE: 'RTGE:CLICK_TABLE'
 };
 
@@ -155,5 +156,19 @@ export function clickTable(feature, control) {
         type: actions.CLICK_TABLE,
         feature,
         control
+    };
+}
+
+/**
+ * TODO: gérer les commentaires proprement.
+ * sendMail actions when table is clicked
+ * @memberof rtge.actions
+ * @param row - row id of the clicked row
+ * @returns - action click table
+ */
+export function sendMail(form) {
+    return {
+        type: actions.SEND_MAIL,
+        form
     };
 }
