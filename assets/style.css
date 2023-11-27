@@ -42,12 +42,6 @@ button.active{
     color: black;
 }
 
-.buttonForm{
-    /* border: 1px solid lightgrey; */
-    background-color: lightgray;
-    border-radius: 7px;
-}
-
 .title{
     font-weight: bold;
     font-size: 15px;
@@ -64,6 +58,18 @@ p {
 .paragraphs{
     margin: 10px;
     max-width: 500px;
+}
+
+.right {
+    text-align: right;
+}
+
+.left{
+    height: 40px;
+    margin-top: 10px;
+    display:grid;
+    align-items: center;
+    padding-left: 30px;
 }
 
 /*Section sélection du plugin*/
@@ -166,12 +172,6 @@ label {
     font-size: inherit;
 }
 
-.formUnit input {
-    padding: 3px;
-    width: 69%;
-    /* padding: 12px; */
-}
-
 .formUnit input[type='checkbox']{
     margin-left: 33%;
     margin-right: 10px;
@@ -187,6 +187,60 @@ label {
 .checkbox{
     margin-top: -20px;
     margin-left: 20px;
+}
+
+input:placeholder-shown {
+    border: 1px solid red;
+}
+
+textarea:placeholder-shown {
+    border: 1px solid red;
+}
+
+.errorZone {
+    background-color: red;
+    display: grid;
+    align-items: center;
+    text-align: center;
+    height: 50px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.inputGroupStyles {
+    display:flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.label-default {
+    padding: 8px;
+}
+
+.inputGroupStyles .PhoneInput {
+    margin-left: 10px;
+}
+
+textarea {
+    margin-top: 6px;
+}
+
+.form-group {
+    margin-bottom: 9px;
+}
+
+.specialInputGroupStyles {
+    margin-top: 17px;
+}
+
+.buttonForm{
+    border-radius: 5px;
+    border-width: 0px;
+    padding: 8px;
+    color: white;
+    margin-left: 4px;
+    font-weight: bold;
 }
 
 /* ==== End of Form ==== */

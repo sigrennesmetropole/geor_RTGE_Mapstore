@@ -10,7 +10,10 @@ import {
     addFeatures,
     stopDraw
 } from "../actions/rtge-action";
-import { TOGGLE_CONTROL} from "@mapstore/actions/controls";
+import {
+    TOGGLE_CONTROL,
+    toggleControl
+} from "@mapstore/actions/controls";
 import {
     RTGE_PANEL_WIDTH,
     RIGHT_SIDEBAR_MARGIN_LEFT,
@@ -65,14 +68,14 @@ const styles = {
         fillColor: "#18BEF7",
         opacity: 1,
         fillOpacity: 0,
-        color: "#f5c42c",
+        color: "#18BEF7",
         weight: 4
     },
     "default": {
         fillColor: "#222111",
         opacity: 0.6,
         fillOpacity: 0,
-        color: "#18BEF7",
+        color: "#f5c42c",
         weight: 2
     }
 };
@@ -357,8 +360,6 @@ export const switchDrawingEpic = (action$, store) => action$.ofType(actions.SWIT
     return Rx.Observable.from([startDraw(action.geometryType)]);
 });
 
-// TODO: ajouter dans la doc l'explication du code à partir d'ici
-
 /**
  * featureSelection tells us if the selected feature is already selected and gives styles according this state
  * @memberof rtge.epics
@@ -367,10 +368,16 @@ export const switchDrawingEpic = (action$, store) => action$.ofType(actions.SWIT
  * @param intersectedFeature - all features clicked
  * @returns - return one or more feature with their style updated... or not
  */
-function featureSelection(currentFeatures, control, intersectedFeature) {
+function featureSelection(currentFeatures, control, intersectedFeature, state) {
     return currentFeatures.map((feature) => {
         if (intersectedFeature?.properties?.id_case === feature.properties.id_case) {
             feature.properties.selected = !feature.properties.selected;
+            if (!control) {
+                state.rtge.selectedRow = [];
+            }
+            if (feature.properties.selected) {
+                state.rtge.selectedRow.push(intersectedFeature);
+            }
         } else if (!control) {
             feature.properties.selected = false;
         }
@@ -397,7 +404,7 @@ export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).s
     const intersectedFeature = layer?.features[0];
     const currentFeatures = getSelectedTiles(store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
-    const features = featureSelection(currentFeatures, action.point.modifiers.ctrl, intersectedFeature);
+    const features = featureSelection(currentFeatures, action.point.modifiers.ctrl, intersectedFeature, store.getState());
     return Rx.Observable.from([updateAdditionalLayer(
         selectedTilesLayerId,
         "RTGE",
@@ -420,7 +427,7 @@ export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).s
  */
 export const clickTableEpic = (action$, store) => action$.ofType(actions.CLICK_TABLE).switchMap((action) => {
     const currentFeatures = getSelectedTiles(store.getState());
-    const features = featureSelection(currentFeatures, action.control, action.feature);
+    const features = featureSelection(currentFeatures, action.control, action.feature, store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
     return Rx.Observable.from([updateAdditionalLayer(
         selectedTilesLayerId,
@@ -443,9 +450,10 @@ export const clickTableEpic = (action$, store) => action$.ofType(actions.CLICK_T
  * @returns - observable which update the layer and who update the feature list
  */
 export const removeSelectedFeaturesEpic = (action$, store) => action$.ofType(actions.REMOVE_SELECTED_TILES).switchMap(() => {
-    var currentFeatures = getSelectedTiles(store.getState());
+    let currentFeatures = getSelectedTiles(store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
-    var emptiedFeatures = currentFeatures.filter(l => l.properties.selected === false);
+    let emptiedFeatures = currentFeatures.filter(l => l.properties.selected === false);
+    store.getState().rtge.selectedRow = [];
     return Rx.Observable.from([updateAdditionalLayer(
         selectedTilesLayerId,
         "RTGE",
@@ -459,11 +467,10 @@ export const removeSelectedFeaturesEpic = (action$, store) => action$.ofType(act
 });
 
 /**
- * TODO: Modifier les commentaires de cette fonction
- * removeSelectedFeaturesEpic removes the selected feature from table and map
+ * getFormattedTiles format tiles id list send into the mail
  * @memberof rtge.epics
  * @param state - list of actions triggered in mapstore context
- * @returns - observable which update the layer and who update the feature list
+ * @returns - formated tile id list for mail
  */
 function getFormattedTiles(state) {
     var selectedTiles = getSelectedTiles(state);
@@ -481,15 +488,35 @@ function getFormattedTiles(state) {
 }
 
 /**
- * TODO: Modifier les commentaires de cette fonction
- * removeSelectedFeaturesEpic removes the selected feature from table and map
+ * TODO: revoir les commentaires de cette fonction
+ * sendMailSuccess show pop up if max feature is reached or starts to recover the list of selected tiles
+ * @memberof rtge.epics
+ * @param layer - current layer where we want the data of
+ * @param filter - contains datas to filter the results (e.g no more than 50)
+ * @returns - empty observable or starts the function to recover datas from geoserver
+ */
+const dropPopUp = (level) => {
+    switch (level) {
+    case "success":
+        return Rx.Observable.from([show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, level), toggleControl('rtge', 'enabled')]);
+    case "error":
+        return Rx.Observable.from([show({ title: "RTGE.sendMailFailure.title", message: "RTGE.sendMailFailure.message" }, level)]);
+    default:
+        break;
+    }
+    return Rx.Observable.empty();
+};
+
+/**
+ * sendMailEpic send email to selected adresse in mailContent.to
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - observable which update the layer and who update the feature list
+ * @param store - list the content of variables inputted with the actions
+ * @returns - empty observable
  */
 export const sendMailEpic = (action$, store) => action$.ofType(actions.SEND_MAIL).switchMap((action) => {
     let mailContent = {
-        "subject": "[RTGE] nouvelle demande concernant {count} dalles",
+        "subject": "[RTGE] nouvelle demande concernant {{count}} dalles",
         "to": ["sigsupport@rennesmetropole.fr"],
         "cc": [],
         "bcc": []
@@ -508,18 +535,22 @@ export const sendMailEpic = (action$, store) => action$.ofType(actions.SEND_MAIL
         comments: action.form.motivation,
         tiles: formatedTiles
     });
+    let subjectTemplate = new Xtemplate(mailContent.subject).render({
+        count: getSelectedTiles(store.getState()).length
+    });
     mailContent.body = template;
+    mailContent.subject = subjectTemplate;
     const params = {
         timeout: 30000,
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
     };
     return Rx.Observable.defer(() => axios.post(emailUrl, mailContent, params))
-        .switchMap((response) => {
-            console.log(response);
-            return Rx.Observable.empty();
+        .switchMap((/* response */) => {
+            // console.log(response);
+            return dropPopUp("success");
         })
         .catch((e) => {
             console.log(e);
-            return Rx.Observable.empty();
+            return dropPopUp("error");
         });
 });

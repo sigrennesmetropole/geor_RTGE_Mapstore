@@ -17,7 +17,7 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
-    console.log(action);
+    // console.log(action);
     // console.log(state);
     switch (action.type) {
     case actions.INCREASE_COUNTER:

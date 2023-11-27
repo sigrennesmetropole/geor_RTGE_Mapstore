@@ -12,7 +12,6 @@ import {
     FormGroup,
     Glyphicon,
     InputGroup,
-    Label,
     Checkbox
 } from 'react-bootstrap';
 import 'react-phone-number-input/style.css';
@@ -28,15 +27,17 @@ export class RTGEComponent extends React.Component {
         width: PropTypes.number,
         activeTab: PropTypes.string,
         activeSelection: PropTypes.string,
+        selectedTiles: PropTypes.array,
+        user: PropTypes.object,
+        selectedRow: PropTypes.array,
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
         changeTab: PropTypes.func,
-        selectedTiles: PropTypes.array,
-        user: PropTypes.object,
         switchDraw: PropTypes.func,
         removeSelectedTiles: PropTypes.func,
         clickTable: PropTypes.func,
-        sendMail: PropTypes.func
+        sendMail: PropTypes.func,
+        formValidationError: PropTypes.func
     }
 
     static defaultProps= {
@@ -60,13 +61,15 @@ export class RTGEComponent extends React.Component {
             dataUnderSurf: false
         },
         activeSelection: '',
+        selectedRow: [],
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
         changeTab: ()=>{},
         switchDraw: ()=>{},
         removeSelectedTiles: ()=>{},
         clickTable: ()=>{},
-        sendMail: ()=>{}
+        sendMail: ()=>{},
+        formValidationError: ()=>{}
     }
 
     constructor(props) {
@@ -80,7 +83,8 @@ export class RTGEComponent extends React.Component {
             telephone: this.props.user.telephone,
             motivation: this.props.user.motivation,
             dataSurf: this.props.user.dataSurf,
-            dataUnderSurf: this.props.user.dataUnderSurf
+            dataUnderSurf: this.props.user.dataUnderSurf,
+            errorTag: ''
         };
     }
 
@@ -106,15 +110,18 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.prenom">
-                    <InputGroup>
-                        <Label>
+                    <InputGroup className="inputGroupStyles">
+                        <div className="col-sm-3">
                             <Message msgId="RTGE.prenom" />
-                        </Label>
-                        <FormControl
-                            type="text"
-                            value={this.state.prenom}
-                            onChange={(e) => this.handleTextFieldChange(e, 'prenom')}
-                        />
+                        </div>
+                        <div className="col-sm-9">
+                            <FormControl
+                                type="text"
+                                placeholder=""
+                                value={this.state.prenom}
+                                onChange={(e) => this.handleTextFieldChange(e, 'prenom')}
+                            />
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </div>
@@ -130,15 +137,18 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.nom">
-                    <InputGroup>
-                        <Label>
+                    <InputGroup className="inputGroupStyles">
+                        <div className="col-sm-3">
                             <Message msgId="RTGE.nom" />
-                        </Label>
-                        <FormControl
-                            type="text"
-                            value={this.state.nom}
-                            onChange={(e) => this.handleTextFieldChange(e, 'nom')}
-                        />
+                        </div>
+                        <div className="col-sm-9">
+                            <FormControl
+                                type="text"
+                                placeholder=""
+                                value={this.state.nom}
+                                onChange={(e) => this.handleTextFieldChange(e, 'nom')}
+                            />
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </div>
@@ -154,15 +164,18 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.collectivite">
-                    <InputGroup>
-                        <Label>
+                    <InputGroup className="inputGroupStyles">
+                        <div className="col-sm-3">
                             <Message msgId="RTGE.collectivite" />
-                        </Label>
-                        <FormControl
-                            type="text"
-                            value={this.state.collectivite}
-                            onChange={(e) => this.handleTextFieldChange(e, 'collectivites')}
-                        />
+                        </div>
+                        <div className="col-sm-9">
+                            <FormControl
+                                type="text"
+                                placeholder=""
+                                value={this.state.collectivite}
+                                onChange={(e) => this.handleTextFieldChange(e, 'collectivites')}
+                            />
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </div>
@@ -178,15 +191,18 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.service">
-                    <InputGroup>
-                        <Label>
+                    <InputGroup className="inputGroupStyles">
+                        <div className="col-sm-3">
                             <Message msgId="RTGE.service" />
-                        </Label>
-                        <FormControl
-                            type="text"
-                            value={this.state.service}
-                            onChange={(e) => this.handleTextFieldChange(e, 'service')}
-                        />
+                        </div>
+                        <div className="col-sm-9">
+                            <FormControl
+                                type="text"
+                                placeholder=""
+                                value={this.state.service}
+                                onChange={(e) => this.handleTextFieldChange(e, 'service')}
+                            />
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </div>
@@ -202,15 +218,18 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.courriel">
-                    <InputGroup>
-                        <Label>
+                    <InputGroup className="inputGroupStyles">
+                        <div className="col-sm-3">
                             <Message msgId="RTGE.courriel" />
-                        </Label>
-                        <FormControl
-                            type="text"
-                            value={this.state.courriel}
-                            onChange={(e) => this.handleTextFieldChange(e, 'courriel')}
-                        />
+                        </div>
+                        <div className="col-sm-9">
+                            <FormControl
+                                type="text"
+                                placeholder=""
+                                value={this.state.courriel}
+                                onChange={(e) => this.handleTextFieldChange(e, 'courriel')}
+                            />
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </div>
@@ -226,15 +245,17 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.telephone">
-                    <InputGroup>
-                        <Label>
+                    <InputGroup className="inputGroupStyles">
+                        <div className="col-sm-3">
                             <Message msgId="RTGE.telephone" />
-                        </Label>
-                        <PhoneInput
-                            defaultCountry="FR"
-                            placeholder="Entrez un numéro de téléphone"
-                            value={this.state.telephone}
-                            onChange={(e) => this.handlePhoneFieldChange(e, 'telephone')}/>
+                        </div>
+                        <div className="col-sm-9">
+                            <PhoneInput
+                                defaultCountry="FR"
+                                placeholder="Entrez un numéro de téléphone"
+                                value={this.state.telephone}
+                                onChange={(e) => this.handlePhoneFieldChange(e, 'telephone')}/>
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </div>
@@ -250,12 +271,11 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.motivation">
-                    <InputGroup>
-                        <Label>
-                            <Message msgId="RTGE.motivation" />
-                        </Label>
+                    <InputGroup className="specialInputGroupStyles">
+                        <Message msgId="RTGE.motivation" />
                         <FormControl
                             componentClass="textarea"
+                            placeholder=""
                             value={this.state.motivation}
                             onChange={(e) => this.handleTextFieldChange(e, 'motivation')}
                             rows={4}
@@ -275,14 +295,12 @@ export class RTGEComponent extends React.Component {
     renderDataSurf() {
         return (
             <div className="formUnit">
-                <FormGroup controlId="rtgeForm.dataSurf">
-                    <Label>
-                        <Message msgId="RTGE.dataSurf" />
-                    </Label>
+                <FormGroup controlId="rtgeForm.dataSurf"  className="specialInputGroupStyles">
                     <Checkbox
                         defaultChecked={this.state.dataSurf}
                         onChange={() => this.handleBooleanFieldChange('dataSurf')}
                     />
+                    <Message msgId="RTGE.dataSurf" />
                 </FormGroup>
             </div>
         );
@@ -296,14 +314,12 @@ export class RTGEComponent extends React.Component {
     renderDataUnderSurf() {
         return (
             <div className="formUnit">
-                <FormGroup controlId="rtgeForm.dataUnderSurf">
-                    <Label>
-                        <Message msgId="RTGE.dataUnderSurf" />
-                    </Label>
+                <FormGroup controlId="rtgeForm.dataUnderSurf"  className="specialInputGroupStyles">
                     <Checkbox
                         defaultChecked={this.state.dataUnderSurf}
                         onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
                     />
+                    <Message msgId="RTGE.dataUnderSurf" />
                 </FormGroup>
             </div>
         );
@@ -350,6 +366,7 @@ export class RTGEComponent extends React.Component {
     renderSendTab() {
         return (
             <div className="formGlobal">
+                {this.state.errorTag.length > 0 ? <div className="errorZone">Attention, le champ {this.state.errorTag} est vide et obligatoire</div> : ""}
                 <Form>
                     {this.renderPrenomField()}
                     {this.renderNomField()}
@@ -361,7 +378,7 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataSurf()}
                     {this.renderDataUnderSurf()}
                 </Form>
-                <button className="buttonForm" onClick={() => this.props.sendMail(this.state)}>Envoyer</button>
+                <button className="buttonForm label-default" onClick={() => this.sendMail()}>Envoyer mail</button>
             </div>
         );
     }
@@ -374,16 +391,23 @@ export class RTGEComponent extends React.Component {
     renderSelectionTab() {
         return (
             <div>
-                <div className="row text-center">
-                    <button className={this.props.activeSelection === 'Point' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
-                    <button className={this.props.activeSelection === 'LineString' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
-                    <button className={this.props.activeSelection === 'Polygon' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
-                    <button className={this.props.selectedTiles.length === 0 ? "selectorButton empty" : "selectorButton"} onClick={() => this.props.selectedTiles.length === 0 ? '' : this.props.removeSelectedTiles()}><Glyphicon glyph="trash"/></button>
+                <div className="row">
+                    <div className="col-sm-4 left">{this.props.selectedTiles.length} tuiles</div>
+                    <div className="col-sm-4 text-center">
+                        <button className={this.props.activeSelection === 'Point' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
+                        <button className={this.props.activeSelection === 'LineString' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
+                        <button className={this.props.activeSelection === 'Polygon' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
+                    </div>
+                    <div className="col-sm-4 right">
+                        <button className={this.props.selectedRow.length === 0 ? "selectorButton empty" : "selectorButton"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
+                            <Glyphicon glyph="trash"/>
+                        </button>
+                    </div>
                 </div>
                 <div className="row arrayOffset">
                     <div className="row tableOffset selectTitle text-center">
-                        <div className="col-sm-3 v-align delimitor"><span>Identifiant</span></div>
-                        <div className="col-sm-3 v-align delimitor">Date MAJ</div>
+                        <div className="col-sm-4 v-align delimitor"><span>Identifiant</span></div>
+                        <div className="col-sm-2 v-align delimitor">Date MAJ</div>
                         <div className="col-sm-3 v-align delimitor">Nb d'objets surf</div>
                         <div className="col-sm-3 v-align">nb d'objets ssol</div>
                     </div>
@@ -392,8 +416,8 @@ export class RTGEComponent extends React.Component {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
                                     <div className={val.properties.selected ? "row arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
-                                        <div className="col-sm-3">{val.properties.cases_200}</div>
-                                        <div className="col-sm-3">{val.properties.date_der_maj}</div>
+                                        <div className="col-sm-4">{val.properties.cases_200}</div>
+                                        <div className="col-sm-2">{val.properties.date_der_maj}</div>
                                         <div className="col-sm-3">{val.properties.nb_donnees_surf}</div>
                                         <div className="col-sm-3">{val.properties.nb_donnees_ssol}</div>
                                     </div>
@@ -519,4 +543,42 @@ export class RTGEComponent extends React.Component {
         this.state[fieldName] = !this.state[fieldName];
         this.setState(this.state);
     }
+
+    /**
+     * TODO: revoir les commentaires
+     * sendMail when the booleans fields change, it updates their state
+     * @memberof rtge.component
+     * @param fieldName - name of the field which is to update
+     * @returns - nothing
+     */
+    sendMail() {
+        console.log(this.state);
+        this.state.errorTag = "";
+        if (!this.state.prenom) {
+            this.state.errorTag = "Prenom";
+            return null;
+        }
+        if (!this.state.nom) {
+            this.state.errorTag = "Nom";
+            return null;
+        }
+        if (!this.state.collectivite) {
+            this.state.errorTag = "Collectivite";
+            return null;
+        }
+        if (!this.state.service) {
+            this.state.errorTag = "Service";
+            return null;
+        }
+        if (!this.state.courriel) {
+            this.state.errorTag = "Courriel";
+            return null;
+        }
+        if (!this.state.motivation) {
+            this.state.errorTag = "Motivation";
+            return null;
+        }
+        return this.props.sendMail(this.state);
+    }
 }
+
