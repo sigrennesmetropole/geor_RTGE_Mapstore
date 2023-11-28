@@ -234,7 +234,7 @@ textarea {
     margin-top: 17px;
 }
 
-.buttonForm{
+.buttonForm {
     border-radius: 5px;
     border-width: 0px;
     padding: 8px;
@@ -242,5 +242,14 @@ textarea {
     margin-left: 4px;
     font-weight: bold;
 }
+
+.checkbox {
+    margin-top: -6px;
+}
+
+.notBold span {
+    font-weight: normal;
+}
+
 
 /* ==== End of Form ==== */

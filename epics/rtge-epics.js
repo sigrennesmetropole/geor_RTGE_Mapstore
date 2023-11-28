@@ -8,7 +8,8 @@ import {
     startDraw,
     initProjections,
     addFeatures,
-    stopDraw
+    stopDraw,
+    updateUser
 } from "../actions/rtge-action";
 import {
     TOGGLE_CONTROL,
@@ -55,7 +56,7 @@ import axios from 'axios';
 const gridLayerId = "ref_topo:rmtr_carroyage";
 const backendURLPrefix = "";
 const gridLayerName = "rmtr_carroyage";
-const RTGE_GRID_LAYER_TITLE = "RMTR : Carroyage au 1/200";
+const RTGE_GRID_LAYER_TITLE = "RTGE : Carroyage au 1/200";
 const RTGEGridLayerProjection = "EPSG:3948";
 const GeometryType = {
     POINT: "Point",
@@ -82,6 +83,7 @@ const styles = {
 const featuresLimit = 50;
 var gridLayer = {};
 const emailUrl = "/console/emailProxy";
+const userDetailsUrl = "/console/account/userdetails";
 
 export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
     if (!Proj4js.defs("EPSG:3948")) {
@@ -92,6 +94,38 @@ export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PR
     }
     return Rx.Observable.empty();
 });
+
+/**
+ * TODO: revoir les commentaires
+ * removeSelectedFeaturesEpic removes the selected feature from table and map
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which update the layer and who update the feature list
+ */
+export const getUserDetails = () => {
+    return Rx.Observable.defer(() => axios.get(userDetailsUrl))
+        .switchMap((response) => {
+            // console.log(response);
+            // console.log(response.data);
+            let text = response.data;
+            let parser = new DOMParser();
+            let html = parser.parseFromString(text, "text/html");
+
+            let newUserDetails = {
+                prenom: html.getElementById("firstName").value,
+                nom: html.getElementById("surname").value,
+                collectivite: html.getElementsByClassName("form-group")[5].children[1].firstElementChild.innerHTML.trim(),
+                courriel: html.getElementsByClassName("form-group")[2].children[1].firstElementChild.innerHTML.trim(),
+                telephone: html.getElementById("phone").value
+            };
+            return Rx.Observable.from([updateUser(newUserDetails)]);
+        })
+        .catch((e) => {
+            console.log(e);
+            return Rx.Observable.empty();
+        });
+};
 
 /**
  * openRTGEPanelEpic opens the panel of this RTGE plugin
@@ -105,7 +139,7 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
     .switchMap(() => {
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT, boundingMapRect: {...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT}, boundingSidebarRect: layout.boundingSidebarRect};
-        return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout)]);
+        return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout), getUserDetails()]);
     });
 
 /**

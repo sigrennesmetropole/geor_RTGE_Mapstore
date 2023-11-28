@@ -23,7 +23,8 @@ import {
     getActiveTab,
     getSelectedTiles,
     getActiveSelection,
-    getSelectedRow
+    getSelectedRow,
+    getUserDetails
 } from "../selectors/rtge-selectors";
 import '../assets/style.css';
 
@@ -35,17 +36,7 @@ export default createPlugin(name, {
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         activeTab: getActiveTab(state),
         selectedTiles: getSelectedTiles(state),
-        user: {
-            prenom: 'Benoit',
-            nom: 'DAVID',
-            collectivite: 'Rennes Metropole',
-            service: 'Service Information Géographique',
-            courriel: 'b.david@rennesmetropole.fr',
-            telephone: '+33600000000',
-            motivation: '',
-            dataSurf: true,
-            dataUnderSurf: false
-        },
+        user: getUserDetails(state),
         activeSelection: getActiveSelection(state),
         selectedRow: getSelectedRow(state)
     }), {
@@ -69,7 +60,8 @@ export default createPlugin(name, {
             doNotHide: true,
             tooltip: "RTGE.title",
             toggle: true,
-            action: toggleControl.bind(null, 'rtge', 'enabled')
+            action: toggleControl.bind(null, 'rtge', 'enabled'),
+            priority: 1
         }
     }
 });

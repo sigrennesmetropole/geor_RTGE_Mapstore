@@ -49,17 +49,7 @@ export class RTGEComponent extends React.Component {
         width: RTGE_PANEL_WIDTH,
         activeTab: tabTypes.HOME,
         selectedTiles: [],
-        user: {
-            prenom: 'Benoit',
-            nom: 'DAVID',
-            collectivite: 'Rennes Metropole',
-            service: 'Service Information Géographique',
-            courriel: 'b.david@rennesmetropole.fr',
-            telephone: '+33600000000',
-            motivation: '',
-            dataSurf: false,
-            dataUnderSurf: false
-        },
+        user: {},
         activeSelection: '',
         selectedRow: [],
         changeZoomLevel: ()=>{},
@@ -74,23 +64,14 @@ export class RTGEComponent extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            prenom: this.props.user.prenom,
-            nom: this.props.user.nom,
-            collectivite: this.props.user.collectivite,
-            service: this.props.user.service,
-            courriel: this.props.user.courriel,
-            telephone: this.props.user.telephone,
-            motivation: this.props.user.motivation,
-            dataSurf: this.props.user.dataSurf,
-            dataUnderSurf: this.props.user.dataUnderSurf,
-            errorTag: ''
-        };
+        this.setLocalState();
     }
 
-    // TODO
-    // ajouter componentDidMount() pour ajouter tout les éléments à mettre en place une fois le composant monté
-    // pareil pour le componentDidUpdate(prevProp,prevState) mais pour mettre à jour la vue une fois déjà montée
+    componentDidUpdate(prevProps) {
+        if (!Object.keys(prevProps.user).length && this.props.user !== prevProps.user) {
+            this.setLocalState();
+        }
+    }
 
     /**
      * onClose closes the plugins Panel
@@ -296,11 +277,21 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.dataSurf"  className="specialInputGroupStyles">
-                    <Checkbox
-                        defaultChecked={this.state.dataSurf}
-                        onChange={() => this.handleBooleanFieldChange('dataSurf')}
-                    />
-                    <Message msgId="RTGE.dataSurf" />
+                    <div className="col-sm-4">
+                        <Message msgId="RTGE.dataType" />
+                    </div>
+                    <div className="col-sm-8">
+                        <div className="col-sm-3 v-align">
+                            <Checkbox
+                                defaultChecked={this.state.dataSurf}
+                                onChange={() => this.handleBooleanFieldChange('dataSurf')}
+                                className="checkbox"
+                            />
+                        </div>
+                        <div className="col-sm-9 notBold">
+                            <Message msgId="RTGE.dataSurf"/>
+                        </div>
+                    </div>
                 </FormGroup>
             </div>
         );
@@ -315,11 +306,19 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="formUnit">
                 <FormGroup controlId="rtgeForm.dataUnderSurf"  className="specialInputGroupStyles">
-                    <Checkbox
-                        defaultChecked={this.state.dataUnderSurf}
-                        onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
-                    />
-                    <Message msgId="RTGE.dataUnderSurf" />
+                    <div className="col-sm-4"></div>
+                    <div className="col-sm-8">
+                        <div className="col-sm-3 v-align">
+                            <Checkbox
+                                defaultChecked={this.state.dataUnderSurf}
+                                onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
+                                className="checkbox"
+                            />
+                        </div>
+                        <div className="col-sm-9 notBold">
+                            <Message msgId="RTGE.dataUnderSurf"/>
+                        </div>
+                    </div>
                 </FormGroup>
             </div>
         );
@@ -378,7 +377,7 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataSurf()}
                     {this.renderDataUnderSurf()}
                 </Form>
-                <button className="buttonForm label-default" onClick={() => this.sendMail()}>Envoyer mail</button>
+                <button className="buttonForm label-default" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
             </div>
         );
     }
@@ -392,7 +391,7 @@ export class RTGEComponent extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm-4 left">{this.props.selectedTiles.length} tuiles</div>
+                    <div className="col-sm-4 left">{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></div>
                     <div className="col-sm-4 text-center">
                         <button className={this.props.activeSelection === 'Point' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
                         <button className={this.props.activeSelection === 'LineString' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
@@ -406,10 +405,10 @@ export class RTGEComponent extends React.Component {
                 </div>
                 <div className="row arrayOffset">
                     <div className="row tableOffset selectTitle text-center">
-                        <div className="col-sm-4 v-align delimitor"><span>Identifiant</span></div>
-                        <div className="col-sm-2 v-align delimitor">Date MAJ</div>
-                        <div className="col-sm-3 v-align delimitor">Nb d'objets surf</div>
-                        <div className="col-sm-3 v-align">nb d'objets ssol</div>
+                        <div className="col-sm-4 v-align delimitor"><span><Message msgId={'RTGE.selectionTab.identifier'}/></span></div>
+                        <div className="col-sm-2 v-align delimitor"><Message msgId={'RTGE.selectionTab.update'}/></div>
+                        <div className="col-sm-3 v-align delimitor"><Message msgId={'RTGE.selectionTab.aboveground'}/></div>
+                        <div className="col-sm-3 v-align"><Message msgId={'RTGE.selectionTab.underground'}/></div>
                     </div>
                     <div className="scrollBar text-center">
                         {
@@ -440,17 +439,17 @@ export class RTGEComponent extends React.Component {
             <div className="row rowTabs">
                 <div className="col-sm-4 text-center">
                     <button className={this.props.activeTab === "RTGE:HOME" ? "homeButton active" : "homeButton"} onClick={() => this.props.changeTab(tabTypes.HOME)}>
-                        Accueil
+                        <Message msgId={'RTGE.welcome'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
                     <button className={this.props.activeTab === "RTGE:SELECT" ? "selectButton active" : "selectButton"} onClick={() => this.props.changeTab(tabTypes.SELECT)}>
-                        Selection
+                        <Message msgId={'RTGE.selection'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
                     <button className={this.props.activeTab === "RTGE:SEND" ? "sendButton active" : "sendButton"} onClick={() => this.props.changeTab(tabTypes.SEND)}>
-                        Envoi
+                        <Message msgId={'RTGE.send'}/>
                     </button>
                 </div>
             </div>
@@ -518,6 +517,7 @@ export class RTGEComponent extends React.Component {
      */
     handleTextFieldChange(e, fieldName) {
         this.state[fieldName] = e.target.value;
+        console.log(this.state.fieldName);
         this.setState(this.state);
     }
 
@@ -580,5 +580,22 @@ export class RTGEComponent extends React.Component {
         }
         return this.props.sendMail(this.state);
     }
+
+    /* TODO: comms */
+    setLocalState() {
+        this.setState({
+            prenom: this.props.user.prenom,
+            nom: this.props.user.nom,
+            collectivite: this.props.user.collectivite,
+            service: this.props.user.service,
+            courriel: this.props.user.courriel,
+            telephone: this.props.user.telephone,
+            motivation: this.props.user.motivation,
+            dataSurf: this.props.user.dataSurf,
+            dataUnderSurf: this.props.user.dataUnderSurf,
+            errorTag: ''
+        });
+    }
 }
+
 

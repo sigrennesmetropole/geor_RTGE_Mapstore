@@ -16,7 +16,8 @@ export const actions = {
     SWITCH_DRAW: 'RTGE:SWITCH_DRAW',
     REMOVE_SELECTED_TILES: 'RTGE:REMOVE_SELECTED_TILES',
     SEND_MAIL: 'RTGE:SEND_MAIL',
-    CLICK_TABLE: 'RTGE:CLICK_TABLE'
+    CLICK_TABLE: 'RTGE:CLICK_TABLE',
+    UPDATE_USER: 'RTGE:UPDATE_USER'
 };
 
 export const tabTypes = {
@@ -170,5 +171,19 @@ export function sendMail(form) {
     return {
         type: actions.SEND_MAIL,
         form
+    };
+}
+
+/**
+ * TODO: gérer les commentaires proprement.
+ * sendMail actions when table is clicked
+ * @memberof rtge.actions
+ * @param row - row id of the clicked row
+ * @returns - action click table
+ */
+export function updateUser(newUserDetails) {
+    return {
+        type: actions.UPDATE_USER,
+        newUserDetails
     };
 }

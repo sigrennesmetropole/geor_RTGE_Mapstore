@@ -32,6 +32,8 @@ export default (state = initialState, action) => {
         return assign({}, state, { selectionGeometryType: undefined });
     case actions.SWITCH_DRAW:
         return assign({}, state, { activeSelection: action.geometryType });
+    case actions.UPDATE_USER:
+        return assign({}, state, { user: action.newUserDetails });
     default:
         return state;
     }
