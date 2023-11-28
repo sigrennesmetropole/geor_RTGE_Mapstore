@@ -64,7 +64,17 @@ export class RTGEComponent extends React.Component {
 
     constructor(props) {
         super(props);
-        this.setLocalState();
+        this.state = {
+            prenom: this.props.user.prenom || '',
+            nom: this.props.user.nom || '',
+            collectivite: this.props.user.collectivite || '',
+            service: this.props.user.service || '',
+            courriel: this.props.user.courriel || '',
+            telephone: this.props.user.telephone || '',
+            motivation: this.props.user.motivation || '',
+            dataSurf: this.props.user.dataSurf || '',
+            dataUnderSurf: this.props.user.dataUnderSurf || ''
+        };
     }
 
     componentDidUpdate(prevProps) {
@@ -365,7 +375,6 @@ export class RTGEComponent extends React.Component {
     renderSendTab() {
         return (
             <div className="formGlobal">
-                {this.state.errorTag.length > 0 ? <div className="errorZone">Attention, le champ {this.state.errorTag} est vide et obligatoire</div> : ""}
                 <Form>
                     {this.renderPrenomField()}
                     {this.renderNomField()}
@@ -553,47 +562,21 @@ export class RTGEComponent extends React.Component {
      */
     sendMail() {
         console.log(this.state);
-        this.state.errorTag = "";
-        if (!this.state.prenom) {
-            this.state.errorTag = "Prenom";
-            return null;
-        }
-        if (!this.state.nom) {
-            this.state.errorTag = "Nom";
-            return null;
-        }
-        if (!this.state.collectivite) {
-            this.state.errorTag = "Collectivite";
-            return null;
-        }
-        if (!this.state.service) {
-            this.state.errorTag = "Service";
-            return null;
-        }
-        if (!this.state.courriel) {
-            this.state.errorTag = "Courriel";
-            return null;
-        }
-        if (!this.state.motivation) {
-            this.state.errorTag = "Motivation";
-            return null;
-        }
         return this.props.sendMail(this.state);
     }
 
     /* TODO: comms */
     setLocalState() {
         this.setState({
-            prenom: this.props.user.prenom,
-            nom: this.props.user.nom,
-            collectivite: this.props.user.collectivite,
-            service: this.props.user.service,
-            courriel: this.props.user.courriel,
-            telephone: this.props.user.telephone,
-            motivation: this.props.user.motivation,
-            dataSurf: this.props.user.dataSurf,
-            dataUnderSurf: this.props.user.dataUnderSurf,
-            errorTag: ''
+            prenom: this.props.user.prenom || '',
+            nom: this.props.user.nom || '',
+            collectivite: this.props.user.collectivite || '',
+            service: this.props.user.service || '',
+            courriel: this.props.user.courriel || '',
+            telephone: this.props.user.telephone || '',
+            motivation: this.props.user.motivation || '',
+            dataSurf: this.props.user.dataSurf || '',
+            dataUnderSurf: this.props.user.dataUnderSurf || ''
         });
     }
 }

@@ -17,7 +17,8 @@ export const actions = {
     REMOVE_SELECTED_TILES: 'RTGE:REMOVE_SELECTED_TILES',
     SEND_MAIL: 'RTGE:SEND_MAIL',
     CLICK_TABLE: 'RTGE:CLICK_TABLE',
-    UPDATE_USER: 'RTGE:UPDATE_USER'
+    UPDATE_USER: 'RTGE:UPDATE_USER',
+    GET_USER_DETAILS: 'GET_USER_DETAILS'
 };
 
 export const tabTypes = {
@@ -185,5 +186,19 @@ export function updateUser(newUserDetails) {
     return {
         type: actions.UPDATE_USER,
         newUserDetails
+    };
+}
+
+/**
+ * TODO: gérer les commentaires proprement.
+ * sendMail actions when table is clicked
+ * @memberof rtge.actions
+ * @param row - row id of the clicked row
+ * @returns - action click table
+ */
+export function getUserDetails() {
+    console.log(actions.GET_USER_DETAILS);
+    return {
+        type: actions.GET_USER_DETAILS
     };
 }

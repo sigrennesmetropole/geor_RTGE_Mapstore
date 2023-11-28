@@ -9,7 +9,8 @@ import {
     initProjections,
     addFeatures,
     stopDraw,
-    updateUser
+    updateUser,
+    getUserDetails
 } from "../actions/rtge-action";
 import {
     TOGGLE_CONTROL,
@@ -94,38 +95,6 @@ export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PR
     }
     return Rx.Observable.empty();
 });
-
-/**
- * TODO: revoir les commentaires
- * removeSelectedFeaturesEpic removes the selected feature from table and map
- * @memberof rtge.epics
- * @param action$ - list of actions triggered in mapstore context
- * @param store - list the content of variables inputted with the actions
- * @returns - observable which update the layer and who update the feature list
- */
-export const getUserDetails = () => {
-    return Rx.Observable.defer(() => axios.get(userDetailsUrl))
-        .switchMap((response) => {
-            // console.log(response);
-            // console.log(response.data);
-            let text = response.data;
-            let parser = new DOMParser();
-            let html = parser.parseFromString(text, "text/html");
-
-            let newUserDetails = {
-                prenom: html.getElementById("firstName").value,
-                nom: html.getElementById("surname").value,
-                collectivite: html.getElementsByClassName("form-group")[5].children[1].firstElementChild.innerHTML.trim(),
-                courriel: html.getElementsByClassName("form-group")[2].children[1].firstElementChild.innerHTML.trim(),
-                telephone: html.getElementById("phone").value
-            };
-            return Rx.Observable.from([updateUser(newUserDetails)]);
-        })
-        .catch((e) => {
-            console.log(e);
-            return Rx.Observable.empty();
-        });
-};
 
 /**
  * openRTGEPanelEpic opens the panel of this RTGE plugin
@@ -586,5 +555,34 @@ export const sendMailEpic = (action$, store) => action$.ofType(actions.SEND_MAIL
         .catch((e) => {
             console.log(e);
             return dropPopUp("error");
+        });
+});
+
+/**
+ * TODO: revoir les commentaires
+ * removeSelectedFeaturesEpic removes the selected feature from table and map
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - observable which update the layer and who update the feature list
+ */
+export const getUserDetailsEpic = (action$) => action$.ofType(actions.GET_USER_DETAILS).switchMap(() => {
+    return Rx.Observable.defer(() => axios.get(userDetailsUrl))
+        .switchMap((response) => {
+            let text = response.data;
+            let parser = new DOMParser();
+            let html = parser.parseFromString(text, "text/html");
+
+            let newUserDetails = {
+                prenom: html.getElementById("firstName").value,
+                nom: html.getElementById("surname").value,
+                collectivite: html.getElementsByClassName("form-group")[5].children[1].firstElementChild.innerHTML.trim(),
+                courriel: html.getElementsByClassName("form-group")[2].children[1].firstElementChild.innerHTML.trim(),
+                telephone: html.getElementById("phone").value
+            };
+            return Rx.Observable.from([updateUser(newUserDetails)]);
+        })
+        .catch((e) => {
+            console.log(e);
+            return Rx.Observable.empty();
         });
 });
