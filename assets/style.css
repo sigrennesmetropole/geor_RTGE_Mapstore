@@ -27,6 +27,10 @@
     width: 100%;
 }
 
+.gray {
+    background-color: lightgray;
+}
+
 .active{
     border-bottom: 0px solid white;
     background-color: white;
@@ -189,13 +193,17 @@ label {
     margin-left: 20px;
 }
 
-input:placeholder-shown {
+/* input:placeholder-shown {
     border: 1px solid red;
+}
+
+input:placeholder-shown.PhoneInputInput {
+    border: 1px solid black;
 }
 
 textarea:placeholder-shown {
     border: 1px solid red;
-}
+} */
 
 .errorZone {
     background-color: red;
@@ -251,5 +259,13 @@ textarea {
     font-weight: normal;
 }
 
+.buttonToRight{
+    float: right;
+}
+
+.undergroundWarning{
+    background-color: orange;
+    margin-bottom: 5px;
+}
 
 /* ==== End of Form ==== */

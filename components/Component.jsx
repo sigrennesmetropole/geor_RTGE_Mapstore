@@ -72,8 +72,8 @@ export class RTGEComponent extends React.Component {
             courriel: this.props.user.courriel || '',
             telephone: this.props.user.telephone || '',
             motivation: this.props.user.motivation || '',
-            dataSurf: this.props.user.dataSurf || '',
-            dataUnderSurf: this.props.user.dataUnderSurf || ''
+            dataSurf: this.props.user.dataSurf || true,
+            dataUnderSurf: this.props.user.dataUnderSurf || false
         };
     }
 
@@ -110,6 +110,7 @@ export class RTGEComponent extends React.Component {
                                 type="text"
                                 placeholder=""
                                 value={this.state.prenom}
+                                required
                                 onChange={(e) => this.handleTextFieldChange(e, 'prenom')}
                             />
                         </div>
@@ -137,6 +138,7 @@ export class RTGEComponent extends React.Component {
                                 type="text"
                                 placeholder=""
                                 value={this.state.nom}
+                                required
                                 onChange={(e) => this.handleTextFieldChange(e, 'nom')}
                             />
                         </div>
@@ -147,9 +149,9 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
-     * renderCollectiviteField Renders collectivites field for the form
+     * renderCollectiviteField Renders collectivite field for the form
      * @memberof rtge.component
-     * @returns - dom parts for the collectivites field
+     * @returns - dom parts for the collectivite field
      */
     renderCollectiviteField() {
         return (
@@ -164,7 +166,8 @@ export class RTGEComponent extends React.Component {
                                 type="text"
                                 placeholder=""
                                 value={this.state.collectivite}
-                                onChange={(e) => this.handleTextFieldChange(e, 'collectivites')}
+                                required
+                                onChange={(e) => this.handleTextFieldChange(e, 'collectivite')}
                             />
                         </div>
                     </InputGroup>
@@ -191,6 +194,7 @@ export class RTGEComponent extends React.Component {
                                 type="text"
                                 placeholder=""
                                 value={this.state.service}
+                                required
                                 onChange={(e) => this.handleTextFieldChange(e, 'service')}
                             />
                         </div>
@@ -218,6 +222,7 @@ export class RTGEComponent extends React.Component {
                                 type="text"
                                 placeholder=""
                                 value={this.state.courriel}
+                                required
                                 onChange={(e) => this.handleTextFieldChange(e, 'courriel')}
                             />
                         </div>
@@ -268,6 +273,7 @@ export class RTGEComponent extends React.Component {
                             componentClass="textarea"
                             placeholder=""
                             value={this.state.motivation}
+                            required
                             onChange={(e) => this.handleTextFieldChange(e, 'motivation')}
                             rows={4}
                             cols={50}
@@ -327,6 +333,12 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9 notBold">
                             <Message msgId="RTGE.dataUnderSurf"/>
+                            {this.state.dataUnderSurf
+                                ? <div className="row undergroundWarning text-center">
+                                    <Message msgId="RTGE.dataUnderSurfWarning"/>
+                                </div>
+                                : ''
+                            }
                         </div>
                     </div>
                 </FormGroup>
@@ -385,8 +397,11 @@ export class RTGEComponent extends React.Component {
                     {this.renderMotivation()}
                     {this.renderDataSurf()}
                     {this.renderDataUnderSurf()}
+                    {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
+                        ? <button className="buttonForm label-default buttonToRight" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
+                        : <button className="buttonForm gray buttonToRight"><Message msgId={'RTGE.sendTab.button'}/></button>
+                    }
                 </Form>
-                <button className="buttonForm label-default" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
             </div>
         );
     }
@@ -400,7 +415,7 @@ export class RTGEComponent extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm-4 left">{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></div>
+                    <div className="col-sm-4 left"><span>{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
                         <button className={this.props.activeSelection === 'Point' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
                         <button className={this.props.activeSelection === 'LineString' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
@@ -457,9 +472,16 @@ export class RTGEComponent extends React.Component {
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === "RTGE:SEND" ? "sendButton active" : "sendButton"} onClick={() => this.props.changeTab(tabTypes.SEND)}>
-                        <Message msgId={'RTGE.send'}/>
-                    </button>
+                    {this.props.selectedTiles.length === 0 &&
+                        <button className="sendButton gray">
+                            <Message msgId={'RTGE.send'}/>
+                        </button>
+                    }
+                    {this.props.selectedTiles.length > 0 &&
+                        <button className={this.props.activeTab === "RTGE:SEND" ? "sendButton active" : "sendButton" } onClick={() => this.props.changeTab(tabTypes.SEND)}>
+                            <Message msgId={'RTGE.send'}/>
+                        </button>
+                    }
                 </div>
             </div>
         );
@@ -526,7 +548,6 @@ export class RTGEComponent extends React.Component {
      */
     handleTextFieldChange(e, fieldName) {
         this.state[fieldName] = e.target.value;
-        console.log(this.state.fieldName);
         this.setState(this.state);
     }
 
@@ -561,8 +582,10 @@ export class RTGEComponent extends React.Component {
      * @returns - nothing
      */
     sendMail() {
-        console.log(this.state);
-        return this.props.sendMail(this.state);
+        if (this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '') {
+            return this.props.sendMail(this.state);
+        }
+        return null;
     }
 
     /* TODO: comms */
@@ -575,8 +598,8 @@ export class RTGEComponent extends React.Component {
             courriel: this.props.user.courriel || '',
             telephone: this.props.user.telephone || '',
             motivation: this.props.user.motivation || '',
-            dataSurf: this.props.user.dataSurf || '',
-            dataUnderSurf: this.props.user.dataUnderSurf || ''
+            dataSurf: this.props.user.dataSurf || true,
+            dataUnderSurf: this.props.user.dataUnderSurf || false
         });
     }
 }
