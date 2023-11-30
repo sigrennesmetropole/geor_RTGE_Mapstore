@@ -47,6 +47,8 @@ export function changeTab(tab) {
  * @returns - action start draw
  */
 export function startDraw(geometryType) {
+    console.log('in start draw action, geometryType is:');
+    console.log(geometryType);
     return {
         type: actions.START_DRAW,
         geometryType

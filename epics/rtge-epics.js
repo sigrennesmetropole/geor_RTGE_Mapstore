@@ -210,6 +210,7 @@ export const stopDrawingEpic = (action$) => action$.ofType(actions.STOP_DRAW).sw
  */
 export const startDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).switchMap((action) => {
     console.log('in start draw');
+    console.log(action);
     const feature = {
         geometry: {
             type: GeometryType.POINT,
