@@ -399,8 +399,8 @@ export class RTGEComponent extends React.Component {
                         {this.renderDataSurf()}
                         {this.renderDataUnderSurf()}
                         {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                            ? <button className="buttonForm label-default buttonToRight" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
-                            : <button className="buttonForm gray buttonToRight"><Message msgId={'RTGE.sendTab.button'}/></button>
+                            ? <button className="buttonForm label-default buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
+                            : <button className="buttonForm gray buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
                         }
                     </Form>
                 </div>
@@ -419,12 +419,12 @@ export class RTGEComponent extends React.Component {
                 <div className="row">
                     <div className="col-sm-4 left"><span>{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
-                        <button className={this.props.activeSelection === 'Point' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
-                        <button className={this.props.activeSelection === 'LineString' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
-                        <button className={this.props.activeSelection === 'Polygon' ? "selectorButton active" : "selectorButton"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
+                        <button className={this.props.activeSelection === 'Point' ? "selectorButton btn btn-active" : "selectorButton btn btn-primary"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
+                        <button className={this.props.activeSelection === 'LineString' ? "selectorButton btn btn-active" : "selectorButton btn btn-primary"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
+                        <button className={this.props.activeSelection === 'Polygon' ? "selectorButton btn btn-active" : "selectorButton btn btn-primary"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
                     </div>
                     <div className="col-sm-4 right">
-                        <button className={this.props.selectedRow.length === 0 ? "selectorButton empty" : "selectorButton"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
+                        <button className={this.props.selectedRow.length === 0 ? "selectorButton empty btn btn-active" : "selectorButton btn-primary"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
                             <Glyphicon glyph="trash"/>
                         </button>
                     </div>
@@ -475,9 +475,12 @@ export class RTGEComponent extends React.Component {
                 </div>
                 <div className="col-sm-4 text-center">
                     {this.props.selectedTiles.length === 0 &&
-                        <button className="sendButton gray">
+                    <>
+                        <button className="sendButton gray tooltipMain">
                             <Message msgId={'RTGE.send'}/>
+                            <span className="tooltipContent"><Message msgId={'RTGE.grayTooltip'}/></span>
                         </button>
+                    </>
                     }
                     {this.props.selectedTiles.length > 0 &&
                         <button className={this.props.activeTab === "RTGE:SEND" ? "sendButton active" : "sendButton" } onClick={() => this.props.changeTab(tabTypes.SEND)}>
@@ -577,11 +580,9 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
-     * TODO: revoir les commentaires
-     * sendMail when the booleans fields change, it updates their state
+     * sendMail sends the email action if all mandatory fields are not empty
      * @memberof rtge.component
-     * @param fieldName - name of the field which is to update
-     * @returns - nothing
+     * @returns - send mail action when available or nothing
      */
     sendMail() {
         if (this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '') {
@@ -590,7 +591,11 @@ export class RTGEComponent extends React.Component {
         return null;
     }
 
-    /* TODO: comms */
+    /**
+     * setLocalState Initializes the object for user data and is used to populate it
+     * @memberof rtge.component
+     * @returns - latest user data in state
+     */
     setLocalState() {
         this.setState({
             prenom: this.props.user.prenom || '',

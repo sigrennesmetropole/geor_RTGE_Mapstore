@@ -498,12 +498,10 @@ function getFormattedTiles(state) {
 }
 
 /**
- * TODO: revoir les commentaires de cette fonction
- * sendMailSuccess show pop up if max feature is reached or starts to recover the list of selected tiles
+ * dropPopUp drop popup according to level
  * @memberof rtge.epics
- * @param layer - current layer where we want the data of
- * @param filter - contains datas to filter the results (e.g no more than 50)
- * @returns - empty observable or starts the function to recover datas from geoserver
+ * @param level - popup level e.g: success | error
+ * @returns - observable containing popup or empty observable
  */
 const dropPopUp = (level) => {
     switch (level) {
@@ -566,11 +564,10 @@ export const sendMailEpic = (action$, store) => action$.ofType(actions.SEND_MAIL
 });
 
 /**
- * TODO: revoir les commentaires
- * removeSelectedFeaturesEpic removes the selected feature from table and map
+ * getUserDetailsEpic get user details when called
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - observable which update the layer and who update the feature list
+ * @returns - observable which update the user object
  */
 export const getUserDetailsEpic = (action$) => action$.ofType(actions.GET_USER_DETAILS).switchMap(() => {
     return Rx.Observable.defer(() => axios.get(userDetailsUrl))

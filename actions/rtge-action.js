@@ -164,11 +164,10 @@ export function clickTable(feature, control) {
 }
 
 /**
- * TODO: gérer les commentaires proprement.
- * sendMail actions when table is clicked
+ * sendMail actions form button to populate mail is pressed
  * @memberof rtge.actions
- * @param row - row id of the clicked row
- * @returns - action click table
+ * @param form - form content
+ * @returns - action send mail and corresponding data
  */
 export function sendMail(form) {
     return {
@@ -178,11 +177,10 @@ export function sendMail(form) {
 }
 
 /**
- * TODO: gérer les commentaires proprement.
- * sendMail actions when table is clicked
+ * updateUser actions to call when user data is available
  * @memberof rtge.actions
- * @param row - row id of the clicked row
- * @returns - action click table
+ * @param newUserDetails - list of user data to store in state
+ * @returns - action update user
  */
 export function updateUser(newUserDetails) {
     return {
@@ -192,14 +190,11 @@ export function updateUser(newUserDetails) {
 }
 
 /**
- * TODO: gérer les commentaires proprement.
- * sendMail actions when table is clicked
+ * getUserDetails action triggered when we look to get user data
  * @memberof rtge.actions
- * @param row - row id of the clicked row
- * @returns - action click table
+ * @returns - action get user details
  */
 export function getUserDetails() {
-    console.log(actions.GET_USER_DETAILS);
     return {
         type: actions.GET_USER_DETAILS
     };

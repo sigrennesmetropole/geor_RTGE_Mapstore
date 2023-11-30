@@ -23,7 +23,6 @@
     border: none;
     margin-top: 10px;
     height: 40px;
-    color: #078aa3;
     width: 100%;
 }
 
@@ -45,6 +44,47 @@ button.active{
     background-color: white;
     color: black;
 }
+
+.tooltipMain {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Tooltip text */
+  .tooltipMain .tooltipContent {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .tooltipMain .tooltipContent {
+    width: 120px;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltipMain:hover .tooltipContent {
+    visibility: visible;
+  }
+
+  .tooltipMain .tooltipContent::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+  }
 
 .title{
     font-weight: bold;
@@ -79,8 +119,6 @@ p {
 /*Section sélection du plugin*/
 
 .selectorButton{
-    background-color: #078aa3;
-    color: white;
     border: none;
     width: 40px;
     height: 40px;
@@ -90,15 +128,11 @@ p {
 }
 
 .selectorButton.active {
-    background-color: #05505F;
-    color: white;
     border: none;
 }
 
 
 .selectorButton.empty{
-    background-color: darkgray;
-    color: white;
     border: none;
 }
 
@@ -246,7 +280,6 @@ textarea {
     border-radius: 5px;
     border-width: 0px;
     padding: 8px;
-    color: white;
     margin-left: 4px;
     font-weight: bold;
 }
