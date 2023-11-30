@@ -353,7 +353,7 @@ export class RTGEComponent extends React.Component {
      */
     renderHomeTab() {
         return (
-            <div id="SAMPLE_EXTENSION" >
+            <div id="SAMPLE_EXTENSION">
                 <div className="paragraphs">
                     <p className="title mainTitle">Outil d'extraction de dalles du Référentiel Métropolitain Topographique et Réseaux.</p>
 
@@ -386,22 +386,24 @@ export class RTGEComponent extends React.Component {
      */
     renderSendTab() {
         return (
-            <div className="formGlobal">
-                <Form>
-                    {this.renderPrenomField()}
-                    {this.renderNomField()}
-                    {this.renderCollectiviteField()}
-                    {this.renderService()}
-                    {this.renderCourriel()}
-                    {this.renderTelephone()}
-                    {this.renderMotivation()}
-                    {this.renderDataSurf()}
-                    {this.renderDataUnderSurf()}
-                    {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                        ? <button className="buttonForm label-default buttonToRight" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
-                        : <button className="buttonForm gray buttonToRight"><Message msgId={'RTGE.sendTab.button'}/></button>
-                    }
-                </Form>
+            <div id="SAMPLE_EXTENSION">
+                <div className="formGlobal">
+                    <Form>
+                        {this.renderPrenomField()}
+                        {this.renderNomField()}
+                        {this.renderCollectiviteField()}
+                        {this.renderService()}
+                        {this.renderCourriel()}
+                        {this.renderTelephone()}
+                        {this.renderMotivation()}
+                        {this.renderDataSurf()}
+                        {this.renderDataUnderSurf()}
+                        {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
+                            ? <button className="buttonForm label-default buttonToRight" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
+                            : <button className="buttonForm gray buttonToRight"><Message msgId={'RTGE.sendTab.button'}/></button>
+                        }
+                    </Form>
+                </div>
             </div>
         );
     }

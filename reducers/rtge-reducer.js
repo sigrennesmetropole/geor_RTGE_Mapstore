@@ -18,7 +18,7 @@ const initialState = {
  */
 export default (state = initialState, action) => {
     console.log(action);
-    // console.log(state);
+    console.log(state);
     switch (action.type) {
     case actions.INCREASE_COUNTER:
         return assign({}, state, { value: state.value + 1 });

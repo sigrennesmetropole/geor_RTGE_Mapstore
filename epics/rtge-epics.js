@@ -209,6 +209,7 @@ export const stopDrawingEpic = (action$) => action$.ofType(actions.STOP_DRAW).sw
  * @returns - observable with the list of actions to do after completing the function (trigger the change map drawing status action)
  */
 export const startDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).switchMap((action) => {
+    console.log('in start draw');
     const feature = {
         geometry: {
             type: GeometryType.POINT,
@@ -217,6 +218,7 @@ export const startDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).
         newFeature: true,
         type: "Feature"
     };
+    console.log(feature);
 
     const options = {
         drawEnabled: true,
@@ -228,6 +230,7 @@ export const startDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).
         translateEnabled: false,
         useSelectedStyle: false
     };
+    console.log(options);
     return Rx.Observable.from([changeDrawingStatus('drawOrEdit', action.geometryType, 'rtge', [feature], options)]);
 });
 
@@ -355,7 +358,10 @@ export const getFeaturesEpic = (action$, store) =>
  * @returns - observable which send start draw action
  */
 export const switchDrawingEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
+    console.log('in switch');
+    console.log(action);
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
+    console.log(activeSelectionGeometryType);
     if (action.geometryType === activeSelectionGeometryType) {
         store.getState().rtge.activeSelection = "";
         return Rx.Observable.from([stopDraw()]);
