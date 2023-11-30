@@ -27,6 +27,7 @@ export default (state = initialState, action) => {
     case actions.ADD_FEATURES:
         return assign({}, state, { selectedTiles: action.features });
     case actions.START_DRAW:
+        console.log('start_draw triggered');
         return assign({}, state, { selectionGeometryType: action.geometryType });
     case actions.STOP_DRAW:
         return assign({}, state, { selectionGeometryType: undefined });
