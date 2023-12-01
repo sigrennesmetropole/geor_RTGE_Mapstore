@@ -419,13 +419,23 @@ export class RTGEComponent extends React.Component {
                 <div className="row">
                     <div className="col-sm-4 left"><span>{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
-                        <button className={this.props.activeSelection === 'Point' ? "selectorButton btn btn-active" : "selectorButton btn btn-primary"} onClick={() => this.props.switchDraw('Point')}><Glyphicon glyph="map-marker"/></button>
-                        <button className={this.props.activeSelection === 'LineString' ? "selectorButton btn btn-active" : "selectorButton btn btn-primary"} onClick={() => this.props.switchDraw('LineString')}><Glyphicon glyph="polyline"/></button>
-                        <button className={this.props.activeSelection === 'Polygon' ? "selectorButton btn btn-active" : "selectorButton btn btn-primary"} onClick={() => this.props.switchDraw('Polygon')}><Glyphicon glyph="polygon"/></button>
+                        <button className={this.props.activeSelection === 'Point' ? "selectorButton btn btn-active tooltipMain" : "selectorButton btn btn-primary tooltipMain"} onClick={() => this.props.switchDraw('Point')}>
+                            <Glyphicon glyph="map-marker"/>
+                            <span className="tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPoint'}/></span>
+                        </button>
+                        <button className={this.props.activeSelection === 'LineString' ? "selectorButton btn btn-active tooltipMain" : "selectorButton btn btn-primary tooltipMain"} onClick={() => this.props.switchDraw('LineString')}>
+                            <Glyphicon glyph="polyline"/>
+                            <span className="tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSeclectLine'}/></span>
+                        </button>
+                        <button className={this.props.activeSelection === 'Polygon' ? "selectorButton btn btn-active tooltipMain" : "selectorButton btn btn-primary tooltipMain"} onClick={() => this.props.switchDraw('Polygon')}>
+                            <Glyphicon glyph="polygon"/>
+                            <span className="tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPolygon'}/></span>
+                        </button>
                     </div>
                     <div className="col-sm-4 right">
-                        <button className={this.props.selectedRow.length === 0 ? "selectorButton empty btn btn-active" : "selectorButton btn-primary"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
+                        <button className={this.props.selectedRow.length === 0 ? "selectorButton empty btn btn-active tooltipMain" : "selectorButton btn-primary tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
                             <Glyphicon glyph="trash"/>
+                            <span className="tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
                         </button>
                     </div>
                 </div>
@@ -478,7 +488,7 @@ export class RTGEComponent extends React.Component {
                     <>
                         <button className="sendButton gray tooltipMain">
                             <Message msgId={'RTGE.send'}/>
-                            <span className="tooltipContent"><Message msgId={'RTGE.grayTooltip'}/></span>
+                            <span className="tooltipContent"><Message msgId={'RTGE.sendBtnDisabled'}/></span>
                         </button>
                     </>
                     }

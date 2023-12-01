@@ -53,21 +53,21 @@ button.active{
   /* Tooltip text */
   .tooltipMain .tooltipContent {
     visibility: hidden;
-    width: 120px;
-    background-color: black;
+    background-color: #333333;
     color: #fff;
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
     position: absolute;
     z-index: 1;
+    font-size: small;
   }
 
   .tooltipMain .tooltipContent {
-    width: 120px;
+    width: 185px;
     top: 100%;
     left: 50%;
-    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+    margin-left: -92px; /* Use half of the width (120/2 = 60), to center the tooltip */
   }
   
   /* Show the tooltip text when you mouse over the tooltip container */
@@ -80,11 +80,44 @@ button.active{
     position: absolute;
     bottom: 100%;
     left: 50%;
-    margin-left: -5px;
     border-width: 5px;
     border-style: solid;
     border-color: transparent transparent black transparent;
   }
+
+/* Tooltip text */
+.tooltipMain .tooltipContentLeft {
+    visibility: hidden;
+    background-color: #333333;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    font-size: small;
+  }
+
+  .tooltipMain .tooltipContentLeft {
+    top: 2px;
+    right: 105%;
+  }
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipMain:hover .tooltipContentLeft {
+    visibility: visible;
+}
+    
+.tooltipMain .tooltipContentLeft::after {
+    content: " ";
+    position: absolute;
+    top: 60%;
+    left: 100%; /* To the right of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent black;
+}
 
 .title{
     font-weight: bold;
