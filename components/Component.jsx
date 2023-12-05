@@ -69,7 +69,6 @@ export class RTGEComponent extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             prenom: props.user.prenom || '',
             nom: props.user.nom || '',
@@ -122,9 +121,9 @@ export class RTGEComponent extends React.Component {
      */
     renderPrenomField() {
         return (
-            <div className="formUnit">
+            <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.prenom">
-                    <InputGroup className="inputGroupStyles">
+                    <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.prenom" />
                         </div>
@@ -150,9 +149,9 @@ export class RTGEComponent extends React.Component {
      */
     renderNomField() {
         return (
-            <div className="formUnit">
+            <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.nom">
-                    <InputGroup className="inputGroupStyles">
+                    <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.nom" />
                         </div>
@@ -178,9 +177,9 @@ export class RTGEComponent extends React.Component {
      */
     renderCollectiviteField() {
         return (
-            <div className="formUnit">
+            <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.collectivite">
-                    <InputGroup className="inputGroupStyles">
+                    <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.collectivite" />
                         </div>
@@ -206,9 +205,9 @@ export class RTGEComponent extends React.Component {
      */
     renderService() {
         return (
-            <div className="formUnit">
+            <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.service">
-                    <InputGroup className="inputGroupStyles">
+                    <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.service" />
                         </div>
@@ -234,9 +233,9 @@ export class RTGEComponent extends React.Component {
      */
     renderCourriel() {
         return (
-            <div className="formUnit">
+            <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.courriel">
-                    <InputGroup className="inputGroupStyles">
+                    <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.courriel" />
                         </div>
@@ -262,9 +261,9 @@ export class RTGEComponent extends React.Component {
      */
     renderTelephone() {
         return (
-            <div className="formUnit">
+            <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.telephone">
-                    <InputGroup className="inputGroupStyles">
+                    <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.telephone" />
                         </div>
@@ -288,9 +287,9 @@ export class RTGEComponent extends React.Component {
      */
     renderMotivation() {
         return (
-            <div className="formUnit">
+            <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.motivation">
-                    <InputGroup className="specialInputGroupStyles">
+                    <InputGroup className="RTGE_specialInputGroupStyles">
                         <Message msgId="RTGE.motivation" />
                         <FormControl
                             componentClass="textarea"
@@ -314,20 +313,20 @@ export class RTGEComponent extends React.Component {
      */
     renderDataSurf() {
         return (
-            <div className="formUnit">
-                <FormGroup controlId="rtgeForm.dataSurf"  className="specialInputGroupStyles">
+            <div className="RTGE_formUnit">
+                <FormGroup controlId="rtgeForm.dataSurf"  className="RTGE_specialInputGroupStyles">
                     <div className="col-sm-4">
                         <Message msgId="RTGE.dataType" />
                     </div>
                     <div className="col-sm-8">
-                        <div className="col-sm-3 v-align">
+                        <div className="col-sm-3 RTGE_v-align">
                             <Checkbox
                                 defaultChecked={this.state.dataSurf}
                                 onChange={() => this.handleBooleanFieldChange('dataSurf')}
                                 className="checkbox"
                             />
                         </div>
-                        <div className="col-sm-9 notBold">
+                        <div className="col-sm-9 RTGE_notBold">
                             <Message msgId="RTGE.dataSurf"/>
                         </div>
                     </div>
@@ -343,21 +342,21 @@ export class RTGEComponent extends React.Component {
      */
     renderDataUnderSurf() {
         return (
-            <div className="formUnit">
-                <FormGroup controlId="rtgeForm.dataUnderSurf"  className="specialInputGroupStyles">
+            <div className="RTGE_formUnit">
+                <FormGroup controlId="rtgeForm.dataUnderSurf"  className="RTGE_specialInputGroupStyles">
                     <div className="col-sm-4"></div>
                     <div className="col-sm-8">
-                        <div className="col-sm-3 v-align">
+                        <div className="col-sm-3 RTGE_v-align">
                             <Checkbox
                                 defaultChecked={this.state.dataUnderSurf}
                                 onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
                                 className="checkbox"
                             />
                         </div>
-                        <div className="col-sm-9 notBold">
+                        <div className="col-sm-9 RTGE_notBold">
                             <Message msgId="RTGE.dataUnderSurf"/>
                             {this.state.dataUnderSurf
-                                ? <div className="row undergroundWarning text-center">
+                                ? <div className="row RTGE_undergroundWarning text-center">
                                     <Message msgId="RTGE.dataUnderSurfWarning"/>
                                 </div>
                                 : ''
@@ -376,8 +375,8 @@ export class RTGEComponent extends React.Component {
      */
     renderHomeTab() {
         return (
-            <div id="SAMPLE_EXTENSION">
-                <div className="paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtgeHomeText}}>
+            <div id="RTGE_EXTENSION">
+                <div className="RTGE_paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtgeHomeText}}>
                 </div>
             </div>
         );
@@ -390,8 +389,8 @@ export class RTGEComponent extends React.Component {
      */
     renderSendTab() {
         return (
-            <div id="SAMPLE_EXTENSION">
-                <div className="formGlobal">
+            <div id="RTGE_EXTENSION">
+                <div className="RTGE_formGlobal">
                     <Form>
                         {this.renderPrenomField()}
                         {this.renderNomField()}
@@ -403,8 +402,8 @@ export class RTGEComponent extends React.Component {
                         {this.renderDataSurf()}
                         {this.renderDataUnderSurf()}
                         {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                            ? <button className="buttonForm label-default buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
-                            : <button className="buttonForm gray buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
+                            ? <button className="RTGE_buttonForm label-default RTGE_buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
+                            : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
                         }
                     </Form>
                 </div>
@@ -421,43 +420,43 @@ export class RTGEComponent extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm-4 left"><span>{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
+                    <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
-                        <button className={this.props.activeSelection === 'Point' ? "selectorButton btn btn-active tooltipMain" : "selectorButton btn btn-primary tooltipMain"} onClick={() => this.props.switchDraw('Point')}>
+                        <button className={this.props.activeSelection === 'Point' ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"} onClick={() => this.props.switchDraw('Point')}>
                             <Glyphicon glyph="map-marker"/>
-                            <span className="tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPoint'}/></span>
+                            <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPoint'}/></span>
                         </button>
-                        <button className={this.props.activeSelection === 'LineString' ? "selectorButton btn btn-active tooltipMain" : "selectorButton btn btn-primary tooltipMain"} onClick={() => this.props.switchDraw('LineString')}>
+                        <button className={this.props.activeSelection === 'LineString' ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"} onClick={() => this.props.switchDraw('LineString')}>
                             <Glyphicon glyph="polyline"/>
-                            <span className="tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSeclectLine'}/></span>
+                            <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSeclectLine'}/></span>
                         </button>
-                        <button className={this.props.activeSelection === 'Polygon' ? "selectorButton btn btn-active tooltipMain" : "selectorButton btn btn-primary tooltipMain"} onClick={() => this.props.switchDraw('Polygon')}>
+                        <button className={this.props.activeSelection === 'Polygon' ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"} onClick={() => this.props.switchDraw('Polygon')}>
                             <Glyphicon glyph="polygon"/>
-                            <span className="tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPolygon'}/></span>
+                            <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPolygon'}/></span>
                         </button>
                     </div>
-                    <div className="col-sm-4 right">
-                        <button className={this.props.selectedRow.length === 0 ? "selectorButton empty btn btn-active tooltipMain" : "selectorButton btn-primary tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
+                    <div className="col-sm-4 RTGE_right">
+                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
                             <Glyphicon glyph="trash"/>
-                            <span className="tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
+                            <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
                         </button>
                     </div>
                 </div>
-                <div className="row arrayOffset">
-                    <div className="row tableOffset selectTitle text-center">
+                <div className="row RTGE_arrayOffset">
+                    <div className="row RTGE_tableOffset RTGE_selectTitle text-center">
                         {
                             this.props.rtgeTilesAttributes.map((val) => {
                                 return (
-                                    <div className={val.colWidth + " v-align delimitor"}><span>{val.title}</span></div>
+                                    <div className={val.colWidth + " RTGE_v-align RTGE_delimitor"}><span>{val.title}</span></div>
                                 );
                             })
                         }
                     </div>
-                    <div className="scrollBar text-center">
+                    <div className="RTGE_scrollBar text-center">
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
-                                    <div className={val.properties.selected ? "row arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
+                                    <div className={val.properties.selected ? "row RTGE_arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
@@ -482,28 +481,28 @@ export class RTGEComponent extends React.Component {
      */
     renderTabMenu() {
         return (
-            <div className="row rowTabs">
+            <div className="row RTGE_rowTabs">
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === "RTGE:HOME" ? "homeButton active" : "homeButton"} onClick={() => this.props.changeTab(tabTypes.HOME)}>
+                    <button className={this.props.activeTab === "RTGE:HOME" ? "RTGE_homeButton RTGE_active" : "RTGE_homeButton"} onClick={() => this.props.changeTab(tabTypes.HOME)}>
                         <Message msgId={'RTGE.welcome'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === "RTGE:SELECT" ? "selectButton active" : "selectButton"} onClick={() => this.props.changeTab(tabTypes.SELECT)}>
+                    <button className={this.props.activeTab === "RTGE:SELECT" ? "RTGE_selectButton RTGE_active" : "RTGE_selectButton"} onClick={() => this.props.changeTab(tabTypes.SELECT)}>
                         <Message msgId={'RTGE.selection'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
                     {this.props.selectedTiles.length === 0 &&
                     <>
-                        <button className="sendButton gray tooltipMain">
+                        <button className="RTGE_sendButton RTGE_gray RTGE_tooltipMain">
                             <Message msgId={'RTGE.send'}/>
-                            <span className="tooltipContent"><Message msgId={'RTGE.sendBtnDisabled'}/></span>
+                            <span className="RTGE_tooltipContent"><Message msgId={'RTGE.sendBtnDisabled'}/></span>
                         </button>
                     </>
                     }
                     {this.props.selectedTiles.length > 0 &&
-                        <button className={this.props.activeTab === "RTGE:SEND" ? "sendButton active" : "sendButton" } onClick={() => this.props.changeTab(tabTypes.SEND)}>
+                        <button className={this.props.activeTab === "RTGE:SEND" ? "RTGE_sendButton RTGE_active" : "RTGE_sendButton" } onClick={() => this.props.changeTab(tabTypes.SEND)}>
                             <Message msgId={'RTGE.send'}/>
                         </button>
                     }

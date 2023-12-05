@@ -145,7 +145,6 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
 export const displayRTGEGridEpic = (action$, store) =>
     action$.ofType(actions.SHOW_GRID)
         .switchMap(() => {
-            console.log(store.getState().layers);
             const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.name === gridLayerNameRTGE ));
             gridLayer = {
                 handleClickOnLayer: true,

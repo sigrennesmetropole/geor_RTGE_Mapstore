@@ -1,6 +1,4 @@
-#SAMPLE_EXTENSION {
-    /* background-color: rgba(255,255,255,.9); */
-    /* border-radius: 10px; */
+#RTGE_EXTENSION {
     max-width: 555px;
     max-height: 700px;
     padding: 10px;
@@ -12,11 +10,11 @@
 
 /* ==== Array selectorButtons ==== */
 
-.rowTabs{
+.RTGE_rowTabs{
     padding: 10px;
 }
 
-.homeButton, .selectButton, .sendButton {
+.RTGE_homeButton, .RTGE_selectButton, .RTGE_sendButton {
     /* margin: 20px; */
     width: 100px;
     background-color: inherit;
@@ -26,17 +24,17 @@
     width: 100%;
 }
 
-.gray {
+.RTGE_gray {
     background-color: lightgray;
 }
 
-.active{
+.RTGE_active{
     border-bottom: 0px solid white;
     background-color: white;
     color: black;
 }
 
-button.active{
+button.RTGE_active{
     border-bottom: 1px solid white;
     border-top: 1px solid #ddd;
     border-left: 1px solid #ddd;
@@ -45,13 +43,13 @@ button.active{
     color: black;
 }
 
-.tooltipMain {
+.RTGE_tooltipMain {
     position: relative;
     display: inline-block;
   }
   
   /* Tooltip text */
-  .tooltipMain .tooltipContent {
+  .RTGE_tooltipMain .RTGE_tooltipContent {
     visibility: hidden;
     background-color: #333333;
     color: #fff;
@@ -63,7 +61,7 @@ button.active{
     font-size: small;
   }
 
-  .tooltipMain .tooltipContent {
+  .RTGE_tooltipMain .RTGE_tooltipContent {
     width: 185px;
     top: 100%;
     left: 50%;
@@ -71,11 +69,11 @@ button.active{
   }
   
   /* Show the tooltip text when you mouse over the tooltip container */
-  .tooltipMain:hover .tooltipContent {
+  .RTGE_tooltipMain:hover .RTGE_tooltipContent {
     visibility: visible;
   }
 
-  .tooltipMain .tooltipContent::after {
+  .RTGE_tooltipMain .RTGE_tooltipContent::after {
     content: " ";
     position: absolute;
     bottom: 100%;
@@ -86,7 +84,7 @@ button.active{
   }
 
 /* Tooltip text */
-.tooltipMain .tooltipContentLeft {
+.RTGE_tooltipMain .RTGE_tooltipContentLeft {
     visibility: hidden;
     background-color: #333333;
     color: #fff;
@@ -98,17 +96,17 @@ button.active{
     font-size: small;
   }
 
-  .tooltipMain .tooltipContentLeft {
+  .RTGE_tooltipMain .RTGE_tooltipContentLeft {
     top: 2px;
     right: 105%;
   }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltipMain:hover .tooltipContentLeft {
+.RTGE_tooltipMain:hover .RTGE_tooltipContentLeft {
     visibility: visible;
 }
     
-.tooltipMain .tooltipContentLeft::after {
+.RTGE_tooltipMain .RTGE_tooltipContentLeft::after {
     content: " ";
     position: absolute;
     top: 60%;
@@ -119,7 +117,7 @@ button.active{
     border-color: transparent transparent transparent black;
 }
 
-.title{
+.RTGE_title{
     font-weight: bold;
     font-size: 15px;
 }
@@ -128,20 +126,20 @@ p {
     font-size: 12px;
 }
 
-.mainTitle{
+.RTGE_mainTitle{
     font-size: 18px;
 }
 
-.paragraphs{
+.RTGE_paragraphs{
     margin: 10px;
     max-width: 500px;
 }
 
-.right {
+.RTGE_right {
     text-align: right;
 }
 
-.left{
+.RTGE_left{
     height: 40px;
     margin-top: 10px;
     display:grid;
@@ -151,7 +149,7 @@ p {
 
 /*Section sélection du plugin*/
 
-.selectorButton{
+.RTGE_selectorButton{
     border: none;
     width: 40px;
     height: 40px;
@@ -160,12 +158,12 @@ p {
     padding: 5px;
 }
 
-.selectorButton.active {
+.RTGE_selectorButton.RTGE_active {
     border: none;
 }
 
 
-.selectorButton.empty{
+.RTGE_selectorButton.RTGE_empty{
     border: none;
 }
 
@@ -175,7 +173,7 @@ label {
 
 /* ==== Array selectedTiles ==== */
 
-.selectTitle{
+.RTGE_selectTitle{
     /* font-weight: bold; */
     border-bottom: 1px solid #ddd;
     background: darkgray;
@@ -184,39 +182,39 @@ label {
     color: white;
 }
 
-.tableOffset{
+.RTGE_tableOffset{
     margin-right: 15px;
 }
 
-.scrollBar{
+.RTGE_scrollBar{
     overflow-y: scroll;
     max-height: 499px;
     margin-right: 17px;
     cursor: pointer;
 }
 
-.scrollBar div{
+.RTGE_scrollBar div{
     margin-left: 0px;
     margin-right: 0px;
 }
 
-.scrollBar .row div{
+.RTGE_scrollBar .row div{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 }
 
-.arraySelected{
+.RTGE_arraySelected{
     background-color: lightgray;
 }
 
-.v-align{
+.RTGE_v-align{
     display:grid;
     align-items: center;
     height: 40px;
 }
 
-.delimitor{
+.RTGE_delimitor{
     border-bottom: none;
     border-top: none;
     border-left: none;
@@ -224,55 +222,43 @@ label {
     border-color: lightgray;
 }
 
-.arrayOffset{
+.RTGE_arrayOffset{
     margin-left: 0px;
 }
 
 /* ==== Form Area ==== */
 
-.formGlobal{
+.RTGE_formGlobal{
     margin: 10px;
 }
 
-.formUnit{
+.RTGE_formUnit{
     margin: 5px;
 }
 
-.formUnit span{
+.RTGE_formUnit span{
     font-weight: bold;
     font-size: inherit;
 }
 
-.formUnit input[type='checkbox']{
+.RTGE_formUnit input[type='checkbox']{
     margin-left: 33%;
     margin-right: 10px;
     width: auto;
 }
 
-.formUnit textarea {
+.RTGE_formUnit textarea {
     width: 100%;
     height: 175px;
     cursor: pointer;
 }
 
-.checkbox{
+.RTGE_checkbox{
     margin-top: -20px;
     margin-left: 20px;
 }
 
-/* input:placeholder-shown {
-    border: 1px solid red;
-}
-
-input:placeholder-shown.PhoneInputInput {
-    border: 1px solid black;
-}
-
-textarea:placeholder-shown {
-    border: 1px solid red;
-} */
-
-.errorZone {
+.RTGE_errorZone {
     background-color: red;
     display: grid;
     align-items: center;
@@ -283,17 +269,17 @@ textarea:placeholder-shown {
     border-radius: 5px;
 }
 
-.inputGroupStyles {
+.RTGE_inputGroupStyles {
     display:flex;
     align-items: center;
     overflow: hidden;
 }
 
-.label-default {
+.RTGE_label-default {
     padding: 8px;
 }
 
-.inputGroupStyles .PhoneInput {
+.RTGE_inputGroupStyles .RTGE_PhoneInput {
     margin-left: 10px;
 }
 
@@ -301,15 +287,15 @@ textarea {
     margin-top: 6px;
 }
 
-.form-group {
+.RTGE_form-group {
     margin-bottom: 9px;
 }
 
-.specialInputGroupStyles {
+.RTGE_specialInputGroupStyles {
     margin-top: 17px;
 }
 
-.buttonForm {
+.RTGE_buttonForm {
     border-radius: 5px;
     border-width: 0px;
     padding: 8px;
@@ -317,19 +303,19 @@ textarea {
     font-weight: bold;
 }
 
-.checkbox {
+.RTGE_checkbox {
     margin-top: -6px;
 }
 
-.notBold span {
+.RTGE_notBold span {
     font-weight: normal;
 }
 
-.buttonToRight{
+.RTGE_buttonToRight{
     float: right;
 }
 
-.undergroundWarning{
+.RTGE_undergroundWarning{
     background-color: orange;
     margin-bottom: 5px;
 }
