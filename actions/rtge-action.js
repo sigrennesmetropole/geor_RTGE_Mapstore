@@ -18,7 +18,8 @@ export const actions = {
     SEND_MAIL: 'RTGE:SEND_MAIL',
     CLICK_TABLE: 'RTGE:CLICK_TABLE',
     UPDATE_USER: 'RTGE:UPDATE_USER',
-    GET_USER_DETAILS: 'GET_USER_DETAILS'
+    GET_USER_DETAILS: 'RTGE:GET_USER_DETAILS',
+    INIT_CONFIGS: "RTGE:INIT_CONFIGS"
 };
 
 export const tabTypes = {
@@ -47,8 +48,6 @@ export function changeTab(tab) {
  * @returns - action start draw
  */
 export function startDraw(geometryType) {
-    console.log('in start draw action, geometryType is:');
-    console.log(geometryType);
     return {
         type: actions.START_DRAW,
         geometryType
@@ -197,5 +196,19 @@ export function updateUser(newUserDetails) {
 export function getUserDetails() {
     return {
         type: actions.GET_USER_DETAILS
+    };
+}
+
+/**
+ * TODO revoir coms
+ * getUserDetails action triggered when we look to get user data
+ * @memberof rtge.actions
+ * @param newUserDetails - list of user data to store in state
+ * @returns - action get user details
+ */
+export function initConfigs(configs) {
+    return {
+        type: actions.INIT_CONFIGS,
+        configs
     };
 }

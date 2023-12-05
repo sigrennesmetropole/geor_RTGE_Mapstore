@@ -13,7 +13,8 @@ import {
     switchDraw,
     removeSelectedTiles,
     clickTable,
-    sendMail
+    sendMail,
+    initConfigs
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
@@ -46,7 +47,8 @@ export default createPlugin(name, {
         switchDraw: switchDraw,
         removeSelectedTiles: removeSelectedTiles,
         clickTable,
-        sendMail
+        sendMail,
+        initConfigs
     })(RTGEComponent),
     reducers: {
         rtge: rtgeReducer

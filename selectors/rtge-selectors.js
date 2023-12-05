@@ -86,3 +86,12 @@ export const getSelectedRow = (state) => get(state, 'rtge.selectedRow');
  * @returns - returns the latest user datas
  */
 export const getUserDetails = (state) => get(state, 'rtge.user');
+
+/**
+ * TODO: revoir coms
+ * getUserDetails get user object in state
+ * @memberof rtge.selectors
+ * @param state - application state
+ * @returns - returns the latest user datas
+ */
+export const getConfigs = (state) => get(state, 'rtge.configs');

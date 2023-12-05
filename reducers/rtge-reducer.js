@@ -18,7 +18,7 @@ const initialState = {
  */
 export default (state = initialState, action) => {
     // console.log(action);
-    console.log(state);
+    // console.log(state);
     switch (action.type) {
     case actions.INCREASE_COUNTER:
         return assign({}, state, { value: state.value + 1 });
@@ -27,7 +27,6 @@ export default (state = initialState, action) => {
     case actions.ADD_FEATURES:
         return assign({}, state, { selectedTiles: action.features });
     case actions.START_DRAW:
-        console.log('start_draw triggered');
         return assign({}, state, { selectionGeometryType: action.geometryType });
     case actions.STOP_DRAW:
         return assign({}, state, { selectionGeometryType: undefined });
@@ -35,6 +34,8 @@ export default (state = initialState, action) => {
         return assign({}, state, { activeSelection: action.geometryType });
     case actions.UPDATE_USER:
         return assign({}, state, { user: action.newUserDetails });
+    case actions.INIT_CONFIGS:
+        return assign({}, state, { configs: action.configs });
     default:
         return state;
     }

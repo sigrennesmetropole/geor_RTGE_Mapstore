@@ -30,6 +30,8 @@ export class RTGEComponent extends React.Component {
         selectedTiles: PropTypes.array,
         user: PropTypes.object,
         selectedRow: PropTypes.array,
+        rtgeHomeText: PropTypes.string,
+        rtgeTilesAttributes: PropTypes.array,
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
         changeTab: PropTypes.func,
@@ -37,7 +39,8 @@ export class RTGEComponent extends React.Component {
         removeSelectedTiles: PropTypes.func,
         clickTable: PropTypes.func,
         sendMail: PropTypes.func,
-        formValidationError: PropTypes.func
+        formValidationError: PropTypes.func,
+        initConfigs: PropTypes.func
     }
 
     static defaultProps= {
@@ -52,6 +55,7 @@ export class RTGEComponent extends React.Component {
         user: {},
         activeSelection: '',
         selectedRow: [],
+        rtgeTilesAttributes: [],
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
         changeTab: ()=>{},
@@ -59,22 +63,41 @@ export class RTGEComponent extends React.Component {
         removeSelectedTiles: ()=>{},
         clickTable: ()=>{},
         sendMail: ()=>{},
-        formValidationError: ()=>{}
+        formValidationError: ()=>{},
+        initConfigs: ()=>{}
     }
 
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
-            prenom: this.props.user.prenom || '',
-            nom: this.props.user.nom || '',
-            collectivite: this.props.user.collectivite || '',
-            service: this.props.user.service || '',
-            courriel: this.props.user.courriel || '',
-            telephone: this.props.user.telephone || '',
-            motivation: this.props.user.motivation || '',
-            dataSurf: this.props.user.dataSurf || true,
-            dataUnderSurf: this.props.user.dataUnderSurf || false
+            prenom: props.user.prenom || '',
+            nom: props.user.nom || '',
+            collectivite: props.user.collectivite || '',
+            service: props.user.service || '',
+            courriel: props.user.courriel || '',
+            telephone: props.user.telephone || '',
+            motivation: props.user.motivation || '',
+            dataSurf: props.user.dataSurf || true,
+            dataUnderSurf: props.user.dataUnderSurf || false,
+            rtgeHomeText: props.rtgeHomeText
         };
+        props.initConfigs({
+            rtgeBackendURLPrefix: props.rtgeBackendURLPrefix,
+            rtgeEmailUrl: props.rtgeEmailUrl,
+            rtgeGridLayerId: props.rtgeGridLayerId,
+            rtgeGridLayerName: props.rtgeGridLayerName,
+            rtgeGridLayerProjection: props.rtgeGridLayerProjection,
+            rtgeGridLayerTitle: props.rtgeGridLayerTitle,
+            rtgeUserDetailsUrl: props.rtgeUserDetailsUrl,
+            rtgeHomeText: props.rtgeHomeText,
+            rtgeMailTemplate: props.rtgeMailTemplate,
+            rtgeMailRecipients: props.rtgeMailRecipients,
+            rtgeMailSubject: props.rtgeMailSubject,
+            rtgeMaxTiles: props.rtgeMaxTiles,
+            rtgeTileIdAttribute: props.rtgeTileIdAttribute,
+            rtgeTilesAttributes: props.rtgeTilesAttributes
+        });
     }
 
     componentDidUpdate(prevProps) {
@@ -354,26 +377,7 @@ export class RTGEComponent extends React.Component {
     renderHomeTab() {
         return (
             <div id="SAMPLE_EXTENSION">
-                <div className="paragraphs">
-                    <p className="title mainTitle">Outil d'extraction de dalles du Référentiel Métropolitain Topographique et Réseaux.</p>
-
-                    <p className="title">Limites et conditions d'utilisation</p>
-                    <p>Les données du RMTR consultables ici le sont à titre informatif uniquement. Il n'est pas possible de garantir sur cet outil des mesures de précision topographique sur les données. Il faut se reporter sur les outils spécialisés pour ce genre d'exploitation (AutoCAD, TopStation).</p>
-
-                    <p>Les données concernant les réseaux sont en accès restreint. La possibilité de consulter ces données ne vous dispense pas de faire toutes les démarches nécessaires à un projet, notamment les demandes de DT/DICT. Contacter le service Information Géographique si vous avez besoin de consulter les données de réseaux du sous-sol.</p>
-
-                    <p className="title">Principe d'utilisation</p>
-                    <p>Les données du RMTR sont découpées en dalle de 140x200m qui couvre Rennes Métropole.<br />
-                        Une demande d'extraction se formule donc sous la forme d'une liste de dalles.<br />
-                        La demande sera traitée par le service Information Géographique qui vous renverra 1 fichier DXF.<br />
-                        La limite du nombre de dalles maximum par demande est de 50.</p>
-
-                    <p className="title">Mode d'emploi</p>
-                    <p>1. Utiliser 1 des 3 outils de sélection pour sélectionner les dalles dont vous avez besoin. Affiner votre sélection si nécessaire (ajouter / supprimer).<br />
-                        2. Cliquer sur le bouton 'Envoi'<br />
-                        3. Remplir les champs et motiver votre demande en indiquant le projet d'aménagement ou le besoin.<br />
-                        4. Préciser si cela concerne les données de surface et/ou de sous-sol<br />
-                        5. Valider la demande</p>
+                <div className="paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtgeHomeText}}>
                 </div>
             </div>
         );
@@ -441,20 +445,26 @@ export class RTGEComponent extends React.Component {
                 </div>
                 <div className="row arrayOffset">
                     <div className="row tableOffset selectTitle text-center">
-                        <div className="col-sm-4 v-align delimitor"><span><Message msgId={'RTGE.selectionTab.identifier'}/></span></div>
-                        <div className="col-sm-2 v-align delimitor"><Message msgId={'RTGE.selectionTab.update'}/></div>
-                        <div className="col-sm-3 v-align delimitor"><Message msgId={'RTGE.selectionTab.aboveground'}/></div>
-                        <div className="col-sm-3 v-align"><Message msgId={'RTGE.selectionTab.underground'}/></div>
+                        {
+                            this.props.rtgeTilesAttributes.map((val) => {
+                                return (
+                                    <div className={val.colWidth + " v-align delimitor"}><span>{val.title}</span></div>
+                                );
+                            })
+                        }
                     </div>
                     <div className="scrollBar text-center">
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
                                     <div className={val.properties.selected ? "row arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
-                                        <div className="col-sm-4">{val.properties.cases_200}</div>
-                                        <div className="col-sm-2">{val.properties.date_der_maj}</div>
-                                        <div className="col-sm-3">{val.properties.nb_donnees_surf}</div>
-                                        <div className="col-sm-3">{val.properties.nb_donnees_ssol}</div>
+                                        {
+                                            this.props.rtgeTilesAttributes.map((attributeVal) => {
+                                                return (
+                                                    <div className={attributeVal.colWidth}>{val.properties[attributeVal.attribute]}</div>
+                                                );
+                                            })
+                                        }
                                     </div>
                                 );
                             })

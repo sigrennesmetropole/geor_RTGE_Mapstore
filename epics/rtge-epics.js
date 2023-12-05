@@ -23,7 +23,9 @@ import {
 } from "../constants/rtge-constants";
 import {
     updateDockPanelsList,
-    updateMapLayout
+    updateMapLayout,
+    UPDATE_MAP_LAYOUT,
+    FORCE_UPDATE_MAP_LAYOUT
 } from "@mapstore/actions/maplayout";
 
 import {
@@ -36,7 +38,8 @@ import { head } from "lodash";
 import {
     addLayer,
     refreshLayerVersion,
-    selectNode
+    selectNode,
+    changeLayerProperties
 } from "@mapstore/actions/layers";
 import { changeMapInfoState } from "@mapstore/actions/mapInfo";
 import {
@@ -54,17 +57,24 @@ import {
 import Xtemplate from 'xtemplate';
 import axios from 'axios';
 
-const gridLayerId = "ref_topo:rmtr_carroyage";
-const backendURLPrefix = "";
-const gridLayerName = "rmtr_carroyage";
-const RTGE_GRID_LAYER_TITLE = "RTGE : Carroyage au 1/200";
-const RTGEGridLayerProjection = "EPSG:3948";
+var gridLayerIdRTGE;
+var backendURLPrefixRTGE;
+var gridLayerNameRTGE;
+var RTGE_GRID_LAYER_TITLE;
+var RTGEGridLayerProjection;
+var rtgeEmailUrl;
+var rtgeUserDetailsUrl;
+var rtgeMailTemplate;
+var rtgeMailRecipients;
+var rtgeMailSubject;
+var rtgeMaxTiles;
+var rtgeTileIdAttribute;
+var currentLayout;
 const GeometryType = {
     POINT: "Point",
     LINE: "LineString",
     POLYGON: "Polygon"
 };
-const tileId = 'id_case';
 const styles = {
     "selected": {
         fillColor: "#18BEF7",
@@ -81,10 +91,7 @@ const styles = {
         weight: 2
     }
 };
-const featuresLimit = 50;
 var gridLayer = {};
-const emailUrl = "/console/emailProxy";
-const userDetailsUrl = "/console/account/userdetails";
 
 export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
     if (!Proj4js.defs("EPSG:3948")) {
@@ -108,6 +115,7 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
     .switchMap(() => {
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT, boundingMapRect: {...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT}, boundingSidebarRect: layout.boundingSidebarRect};
+        currentLayout = layout;
         return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout), getUserDetails()]);
     });
 
@@ -123,6 +131,7 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
     .switchMap(() => {
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: layout.boundingSidebarRect.right, boundingMapRect: {...layout.boundingMapRect, right: layout.boundingSidebarRect.right}, boundingSidebarRect: layout.boundingSidebarRect};
+        currentLayout = layout;
         return Rx.Observable.from([updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(layout)]);
     });
 
@@ -136,18 +145,19 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
 export const displayRTGEGridEpic = (action$, store) =>
     action$.ofType(actions.SHOW_GRID)
         .switchMap(() => {
-            const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.id === gridLayerId ));
+            console.log(store.getState().layers);
+            const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.name === gridLayerNameRTGE ));
             gridLayer = {
                 handleClickOnLayer: true,
                 hideLoading: true,
-                id: gridLayerId,
-                name: gridLayerName,
+                id: gridLayerIdRTGE,
+                name: gridLayerNameRTGE,
                 title: RTGE_GRID_LAYER_TITLE,
                 tiled: false,
                 type: "wms",
                 search: {
                     type: "wfs",
-                    url: backendURLPrefix + "/geoserver/ref_topo/ows"
+                    url: backendURLPrefixRTGE + "/geoserver/ref_topo/ows"
                 },
                 params: {
                     exceptions: 'application/vnd.ogc.se_xml'
@@ -155,28 +165,39 @@ export const displayRTGEGridEpic = (action$, store) =>
                 allowedSRS: RTGEGridLayerProjection,
                 format: "image/png",
                 singleTile: false,
-                url: backendURLPrefix + "/geoserver/ref_topo/wms",
+                url: backendURLPrefixRTGE + "/geoserver/ref_topo/wms",
                 visibility: true,
                 featureInfo: {
                     format: "PROPERTIES"
                 }
             };
+            let vectorLayerOption = {
+                id: selectedTilesLayerId,
+                features: [],
+                type: "vector",
+                name: "RTGESelectedTiles",
+                visibility: true
+            };
             return Rx.Observable.from(
                 mapstoreGridLayer
-                    ? [refreshLayerVersion(gridLayerId)]
-                    : [addLayer(gridLayer),
-                        selectNode(gridLayerId, "layer", false),
+                    ? [refreshLayerVersion(mapstoreGridLayer?.id || gridLayerIdRTGE),
+                        changeLayerProperties(mapstoreGridLayer?.id || gridLayerIdRTGE, {
+                            visibility: true
+                        }),
                         updateAdditionalLayer(
                             selectedTilesLayerId,
                             "RTGE",
                             'overlay',
-                            {
-                                id: selectedTilesLayerId,
-                                features: [],
-                                type: "vector",
-                                name: "RTGESelectedTiles",
-                                visibility: true
-                            }
+                            vectorLayerOption
+                        )
+                    ]
+                    : [addLayer(gridLayer),
+                        selectNode(gridLayerIdRTGE, "layer", false),
+                        updateAdditionalLayer(
+                            selectedTilesLayerId,
+                            "RTGE",
+                            'overlay',
+                            vectorLayerOption
                         )
                     ]
             );
@@ -209,8 +230,6 @@ export const stopDrawingRTGEEpic = (action$) => action$.ofType(actions.STOP_DRAW
  * @returns - observable with the list of actions to do after completing the function (trigger the change map drawing status action)
  */
 export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DRAW).switchMap((action) => {
-    console.log('in start draw');
-    console.log(action);
     const feature = {
         geometry: {
             type: GeometryType.POINT,
@@ -219,7 +238,6 @@ export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DR
         newFeature: true,
         type: "Feature"
     };
-    console.log(feature);
 
     const options = {
         drawEnabled: true,
@@ -231,7 +249,6 @@ export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DR
         translateEnabled: false,
         useSelectedStyle: false
     };
-    console.log(options);
     return Rx.Observable.from([changeDrawingStatus('drawOrEdit', action.geometryType, 'rtge', [feature], options)]);
 });
 
@@ -299,7 +316,7 @@ const getLayerFeatures = (layer, filter) => {
 export const getFeaturesRTGEEpic = (action$, store) =>
     action$.ofType(actions.GET_FEATURES)
         .switchMap( (action) => {
-            const maxFeatures = featuresLimit - getSelectedTiles(store.getState()).length;
+            const maxFeatures = rtgeMaxTiles - getSelectedTiles(store.getState()).length;
             const filter = {
                 filterType: "OGC",
                 featureTypeName: gridLayer?.search?.name || gridLayer?.name,
@@ -324,7 +341,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                 })
                 .switchMap(({features = []} = {}) => {
                     var tilesSelected = getSelectedTiles(store.getState());
-                    var finalElements = features.filter((feat) => !tilesSelected.find((selected) => selected.properties[tileId] === feat.properties[tileId] ));
+                    var finalElements = features.filter((feat) => !tilesSelected.find((selected) => selected.properties[rtgeTileIdAttribute] === feat.properties[rtgeTileIdAttribute] ));
                     if (features.length > maxFeatures) {
                         return Rx.Observable.from([show({ title: "RTGE.alertMaxFeatures.title", message: "RTGE.alertMaxFeatures.message" }, "warning"), startDraw(getSelectionGeometryType(store.getState()))]);
                     }
@@ -359,10 +376,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
  * @returns - observable which send start draw action
  */
 export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
-    console.log('in switch');
-    console.log(action);
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
-    console.log(activeSelectionGeometryType);
     if (action.geometryType === activeSelectionGeometryType) {
         store.getState().rtge.activeSelection = "";
         return Rx.Observable.from([stopDraw()]);
@@ -524,12 +538,12 @@ const dropPopUp = (level) => {
  */
 export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_MAIL).switchMap((action) => {
     let mailContent = {
-        "subject": "[RTGE] nouvelle demande concernant {{count}} dalles",
-        "to": ["sigsupport@rennesmetropole.fr"],
+        "subject": rtgeMailSubject,
+        "to": rtgeMailRecipients,
         "cc": [],
         "bcc": []
     };
-    let template = "Bonjour,\n\n{{first_name}} {{last_name}} ({{email}} - {{tel}} - {{service}} - {{company}}) a effectué une demande d'extraction de données.\nSous-sol: {{underground}}\nSurface: {{aboveground}}\n\nMotivations: {{comments}}\n\nLes dalles concernées sont les suivantes:\n\n{{tiles}}";
+    let template = rtgeMailTemplate;
     let formatedTiles = getFormattedTiles(store.getState());
     template = new Xtemplate(template).render({
         first_name: action.form.prenom,
@@ -552,7 +566,7 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
         timeout: 30000,
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
     };
-    return Rx.Observable.defer(() => axios.post(emailUrl, mailContent, params))
+    return Rx.Observable.defer(() => axios.post(rtgeEmailUrl, mailContent, params))
         .switchMap((/* response */) => {
             // console.log(response);
             return dropPopUp("success");
@@ -570,7 +584,7 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
  * @returns - observable which update the user object
  */
 export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_USER_DETAILS).switchMap(() => {
-    return Rx.Observable.defer(() => axios.get(userDetailsUrl))
+    return Rx.Observable.defer(() => axios.get(rtgeUserDetailsUrl))
         .switchMap((response) => {
             let text = response.data;
             let parser = new DOMParser();
@@ -590,3 +604,46 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
             return Rx.Observable.empty();
         });
 });
+
+/**
+ * TODO
+ * getUserDetailsEpic get user details when called
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - observable which update the user object
+ */
+export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFIGS).switchMap((action) => {
+    gridLayerIdRTGE = action.configs.rtgeGridLayerId;
+    backendURLPrefixRTGE = action.configs.rtgeBackendURLPrefix;
+    gridLayerNameRTGE = action.configs.rtgeGridLayerName;
+    RTGE_GRID_LAYER_TITLE = action.configs.rtgeGridLayerTitle;
+    RTGEGridLayerProjection = action.configs.rtgeGridLayerProjection;
+    rtgeEmailUrl = action.configs.rtgeEmailUrl;
+    rtgeUserDetailsUrl = action.configs.rtgeUserDetailsUrl;
+    rtgeMailTemplate = action.configs.rtgeMailTemplate;
+    rtgeMailRecipients = action.configs.rtgeMailRecipients;
+    rtgeMailSubject = action.configs.rtgeMailSubject;
+    rtgeMaxTiles = action.configs.rtgeMaxTiles;
+    rtgeTileIdAttribute = action.configs.rtgeTileIdAttribute;
+    return Rx.Observable.empty();
+});
+
+/**
+ * TODO
+ * getUserDetailsEpic get user details when called
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - observable which update the user object
+ */
+export function onUpdatingLayoutWhenRTGEPanelOpenedEpic(action$, store) {
+    return action$.ofType(UPDATE_MAP_LAYOUT, FORCE_UPDATE_MAP_LAYOUT)
+        .filter((action) => store && store.getState() &&
+            !!isOpen(store.getState()) &&
+            currentLayout?.right !== action?.layout?.right)
+        .switchMap(() => {
+            let layout = store.getState().maplayout;
+            layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: layout.layout.leftPanel, ...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT, boundingMapRect: {...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT}, boundingSidebarRect: layout.boundingSidebarRect};
+            currentLayout = layout;
+            return Rx.Observable.of(updateMapLayout(layout));
+        });
+}
