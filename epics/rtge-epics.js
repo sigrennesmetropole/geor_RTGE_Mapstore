@@ -188,7 +188,7 @@ export const displayRTGEGridEpic = (action$, store) =>
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable with the list of actions to do after completing the function (trigger the change map info state action)
  */
-export const initDrawingModEpic = (action$) => action$.ofType(actions.INIT_DRAWING_MOD).switchMap(() => {
+export const initDrawingModRTGEEpic = (action$) => action$.ofType(actions.INIT_DRAWING_MOD).switchMap(() => {
     return Rx.Observable.from([changeMapInfoState(false)]);
 });
 
@@ -198,7 +198,7 @@ export const initDrawingModEpic = (action$) => action$.ofType(actions.INIT_DRAWI
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable with the list of actions to do after completing the function (trigger the change drawing status action)
  */
-export const stopDrawingEpic = (action$) => action$.ofType(actions.STOP_DRAW).switchMap(() => {
+export const stopDrawingRTGEEpic = (action$) => action$.ofType(actions.STOP_DRAW).switchMap(() => {
     return Rx.Observable.from([changeDrawingStatus("clean", "", 'rtge', [], {})]);
 });
 
@@ -208,7 +208,7 @@ export const stopDrawingEpic = (action$) => action$.ofType(actions.STOP_DRAW).sw
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable with the list of actions to do after completing the function (trigger the change map drawing status action)
  */
-export const RTGEstartDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).switchMap((action) => {
+export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DRAW).switchMap((action) => {
     console.log('in start draw');
     console.log(action);
     const feature = {
@@ -242,7 +242,7 @@ export const RTGEstartDrawingEpic = (action$) => action$.ofType(actions.START_DR
  * @param store - list the content of variables inputted with the actions
  * @returns - observable with the list of actions to do after completing the function (trigger the start draw and/or get feature action)
  */
-export const geometryChangeEpic = (action$, store) =>
+export const geometryChangeRTGEEpic = (action$, store) =>
     action$.ofType(GEOMETRY_CHANGED)
         .switchMap( (action) => {
             let geometrySelection = {};
@@ -296,7 +296,7 @@ const getLayerFeatures = (layer, filter) => {
  * @param store - list the content of variables inputted with the actions
  * @returns - observable which starts add feature and start draw and add a new layer
  */
-export const getFeaturesEpic = (action$, store) =>
+export const getFeaturesRTGEEpic = (action$, store) =>
     action$.ofType(actions.GET_FEATURES)
         .switchMap( (action) => {
             const maxFeatures = featuresLimit - getSelectedTiles(store.getState()).length;
@@ -358,7 +358,7 @@ export const getFeaturesEpic = (action$, store) =>
  * @param store - list the content of variables inputted with the actions
  * @returns - observable which send start draw action
  */
-export const switchDrawingEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
+export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
     console.log('in switch');
     console.log(action);
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
@@ -409,7 +409,7 @@ function featureSelection(currentFeatures, control, intersectedFeature, state) {
  * @param store - list the content of variables inputted with the actions
  * @returns - observable with tiles selected inside and their new styles
  */
-export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).switchMap((action) => {
+export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).switchMap((action) => {
     const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
     const intersectedFeature = layer?.features[0];
     const currentFeatures = getSelectedTiles(store.getState());
@@ -435,7 +435,7 @@ export const clickOnMapEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).s
  * @param store - list the content of variables inputted with the actions
  * @returns - observable which update the layer
  */
-export const clickTableEpic = (action$, store) => action$.ofType(actions.CLICK_TABLE).switchMap((action) => {
+export const clickTableRTGEEpic = (action$, store) => action$.ofType(actions.CLICK_TABLE).switchMap((action) => {
     const currentFeatures = getSelectedTiles(store.getState());
     const features = featureSelection(currentFeatures, action.control, action.feature, store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
@@ -459,7 +459,7 @@ export const clickTableEpic = (action$, store) => action$.ofType(actions.CLICK_T
  * @param store - list the content of variables inputted with the actions
  * @returns - observable which update the layer and who update the feature list
  */
-export const removeSelectedFeaturesEpic = (action$, store) => action$.ofType(actions.REMOVE_SELECTED_TILES).switchMap(() => {
+export const removeSelectedFeaturesRTGEEpic = (action$, store) => action$.ofType(actions.REMOVE_SELECTED_TILES).switchMap(() => {
     let currentFeatures = getSelectedTiles(store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
     let emptiedFeatures = currentFeatures.filter(l => l.properties.selected === false);
@@ -522,7 +522,7 @@ const dropPopUp = (level) => {
  * @param store - list the content of variables inputted with the actions
  * @returns - empty observable
  */
-export const sendMailEpic = (action$, store) => action$.ofType(actions.SEND_MAIL).switchMap((action) => {
+export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_MAIL).switchMap((action) => {
     let mailContent = {
         "subject": "[RTGE] nouvelle demande concernant {{count}} dalles",
         "to": ["sigsupport@rennesmetropole.fr"],
@@ -569,7 +569,7 @@ export const sendMailEpic = (action$, store) => action$.ofType(actions.SEND_MAIL
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable which update the user object
  */
-export const getUserDetailsEpic = (action$) => action$.ofType(actions.GET_USER_DETAILS).switchMap(() => {
+export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_USER_DETAILS).switchMap(() => {
     return Rx.Observable.defer(() => axios.get(userDetailsUrl))
         .switchMap((response) => {
             let text = response.data;
