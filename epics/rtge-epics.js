@@ -208,7 +208,7 @@ export const stopDrawingEpic = (action$) => action$.ofType(actions.STOP_DRAW).sw
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable with the list of actions to do after completing the function (trigger the change map drawing status action)
  */
-export const startDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).switchMap((action) => {
+export const RTGEstartDrawingEpic = (action$) => action$.ofType(actions.START_DRAW).switchMap((action) => {
     console.log('in start draw');
     console.log(action);
     const feature = {
