@@ -402,7 +402,7 @@ export class RTGEComponent extends React.Component {
                         {this.renderDataSurf()}
                         {this.renderDataUnderSurf()}
                         {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                            ? <button className="RTGE_buttonForm label-default RTGE_buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
+                            ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
                             : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
                         }
                     </Form>
@@ -447,7 +447,7 @@ export class RTGEComponent extends React.Component {
                         {
                             this.props.rtgeTilesAttributes.map((val) => {
                                 return (
-                                    <div className={val.colWidth + " RTGE_v-align RTGE_delimitor"}><span>{val.title}</span></div>
+                                    <div className={val.colWidth + " RTGE_v-align RTGE_delimitor"} key={val.attribute}><span>{val.title}</span></div>
                                 );
                             })
                         }
@@ -455,12 +455,13 @@ export class RTGEComponent extends React.Component {
                     <div className="RTGE_scrollBar text-center">
                         {
                             this.props.selectedTiles.map((val, key) => {
+                                {console.log(val)}
                                 return (
                                     <div className={val.properties.selected ? "row RTGE_arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
-                                                    <div className={attributeVal.colWidth}>{val.properties[attributeVal.attribute]}</div>
+                                                    <div className={attributeVal.colWidth} key={attributeVal.attribute}>{val.properties[attributeVal.attribute]}</div>
                                                 );
                                             })
                                         }

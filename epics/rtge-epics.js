@@ -32,7 +32,8 @@ import {
     isOpen,
     getSelectedTiles,
     getSelectedTilesLayer,
-    getSelectionGeometryType
+    getSelectionGeometryType,
+    getSelectedRow
 } from "../selectors/rtge-selectors";
 import { head } from "lodash";
 import {
@@ -396,10 +397,13 @@ function featureSelection(currentFeatures, control, intersectedFeature, state) {
         if (intersectedFeature?.properties?.id_case === feature.properties.id_case) {
             feature.properties.selected = !feature.properties.selected;
             if (!control) {
+                // getSelectedRow(state).pop();
                 state.rtge.selectedRow = [];
             }
             if (feature.properties.selected) {
+                // getSelectedRow(state).push(intersectedFeature);
                 state.rtge.selectedRow.push(intersectedFeature);
+                console.log(state.rtge.selectedRow);
             }
         } else if (!control) {
             feature.properties.selected = false;
