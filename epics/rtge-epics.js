@@ -32,8 +32,7 @@ import {
     isOpen,
     getSelectedTiles,
     getSelectedTilesLayer,
-    getSelectionGeometryType,
-    getSelectedRow
+    getSelectionGeometryType
 } from "../selectors/rtge-selectors";
 import { head } from "lodash";
 import {
@@ -45,7 +44,8 @@ import {
 import { changeMapInfoState } from "@mapstore/actions/mapInfo";
 import {
     changeDrawingStatus,
-    GEOMETRY_CHANGED
+    GEOMETRY_CHANGED,
+    endDrawing
 } from "@mapstore/actions/draw";
 import { getLayerJSONFeature } from "@mapstore/observables/wfs";
 import Proj4js from 'proj4';
@@ -133,7 +133,7 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: layout.boundingSidebarRect.right, boundingMapRect: {...layout.boundingMapRect, right: layout.boundingSidebarRect.right}, boundingSidebarRect: layout.boundingSidebarRect};
         currentLayout = layout;
-        return Rx.Observable.from([updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(layout)]);
+        return Rx.Observable.from([updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(currentLayout)]);
     });
 
 /**
@@ -299,9 +299,9 @@ export const geometryChangeRTGEEpic = (action$, store) =>
  * @returns - empty observable or starts the function to recover datas from geoserver
  */
 const getLayerFeatures = (layer, filter) => {
-    if (filter.pagination.maxFeatures <= 1) {
+    if (filter.pagination.maxFeatures < 1) {
         show({ title: "RTGE.alertMaxFeatures.title", message: "RTGE.alertMaxFeatures.message" }, "warning");
-        return Rx.Observable.empty();
+        return Rx.Observable.from([endDrawing(filter.spatialField.geometry.type, 'rtge')]);
     }
     return getLayerJSONFeature(layer, filter);
 };
@@ -403,7 +403,6 @@ function featureSelection(currentFeatures, control, intersectedFeature, state) {
             if (feature.properties.selected) {
                 // getSelectedRow(state).push(intersectedFeature);
                 state.rtge.selectedRow.push(intersectedFeature);
-                console.log(state.rtge.selectedRow);
             }
         } else if (!control) {
             feature.properties.selected = false;
@@ -466,6 +465,7 @@ export const clickTableRTGEEpic = (action$, store) => action$.ofType(actions.CLI
         }
     ),
     // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
+    resizeMap(),
     resizeMap()]);
 });
 
@@ -557,6 +557,7 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
         company: action.form.collectivite,
         underground: action.form.dataUnderSurf,
         aboveground: action.form.dataSurf,
+        schematicalnetwork: action.form.schematicalNetwork,
         comments: action.form.motivation,
         tiles: formatedTiles
     });

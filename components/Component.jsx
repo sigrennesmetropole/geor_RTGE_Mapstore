@@ -79,6 +79,7 @@ export class RTGEComponent extends React.Component {
             motivation: props.user.motivation || '',
             dataSurf: props.user.dataSurf || true,
             dataUnderSurf: props.user.dataUnderSurf || false,
+            schematicalNetwork: props.user.schematicalNetwork || false,
             rtgeHomeText: props.rtgeHomeText
         };
         props.initConfigs({
@@ -122,7 +123,7 @@ export class RTGEComponent extends React.Component {
     renderPrenomField() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.prenom">
+                <FormGroup controlId="rtgeForm.prenom" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.prenom" />
@@ -150,7 +151,7 @@ export class RTGEComponent extends React.Component {
     renderNomField() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.nom">
+                <FormGroup controlId="rtgeForm.nom" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.nom" />
@@ -178,7 +179,7 @@ export class RTGEComponent extends React.Component {
     renderCollectiviteField() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.collectivite">
+                <FormGroup controlId="rtgeForm.collectivite" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.collectivite" />
@@ -206,7 +207,7 @@ export class RTGEComponent extends React.Component {
     renderService() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.service">
+                <FormGroup controlId="rtgeForm.service" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.service" />
@@ -234,7 +235,7 @@ export class RTGEComponent extends React.Component {
     renderCourriel() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.courriel">
+                <FormGroup controlId="rtgeForm.courriel" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.courriel" />
@@ -262,7 +263,7 @@ export class RTGEComponent extends React.Component {
     renderTelephone() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.telephone">
+                <FormGroup controlId="rtgeForm.telephone" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
                         <div className="col-sm-3">
                             <Message msgId="RTGE.telephone" />
@@ -288,8 +289,8 @@ export class RTGEComponent extends React.Component {
     renderMotivation() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.motivation">
-                    <InputGroup className="RTGE_specialInputGroupStyles">
+                <FormGroup controlId="rtgeForm.motivation" className="RTGE_form-group">
+                    <InputGroup>
                         <Message msgId="RTGE.motivation" />
                         <FormControl
                             componentClass="textarea"
@@ -314,7 +315,7 @@ export class RTGEComponent extends React.Component {
     renderDataSurf() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.dataSurf"  className="RTGE_specialInputGroupStyles">
+                <FormGroup controlId="rtgeForm.dataSurf"  className="RTGE_form-group">
                     <div className="col-sm-4">
                         <Message msgId="RTGE.dataType" />
                     </div>
@@ -323,7 +324,7 @@ export class RTGEComponent extends React.Component {
                             <Checkbox
                                 defaultChecked={this.state.dataSurf}
                                 onChange={() => this.handleBooleanFieldChange('dataSurf')}
-                                className="checkbox"
+                                className="RTGE_checkbox"
                             />
                         </div>
                         <div className="col-sm-9 RTGE_notBold">
@@ -343,14 +344,14 @@ export class RTGEComponent extends React.Component {
     renderDataUnderSurf() {
         return (
             <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.dataUnderSurf"  className="RTGE_specialInputGroupStyles">
+                <FormGroup controlId="rtgeForm.dataUnderSurf"  className="RTGE_form-group">
                     <div className="col-sm-4"></div>
                     <div className="col-sm-8">
                         <div className="col-sm-3 RTGE_v-align">
                             <Checkbox
                                 defaultChecked={this.state.dataUnderSurf}
                                 onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
-                                className="checkbox"
+                                className="RTGE_checkbox"
                             />
                         </div>
                         <div className="col-sm-9 RTGE_notBold">
@@ -358,6 +359,39 @@ export class RTGEComponent extends React.Component {
                             {this.state.dataUnderSurf
                                 ? <div className="row RTGE_undergroundWarning text-center">
                                     <Message msgId="RTGE.dataUnderSurfWarning"/>
+                                </div>
+                                : ''
+                            }
+                        </div>
+                    </div>
+                </FormGroup>
+            </div>
+        );
+    }
+
+    /**
+     * renderDataUnderSurf Renders data under surface checkbox field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the data under surface checkbox field
+     */
+    renderSchematicalNetwork() {
+        return (
+            <div className="RTGE_formUnit">
+                <FormGroup controlId="rtgeForm.schematicalNetwork"  className="RTGE_form-group">
+                    <div className="col-sm-4"></div>
+                    <div className="col-sm-8">
+                        <div className="col-sm-3 RTGE_v-align">
+                            <Checkbox
+                                defaultChecked={this.state.schematicalNetwork}
+                                onChange={() => this.handleBooleanFieldChange('schematicalNetwork')}
+                                className="RTGE_checkbox"
+                            />
+                        </div>
+                        <div className="col-sm-9 RTGE_notBold">
+                            <Message msgId="RTGE.schematicalNetwork"/>
+                            {this.state.schematicalNetwork
+                                ? <div className="row RTGE_undergroundWarning text-center">
+                                    <Message msgId="RTGE.schematicalNetworkWarning"/>
                                 </div>
                                 : ''
                             }
@@ -390,23 +424,22 @@ export class RTGEComponent extends React.Component {
     renderSendTab() {
         return (
             <div id="RTGE_EXTENSION">
-                <div className="RTGE_formGlobal">
-                    <Form>
-                        {this.renderPrenomField()}
-                        {this.renderNomField()}
-                        {this.renderCollectiviteField()}
-                        {this.renderService()}
-                        {this.renderCourriel()}
-                        {this.renderTelephone()}
-                        {this.renderMotivation()}
-                        {this.renderDataSurf()}
-                        {this.renderDataUnderSurf()}
-                        {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                            ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
-                            : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
-                        }
-                    </Form>
-                </div>
+                <Form>
+                    {this.renderPrenomField()}
+                    {this.renderNomField()}
+                    {this.renderCollectiviteField()}
+                    {this.renderService()}
+                    {this.renderCourriel()}
+                    {this.renderTelephone()}
+                    {this.renderMotivation()}
+                    {this.renderDataSurf()}
+                    {this.renderDataUnderSurf()}
+                    {this.renderSchematicalNetwork()}
+                    {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
+                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
+                        : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
+                    }
+                </Form>
             </div>
         );
     }
@@ -455,7 +488,6 @@ export class RTGEComponent extends React.Component {
                     <div className="RTGE_scrollBar text-center">
                         {
                             this.props.selectedTiles.map((val, key) => {
-                                {console.log(val)}
                                 return (
                                     <div className={val.properties.selected ? "row RTGE_arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
                                         {
@@ -626,7 +658,8 @@ export class RTGEComponent extends React.Component {
             telephone: this.props.user.telephone || '',
             motivation: this.props.user.motivation || '',
             dataSurf: this.props.user.dataSurf || true,
-            dataUnderSurf: this.props.user.dataUnderSurf || false
+            dataUnderSurf: this.props.user.dataUnderSurf || false,
+            schematicalNetwork: this.props.user.schematicalNetwork || false
         });
     }
 }

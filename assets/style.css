@@ -8,6 +8,22 @@
     z-index: 1000;
 }
 
+/* ==== HomeTab CSS ==== */
+
+#RTGE_EXTENSION h1 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#RTGE_EXTENSION h2 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#RTGE_EXTENSION p {
+    font-size: 10px;
+}
+
 /* ==== Array selectorButtons ==== */
 
 .RTGE_rowTabs{
@@ -59,6 +75,7 @@ button.RTGE_active{
     position: absolute;
     z-index: 1;
     font-size: small;
+    margin-top: 5px;
   }
 
   .RTGE_tooltipMain .RTGE_tooltipContent {
@@ -220,14 +237,6 @@ button.RTGE_active{
 
 /* ==== Form Area ==== */
 
-.RTGE_formGlobal{
-    margin: 10px;
-}
-
-.RTGE_formUnit{
-    margin: 5px;
-}
-
 .RTGE_formUnit span{
     font-weight: bold;
     font-size: inherit;
@@ -279,10 +288,6 @@ button.RTGE_active{
     margin-bottom: 9px;
 }
 
-.RTGE_specialInputGroupStyles {
-    margin-top: 17px;
-}
-
 .RTGE_buttonForm {
     border-radius: 5px;
     border-width: 0px;
@@ -304,8 +309,9 @@ button.RTGE_active{
 }
 
 .RTGE_undergroundWarning{
-    background-color: orange;
     margin-bottom: 5px;
+    font-size: 8pt;
+    font-style: italic;
 }
 
 /* ==== End of Form ==== */
