@@ -1,8 +1,9 @@
 #RTGE_EXTENSION {
     max-width: 555px;
     max-height: 700px;
-    padding: 10px;
-    margin-top: 50px;
+    padding-left: 10px;
+    padding-top: 5px;
+    margin-top: 35px;
     position: absolute;
     top: 50px;
     z-index: 1000;
@@ -241,13 +242,12 @@ button.RTGE_active{
 
 .RTGE_formUnit textarea {
     width: 100%!important;
-    height: 175px!important;
+    height: 110px!important;
     cursor: pointer!important;
 }
 
 .RTGE_checkbox{
-    margin-top: -26px!important;
-    margin-left: 20px!important;
+    margin-top: -5px!important;
 }
 
 .RTGE_errorZone {
