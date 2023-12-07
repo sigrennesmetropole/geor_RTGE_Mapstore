@@ -2,7 +2,6 @@
 export const actions = {
     INCREASE_COUNTER: 'RTGE:INCREASE_COUNTER',
     OPEN_PANEL: 'RTGE:OPEN_PANEL',
-    CLOSE_PANEL: 'RTGE:CLOSE_PANEL',
     CHANGE_TAB: 'RTGE:CHANGE_TAB',
     START_DRAW: 'RTGE:START_DRAW',
     STOP_DRAW: 'RTGE:STOP_DRAW',
@@ -19,7 +18,8 @@ export const actions = {
     CLICK_TABLE: 'RTGE:CLICK_TABLE',
     UPDATE_USER: 'RTGE:UPDATE_USER',
     GET_USER_DETAILS: 'RTGE:GET_USER_DETAILS',
-    INIT_CONFIGS: "RTGE:INIT_CONFIGS"
+    INIT_CONFIGS: "RTGE:INIT_CONFIGS",
+    CLOSE_RTGE: "RTGE:CLOSE_RTGE"
 };
 
 export const tabTypes = {
@@ -210,5 +210,18 @@ export function initConfigs(configs) {
     return {
         type: actions.INIT_CONFIGS,
         configs
+    };
+}
+
+/**
+ * TODO revoir coms
+ * closeRtge action triggered when we look to get user data
+ * @memberof rtge.actions
+ * @param newUserDetails - list of user data to store in state
+ * @returns - action get user details
+ */
+export function closeRtge() {
+    return {
+        type: actions.CLOSE_RTGE
     };
 }

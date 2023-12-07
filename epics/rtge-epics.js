@@ -10,11 +10,12 @@ import {
     addFeatures,
     stopDraw,
     updateUser,
-    getUserDetails
+    getUserDetails,
+    closeRtge
 } from "../actions/rtge-action";
 import {
-    TOGGLE_CONTROL,
-    toggleControl
+    toggleControl,
+    TOGGLE_CONTROL
 } from "@mapstore/actions/controls";
 import {
     RTGE_PANEL_WIDTH,
@@ -127,13 +128,17 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
  * @param store - list the content of variables inputted with the actions
  * @returns - observable with the list of actions to do after completing the function (the dock panel and the map layout update actions)
  */
-export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL)
-    .filter(action => action.control === 'rtge' && !!store.getState() && !isOpen(store.getState()) )
-    .switchMap(() => {
+export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_RTGE)
+    .filter(action => action.control === 'rtge' && !!store.getState() && !isOpen(store.getState()) || action.type === actions.CLOSE_RTGE )
+    .switchMap((action) => {
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: layout.boundingSidebarRect.right, boundingMapRect: {...layout.boundingMapRect, right: layout.boundingSidebarRect.right}, boundingSidebarRect: layout.boundingSidebarRect};
         currentLayout = layout;
-        return Rx.Observable.from([updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(currentLayout)]);
+        let observableAction = [updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(currentLayout)];
+        if (action.type === actions.CLOSE_RTGE) {
+            observableAction = [toggleControl('rtge', 'enabled')].concat(observableAction);
+        }
+        return Rx.Observable.from(observableAction);
     });
 
 /**
@@ -523,7 +528,7 @@ function getFormattedTiles(state) {
 const dropPopUp = (level) => {
     switch (level) {
     case "success":
-        return Rx.Observable.from([show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, level), toggleControl('rtge', 'enabled')]);
+        return Rx.Observable.from([show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, level), closeRtge()]);
     case "error":
         return Rx.Observable.from([show({ title: "RTGE.sendMailFailure.title", message: "RTGE.sendMailFailure.message" }, level)]);
     default:
