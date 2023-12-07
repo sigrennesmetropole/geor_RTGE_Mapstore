@@ -421,7 +421,7 @@ export class RTGEComponent extends React.Component {
      * @memberof rtge.component
      * @returns - organise the plugins form
      */
-    renderSendTab() {
+    renderSendTab = () => {
         return (
             <div id="RTGE_EXTENSION">
                 <Form>
@@ -436,7 +436,7 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataUnderSurf()}
                     {this.renderSchematicalNetwork()}
                     {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={() => this.sendMail()}><Message msgId={'RTGE.sendTab.button'}/></button>
+                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={this.sendMail}><Message msgId={'RTGE.sendTab.button'}/></button>
                         : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
                     }
                 </Form>
@@ -549,7 +549,7 @@ export class RTGEComponent extends React.Component {
      * @memberof rtge.component
      * @returns - tab dom content
      */
-    renderContent() {
+    renderContent = () => {
         var content;
         switch (this.props.activeTab) {
         case tabTypes.HOME:
@@ -572,7 +572,7 @@ export class RTGEComponent extends React.Component {
      * @memberof rtge.component
      * @returns - Mapstore ResponsivePanel with our data inside
      */
-    render() {
+    render = () => {
         if (this.props.active) {
             return (
                 <ResponsivePanel
@@ -636,11 +636,10 @@ export class RTGEComponent extends React.Component {
      * @memberof rtge.component
      * @returns - send mail action when available or nothing
      */
-    sendMail() {
+    sendMail = () => {
         if (this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '') {
-            return this.props.sendMail(this.state);
+            this.props.sendMail(this.state);
         }
-        return null;
     }
 
     /**
