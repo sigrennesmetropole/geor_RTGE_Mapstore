@@ -14,7 +14,6 @@ import {
     closeRtge
 } from "../actions/rtge-action";
 import {
-    toggleControl,
     TOGGLE_CONTROL
 } from "@mapstore/actions/controls";
 import {
@@ -130,15 +129,11 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
  */
 export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_RTGE)
     .filter(action => action.control === 'rtge' && !!store.getState() && !isOpen(store.getState()) || action.type === actions.CLOSE_RTGE )
-    .switchMap((action) => {
+    .switchMap(() => {
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: layout.boundingSidebarRect.right, boundingMapRect: {...layout.boundingMapRect, right: layout.boundingSidebarRect.right}, boundingSidebarRect: layout.boundingSidebarRect};
         currentLayout = layout;
-        let observableAction = [updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(currentLayout)];
-        if (action.type === actions.CLOSE_RTGE) {
-            observableAction = [toggleControl('rtge', 'enabled')].concat(observableAction);
-        }
-        return Rx.Observable.from(observableAction);
+        return Rx.Observable.from([updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(currentLayout)]);
     });
 
 /**
