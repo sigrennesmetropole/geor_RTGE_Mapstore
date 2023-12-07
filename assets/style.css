@@ -189,7 +189,7 @@ button.RTGE_active{
 
 .RTGE_scrollBar{
     overflow-y: scroll;
-    max-height: 499px;
+    max-height: 420px;
     margin-right: 17px;
     cursor: pointer;
 }
