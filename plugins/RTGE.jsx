@@ -58,7 +58,7 @@ export default createPlugin(name, {
         SidebarMenu: {
             name: "rtge",
             position: 10,
-            icon: <Glyphicon glyph="registration-mark"/>,
+            icon: <Glyphicon glyph="map-marker"/>,
             doNotHide: true,
             tooltip: "RTGE.title",
             toggle: true,

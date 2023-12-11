@@ -637,6 +637,7 @@ export class RTGEComponent extends React.Component {
      * @returns - send mail action when available or nothing
      */
     sendMail = (event) => {
+        // Le preventDefault ci dessous permet de prévenir la double utilisation du bouton, ce qui recharche la page d'envoi de mail.
         event.preventDefault();
         if (this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '') {
             this.props.sendMail(this.state);
