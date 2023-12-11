@@ -436,7 +436,7 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataUnderSurf()}
                     {this.renderSchematicalNetwork()}
                     {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={this.sendMail}><Message msgId={'RTGE.sendTab.button'}/></button>
+                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={(e) => {this.sendMail(e);}}><Message msgId={'RTGE.sendTab.button'}/></button>
                         : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
                     }
                 </Form>
@@ -636,7 +636,8 @@ export class RTGEComponent extends React.Component {
      * @memberof rtge.component
      * @returns - send mail action when available or nothing
      */
-    sendMail = () => {
+    sendMail = (event) => {
+        event.preventDefault();
         if (this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '') {
             this.props.sendMail(this.state);
         }
