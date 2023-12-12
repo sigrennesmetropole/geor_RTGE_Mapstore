@@ -5,7 +5,8 @@ import { name } from '../../../config';
 import {createPlugin} from "@mapstore/utils/PluginsUtils";
 import { toggleControl } from '@mapstore/actions/controls';
 import { RTGEComponent } from "../components/Component";
-import { Glyphicon } from 'react-bootstrap';
+// import { Glyphicon } from 'react-bootstrap';
+import pluginIcon from "../assets/images/registration.svg";
 
 import { changeZoomLevel } from "@mapstore/actions/map";
 import {
@@ -58,7 +59,7 @@ export default createPlugin(name, {
         SidebarMenu: {
             name: "rtge",
             position: 10,
-            icon: <Glyphicon glyph="map-marker"/>,
+            icon: <img src={pluginIcon} className="iconSize" />,
             doNotHide: true,
             tooltip: "RTGE.title",
             toggle: true,

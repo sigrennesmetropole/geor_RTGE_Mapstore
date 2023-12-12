@@ -32,6 +32,7 @@ export class RTGEComponent extends React.Component {
         selectedRow: PropTypes.array,
         rtgeHomeText: PropTypes.string,
         rtgeTilesAttributes: PropTypes.array,
+        rtgeMaxTiles: PropTypes.string,
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
         changeTab: PropTypes.func,
@@ -56,6 +57,7 @@ export class RTGEComponent extends React.Component {
         activeSelection: '',
         selectedRow: [],
         rtgeTilesAttributes: [],
+        rtgeMaxTiles: '',
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
         changeTab: ()=>{},
@@ -453,7 +455,7 @@ export class RTGEComponent extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
+                    <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} / {this.props.rtgeMaxTiles} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
                         <button className={this.props.activeSelection === 'Point' ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"} onClick={() => this.props.switchDraw('Point')}>
                             <Glyphicon glyph="map-marker"/>
@@ -493,7 +495,7 @@ export class RTGEComponent extends React.Component {
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
-                                                    <div className={attributeVal.colWidth} key={attributeVal.attribute}>{val.properties[attributeVal.attribute]}</div>
+                                                    <div className={attributeVal.attribute === 'nb_donnees_surf' || attributeVal.attribute === 'nb_donnees_ssol' ? attributeVal.colWidth + " RTGE_RowsOffset" : attributeVal.colWidth} key={attributeVal.attribute}>{val.properties[attributeVal.attribute]}</div>
                                                 );
                                             })
                                         }

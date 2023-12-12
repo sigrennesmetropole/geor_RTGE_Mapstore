@@ -200,11 +200,10 @@ export function getUserDetails() {
 }
 
 /**
- * TODO revoir coms
- * getUserDetails action triggered when we look to get user data
+ * initConfigs action triggered to initialize or reinitialize plugin basic configs
  * @memberof rtge.actions
- * @param newUserDetails - list of user data to store in state
- * @returns - action get user details
+ * @param configs - configs object
+ * @returns - action init configs with those configs
  */
 export function initConfigs(configs) {
     return {
@@ -214,11 +213,9 @@ export function initConfigs(configs) {
 }
 
 /**
- * TODO revoir coms
- * closeRtge action triggered when we look to get user data
+ * closeRtge action to close configs
  * @memberof rtge.actions
- * @param newUserDetails - list of user data to store in state
- * @returns - action get user details
+ * @returns - action close rtge plugin
  */
 export function closeRtge() {
     return {

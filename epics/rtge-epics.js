@@ -446,7 +446,8 @@ export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MA
         }
     ),
     // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
-    resizeMap()]);
+    resizeMap(),
+    addFeatures(features)]);
 });
 
 /**
@@ -471,7 +472,7 @@ export const clickTableRTGEEpic = (action$, store) => action$.ofType(actions.CLI
     ),
     // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
     resizeMap(),
-    resizeMap()]);
+    addFeatures(features)]);
 });
 
 /**
@@ -615,11 +616,10 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
 });
 
 /**
- * TODO
- * getUserDetailsEpic get user details when called
+ * getConfigsRTGEEpic get RTGE Configs and init them
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - observable which update the user object
+ * @returns - empty observable
  */
 export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFIGS).switchMap((action) => {
     gridLayerIdRTGE = action.configs.rtgeGridLayerId;
@@ -638,11 +638,10 @@ export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFI
 });
 
 /**
- * TODO
- * getUserDetailsEpic get user details when called
+ * onUpdatingLayoutWhenRTGEPanelOpenedEpic fix mapstore search bar issue on rtge panel opening
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
- * @returns - observable which update the user object
+ * @returns - observable which update map layout
  */
 export function onUpdatingLayoutWhenRTGEPanelOpenedEpic(action$, store) {
     return action$.ofType(UPDATE_MAP_LAYOUT, FORCE_UPDATE_MAP_LAYOUT)
