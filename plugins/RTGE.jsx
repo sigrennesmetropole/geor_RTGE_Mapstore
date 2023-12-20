@@ -15,7 +15,8 @@ import {
     removeSelectedTiles,
     clickTable,
     sendMail,
-    initConfigs
+    initConfigs,
+    removeAllTiles
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
@@ -26,7 +27,9 @@ import {
     getSelectedTiles,
     getActiveSelection,
     getSelectedRow,
-    getUserDetails
+    getUserDetails,
+    getRequestStarted,
+    isUndergroundDataRequired
 } from "../selectors/rtge-selectors";
 import '../assets/style.css';
 
@@ -40,13 +43,16 @@ export default createPlugin(name, {
         selectedTiles: getSelectedTiles(state),
         user: getUserDetails(state),
         activeSelection: getActiveSelection(state),
-        selectedRow: getSelectedRow(state)
+        selectedRow: getSelectedRow(state),
+        requestStarted: getRequestStarted(state),
+        undergroundDataIsRequired: isUndergroundDataRequired(state)
     }), {
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
         changeTab: changeTab,
         switchDraw: switchDraw,
         removeSelectedTiles: removeSelectedTiles,
+        removeAllTiles: removeAllTiles,
         clickTable,
         sendMail,
         initConfigs

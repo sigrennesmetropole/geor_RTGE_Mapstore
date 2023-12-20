@@ -19,7 +19,10 @@ export const actions = {
     UPDATE_USER: 'RTGE:UPDATE_USER',
     GET_USER_DETAILS: 'RTGE:GET_USER_DETAILS',
     INIT_CONFIGS: "RTGE:INIT_CONFIGS",
-    CLOSE_RTGE: "RTGE:CLOSE_RTGE"
+    CLOSE_RTGE: "RTGE:CLOSE_RTGE",
+    GET_USER_ROLES: "RTGE:GET_USER_ROLES",
+    UNDERGROUND_DATA_JUSTIFICATION_REQUIRED: "RTGE:UNDERGROUND_DATA_JUSTIFICATION_REQUIRED",
+    REMOVE_ALL_TILES: "RTGE:REMOVE_ALL_TILES"
 };
 
 export const tabTypes = {
@@ -220,5 +223,42 @@ export function initConfigs(configs) {
 export function closeRtge() {
     return {
         type: actions.CLOSE_RTGE
+    };
+}
+
+/**
+ * TODO
+ * closeRtge action to close configs
+ * @memberof rtge.actions
+ * @returns - action close rtge plugin
+ */
+export function getUserRoles() {
+    return {
+        type: actions.GET_USER_ROLES
+    };
+}
+
+/**
+ * TODO
+ * closeRtge action to close configs
+ * @memberof rtge.actions
+ * @returns - action close rtge plugin
+ */
+export function setUndergroundDataJustificationRequired(undergroundDataIsRequired) {
+    return {
+        type: actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED,
+        undergroundDataIsRequired
+    };
+}
+
+/**
+ * TODO
+ * removeAllTiles actions to remove the tiles
+ * @memberof rtge.actions
+ * @returns - action remove selected tiles
+ */
+export function removeAllTiles() {
+    return {
+        type: actions.REMOVE_ALL_TILES
     };
 }

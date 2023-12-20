@@ -94,3 +94,20 @@ export const getUserDetails = (state) => get(state, 'rtge.user');
  * @returns - returns the latest rtge configs
  */
 export const getConfigs = (state) => get(state, 'rtge.configs');
+
+/**
+ * getRequestStarted gets spinner status in state
+ * @memberof rtge.selectors
+ * @param state - application state
+ * @returns - returns if true or false the spinner should be shown
+ */
+export const getRequestStarted = (state) => get(state, 'rtge.requestStarted');
+
+/**
+ * TODO
+ * getRequestStarted gets spinner status in state
+ * @memberof rtge.selectors
+ * @param state - application state
+ * @returns - returns if true or false the spinner should be shown
+ */
+export const isUndergroundDataRequired = (state) => get(state, 'rtge.undergroundDataIsRequired');

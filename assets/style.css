@@ -22,7 +22,7 @@
 }
 
 #RTGE_EXTENSION p {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 /* ==== Array selectorButtons ==== */
@@ -135,7 +135,8 @@ button.RTGE_active{
 }
 
 .RTGE_paragraphs{
-    margin: 10px;
+    margin-top: 15px;
+    margin-left: 10px;
     max-width: 500px;
 }
 
@@ -188,7 +189,7 @@ button.RTGE_active{
 
 .RTGE_scrollBar{
     overflow-y: scroll;
-    max-height: 420px;
+    max-height: 5000px;
     margin-right: 17px;
     cursor: pointer;
 }
@@ -231,6 +232,12 @@ button.RTGE_active{
 }
 
 /* ==== Form Area ==== */
+
+.RTGE_formUnit {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
 .RTGE_formUnit span{
     font-weight: bold!important;
@@ -290,7 +297,7 @@ button.RTGE_active{
     border-radius: 5px;
     border-width: 0px;
     padding: 8px;
-    margin-left: 4px;
+    margin-right: 15px;
     font-weight: bold;
 }
 
@@ -327,3 +334,48 @@ button.active .iconSize{
 }
 
 /* ==== End Of SideBar ==== */
+
+/* ==== Loading Bar ==== */
+
+.plui-evolution-panel .plui-loading-container {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+	margin: auto;
+	position: absolute;
+	display: block;
+	vertical-align: center;
+	left: 0;
+	top: 0;
+	background: rgba(0, 0, 0, .60);
+	z-index: 999;
+}
+
+.RTGE_loadingContainer .RTGE_loading {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -40%);
+	white-space: nowrap;
+	text-align: center;
+}
+
+.RTGE_loadingContainer .RTGE_loading .mapstore-inline-loader {
+	display: block !important;
+	margin: auto;
+	height: 300px;
+	width: 300px;
+	border: 15px solid transparent !important;
+	border-top-color: rgba(7, 138, 163, 0.2) !important;
+	border-right-color: rgba(7, 138, 163, 0.2) !important;
+	border-bottom-color: rgba(7, 138, 163, 0.2) !important;
+	border-left-color: #078aa3 !important;
+}
+
+.RTGE_loadingContainer .RTGE_loading span {
+	font-size: 22px;
+}
+
+.RTGE_loadingContainer .RTGE_loading .sk-circle:before {
+	background-color: white;
+}

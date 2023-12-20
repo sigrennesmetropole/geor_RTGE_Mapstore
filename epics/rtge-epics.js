@@ -11,7 +11,9 @@ import {
     stopDraw,
     updateUser,
     getUserDetails,
-    closeRtge
+    closeRtge,
+    getUserRoles,
+    setUndergroundDataJustificationRequired
 } from "../actions/rtge-action";
 import {
     toggleControl,
@@ -66,11 +68,13 @@ var RTGE_GRID_LAYER_TITLE;
 var RTGEGridLayerProjection;
 var rtgeEmailUrl;
 var rtgeUserDetailsUrl;
+var rtgeUserRolesUrl;
 var rtgeMailTemplate;
 var rtgeMailRecipients;
 var rtgeMailSubject;
 var rtgeMaxTiles;
 var rtgeTileIdAttribute;
+var rtgeUndergroundDataRoles;
 var currentLayout;
 const GeometryType = {
     POINT: "Point",
@@ -118,7 +122,7 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT, boundingMapRect: {...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT}, boundingSidebarRect: layout.boundingSidebarRect};
         currentLayout = layout;
-        return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout), getUserDetails()]);
+        return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout), getUserDetails(), getUserRoles()]);
     });
 
 /**
@@ -134,10 +138,11 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: layout.boundingSidebarRect.right, boundingMapRect: {...layout.boundingMapRect, right: layout.boundingSidebarRect.right}, boundingSidebarRect: layout.boundingSidebarRect};
         currentLayout = layout;
-        let observableAction = [updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(currentLayout)];
+        let observableAction = [updateDockPanelsList('rtge', 'remove', 'right'), updateMapLayout(currentLayout), stopDraw()];
         if (action.type === actions.CLOSE_RTGE) {
             observableAction = [toggleControl('rtge', 'enabled')].concat(observableAction);
         }
+        store.getState().rtge.activeSelection = "";
         return Rx.Observable.from(observableAction);
     });
 
@@ -576,10 +581,13 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
         timeout: 30000,
         headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
     };
+    store.getState().rtge.requestStarted = true;
     return Rx.Observable.defer(() => axios.post(rtgeEmailUrl, mailContent, params))
         .switchMap((/* response */) => {
             // console.log(response);
-            return Rx.Observable.from([show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, 'success'), closeRtge()]);
+            store.getState().rtge.requestStarted = false;
+            store.getState().rtge.activeSelection = "";
+            return Rx.Observable.from([show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, 'success'), closeRtge(), stopDraw()]);
         })
         .catch((e) => {
             console.log(e);
@@ -616,6 +624,31 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
 });
 
 /**
+ * TODO
+ * getUserDetailsEpic get user details when called
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - observable which update the user object
+ */
+export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER_ROLES).switchMap(() => {
+    return Rx.Observable.defer(() => axios.get(rtgeUserRolesUrl, {responseType: "json"}))
+        .switchMap((rolesResponse) => {
+            console.log(rolesResponse.data.User.groups.group);
+            let includedRole = rolesResponse.data.User.groups.group.find(
+                (role) => rtgeUndergroundDataRoles.includes(role.groupName)
+            );
+            if (includedRole) {
+                return Rx.Observable.from([setUndergroundDataJustificationRequired(false)]);
+            }
+            return Rx.Observable.empty();
+        })
+        .catch((e) => {
+            console.log(e);
+            return Rx.Observable.empty();
+        });
+});
+
+/**
  * getConfigsRTGEEpic get RTGE Configs and init them
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
@@ -634,6 +667,8 @@ export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFI
     rtgeMailSubject = action.configs.rtgeMailSubject;
     rtgeMaxTiles = action.configs.rtgeMaxTiles;
     rtgeTileIdAttribute = action.configs.rtgeTileIdAttribute;
+    rtgeUndergroundDataRoles = action.configs.rtgeUndergroundDataRoles;
+    rtgeUserRolesUrl = action.configs.rtgeUserRolesUrl;
     return Rx.Observable.empty();
 });
 
@@ -655,3 +690,28 @@ export function onUpdatingLayoutWhenRTGEPanelOpenedEpic(action$, store) {
             return Rx.Observable.of(updateMapLayout(layout));
         });
 }
+
+/**
+ * TODO
+ * removeAllFeaturesRTGEEpic removes the selected feature from table and map
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @param store - list the content of variables inputted with the actions
+ * @returns - observable which update the layer and who update the feature list
+ */
+export const removeAllFeaturesRTGEEpic = (action$, store) => action$.ofType(actions.REMOVE_ALL_TILES).switchMap(() => {
+    let currentFeatures = getSelectedTiles(store.getState());
+    const vectorLayer = getSelectedTilesLayer(store.getState());
+    let emptiedFeatures = currentFeatures.filter(l => l.properties.selected);
+    store.getState().rtge.selectedRow = [];
+    return Rx.Observable.from([updateAdditionalLayer(
+        selectedTilesLayerId,
+        "RTGE",
+        "overlay",
+        {
+            ...vectorLayer.options,
+            features: emptiedFeatures
+        }
+    ),
+    addFeatures(emptiedFeatures)]);
+});

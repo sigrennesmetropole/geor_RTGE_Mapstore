@@ -16,6 +16,7 @@ import {
 } from 'react-bootstrap';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
+import LoadingSpinner from '@mapstore/components/misc/LoadingSpinner';
 export class RTGEComponent extends React.Component {
 
     static propTypes= {
@@ -33,11 +34,17 @@ export class RTGEComponent extends React.Component {
         rtgeHomeText: PropTypes.string,
         rtgeTilesAttributes: PropTypes.array,
         rtgeMaxTiles: PropTypes.string,
+        requestStarted: PropTypes.bool,
+        undergroundDataIsRequired: PropTypes.bool,
+        dataSurf: PropTypes.bool,
+        dataUnderSurf: PropTypes.bool,
+        schematicalNetwork: PropTypes.bool,
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
         changeTab: PropTypes.func,
         switchDraw: PropTypes.func,
         removeSelectedTiles: PropTypes.func,
+        removeAllTiles: PropTypes.func,
         clickTable: PropTypes.func,
         sendMail: PropTypes.func,
         formValidationError: PropTypes.func,
@@ -58,11 +65,17 @@ export class RTGEComponent extends React.Component {
         selectedRow: [],
         rtgeTilesAttributes: [],
         rtgeMaxTiles: '',
+        requestStarted: false,
+        undergroundDataIsRequired: true,
+        dataSurf: true,
+        dataUnderSurf: false,
+        schematicalNetwork: false,
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
         changeTab: ()=>{},
         switchDraw: ()=>{},
         removeSelectedTiles: ()=>{},
+        removeAllTiles: ()=>{},
         clickTable: ()=>{},
         sendMail: ()=>{},
         formValidationError: ()=>{},
@@ -79,10 +92,13 @@ export class RTGEComponent extends React.Component {
             courriel: props.user.courriel || '',
             telephone: props.user.telephone || '',
             motivation: props.user.motivation || '',
-            dataSurf: props.user.dataSurf || true,
-            dataUnderSurf: props.user.dataUnderSurf || false,
-            schematicalNetwork: props.user.schematicalNetwork || false,
-            rtgeHomeText: props.rtgeHomeText
+            dataSurf: props.dataSurf,
+            dataUnderSurf: props.dataUnderSurf,
+            schematicalNetwork: props.schematicalNetwork,
+            rtgeHomeText: props.rtgeHomeText,
+            rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
+            rtgeUserRolesUrl: props.rtgeUserRolesUrl,
+            undergroundDataIsRequired: props.undergroundDataIsRequired
         };
         props.initConfigs({
             rtgeBackendURLPrefix: props.rtgeBackendURLPrefix,
@@ -98,12 +114,15 @@ export class RTGEComponent extends React.Component {
             rtgeMailSubject: props.rtgeMailSubject,
             rtgeMaxTiles: props.rtgeMaxTiles,
             rtgeTileIdAttribute: props.rtgeTileIdAttribute,
-            rtgeTilesAttributes: props.rtgeTilesAttributes
+            rtgeTilesAttributes: props.rtgeTilesAttributes,
+            rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
+            rtgeUserRolesUrl: props.rtgeUserRolesUrl,
+            undergroundDataIsRequired: props.undergroundDataIsRequired
         });
     }
 
     componentDidUpdate(prevProps) {
-        if (!Object.keys(prevProps.user).length && this.props.user !== prevProps.user) {
+        if (!Object.keys(prevProps.user).length && this.props.user !== prevProps.user || this.props.undergroundDataIsRequired !== prevProps.undergroundDataIsRequired) {
             this.setLocalState();
         }
     }
@@ -358,7 +377,7 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9 RTGE_notBold">
                             <Message msgId="RTGE.dataUnderSurf"/>
-                            {this.state.dataUnderSurf
+                            {this.state.dataUnderSurf && this.state.undergroundDataIsRequired
                                 ? <div className="row RTGE_undergroundWarning text-center">
                                     <Message msgId="RTGE.dataUnderSurfWarning"/>
                                 </div>
@@ -411,7 +430,7 @@ export class RTGEComponent extends React.Component {
      */
     renderHomeTab() {
         return (
-            <div id="RTGE_EXTENSION">
+            <div id="RTGE_EXTENSION RTGE_scrollBar">
                 <div className="RTGE_paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtgeHomeText}}>
                 </div>
             </div>
@@ -425,7 +444,7 @@ export class RTGEComponent extends React.Component {
      */
     renderSendTab = () => {
         return (
-            <div id="RTGE_EXTENSION">
+            <div id="RTGE_EXTENSION RTGE_scrollBar">
                 <Form>
                     {this.renderPrenomField()}
                     {this.renderNomField()}
@@ -471,6 +490,10 @@ export class RTGEComponent extends React.Component {
                         </button>
                     </div>
                     <div className="col-sm-4 RTGE_right">
+                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={this.props.removeAllTiles()}>
+                            <Glyphicon glyph="refresh"/>
+                            <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipRefresh'}/></span>
+                        </button>
                         <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
                             <Glyphicon glyph="trash"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
@@ -487,15 +510,15 @@ export class RTGEComponent extends React.Component {
                             })
                         }
                     </div>
-                    <div className="RTGE_scrollBar text-center">
+                    <div className="text-center">
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
-                                    <div className={val.properties.selected ? "row RTGE_arraySelected" : "row"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
+                                    <div className={val.properties.selected ? "row RTGE_arraySelected RTGE_tableOffset" : "row RTGE_tableOffset"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
-                                                    <div className={attributeVal.attribute === 'nb_donnees_surf' || attributeVal.attribute === 'nb_donnees_ssol' ? attributeVal.colWidth + " RTGE_RowsOffset" : attributeVal.colWidth} key={attributeVal.attribute}>{val.properties[attributeVal.attribute]}</div>
+                                                    <div className={attributeVal.attribute === 'nb_donnees_surf' || attributeVal.attribute === 'nb_donnees_ssol' ? attributeVal.colWidth + " RTGE_RowsOffset" : attributeVal.colWidth + " RTGE_RowsOffset"} key={attributeVal.attribute}>{val.properties[attributeVal.attribute]}</div>
                                                 );
                                             })
                                         }
@@ -547,6 +570,23 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
+     * TODO
+     * renderContent organise which tab is active
+     * @memberof rtge.component
+     * @returns - tab dom content
+     */
+    renderSpinner(msgId) {
+        return (
+            <div className="RTGE_loadingContainer">
+                <div className="RTGE_loading">
+                    <LoadingSpinner />
+                    <Message msgId={msgId} />
+                </div>
+            </div>
+        );
+    }
+
+    /**
      * renderContent organise which tab is active
      * @memberof rtge.component
      * @returns - tab dom content
@@ -561,7 +601,11 @@ export class RTGEComponent extends React.Component {
             content = this.renderSelectionTab();
             break;
         case tabTypes.SEND:
-            content = this.renderSendTab();
+            if (this.props.requestStarted === true) {
+                content = this.renderSpinner("RTGE.spinnerMsg");
+            } else {
+                content = this.renderSendTab();
+            }
             break;
         default:
             break;
@@ -660,11 +704,13 @@ export class RTGEComponent extends React.Component {
             courriel: this.props.user.courriel || '',
             telephone: this.props.user.telephone || '',
             motivation: this.props.user.motivation || '',
-            dataSurf: this.props.user.dataSurf || true,
-            dataUnderSurf: this.props.user.dataUnderSurf || false,
-            schematicalNetwork: this.props.user.schematicalNetwork || false
+            dataSurf: !!this.props.dataSurf,
+            dataUnderSurf: !!this.props.dataUnderSurf,
+            schematicalNetwork: !!this.props.schematicalNetwork,
+            undergroundDataIsRequired: this.props.undergroundDataIsRequired
         });
     }
+
 }
 
 
