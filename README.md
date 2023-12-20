@@ -1,6 +1,6 @@
 # RTGE
 
-Ceci est le mirroré du plugin RTGE (Référentiel (métropolitain) de Très Grande Echelle)
+Ceci est le mirroré du plugin RTGE (Référentiel Topographique très Grande Echelle)
 
 Il s'agit d'un plugin permettant de récupérer les informations contenues dans des tuiles affichées sur la carte au démarrage du plugin.
 
