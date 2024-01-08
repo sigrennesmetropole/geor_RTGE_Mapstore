@@ -490,7 +490,7 @@ export class RTGEComponent extends React.Component {
                         </button>
                     </div>
                     <div className="col-sm-4 RTGE_right">
-                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={this.props.removeAllTiles()}>
+                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.removeAllTiles()}>
                             <Glyphicon glyph="refresh"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipRefresh'}/></span>
                         </button>
@@ -601,7 +601,7 @@ export class RTGEComponent extends React.Component {
             content = this.renderSelectionTab();
             break;
         case tabTypes.SEND:
-            if (this.props.requestStarted === true) {
+            if (this.props.requestStarted) {
                 content = this.renderSpinner("RTGE.spinnerMsg");
             } else {
                 content = this.renderSendTab();
