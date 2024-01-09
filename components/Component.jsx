@@ -48,7 +48,8 @@ export class RTGEComponent extends React.Component {
         clickTable: PropTypes.func,
         sendMail: PropTypes.func,
         formValidationError: PropTypes.func,
-        initConfigs: PropTypes.func
+        initConfigs: PropTypes.func,
+        stopDraw: PropTypes.func
     }
 
     static defaultProps= {
@@ -79,7 +80,8 @@ export class RTGEComponent extends React.Component {
         clickTable: ()=>{},
         sendMail: ()=>{},
         formValidationError: ()=>{},
-        initConfigs: ()=>{}
+        initConfigs: ()=>{},
+        stopDraw: ()=>{}
     }
 
     constructor(props) {
@@ -490,11 +492,11 @@ export class RTGEComponent extends React.Component {
                         </button>
                     </div>
                     <div className="col-sm-4 RTGE_right">
-                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.removeAllTiles()}>
-                            <Glyphicon glyph="refresh"/>
-                            <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipRefresh'}/></span>
-                        </button>
                         <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
+                            <Glyphicon glyph="trash-square"/>
+                            <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrashSquare'}/></span>
+                        </button>
+                        <button className={this.props.selectedTiles.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.removeAllTiles()}>
                             <Glyphicon glyph="trash"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
                         </button>
@@ -514,7 +516,7 @@ export class RTGEComponent extends React.Component {
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
-                                    <div className={val.properties.selected ? "row RTGE_arraySelected RTGE_tableOffset" : "row RTGE_tableOffset"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey)}>
+                                    <div className={val.properties.selected ? "row RTGE_arraySelected RTGE_tableOffset" : "row RTGE_tableOffset"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey, e.shiftKey)}>
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
@@ -596,6 +598,7 @@ export class RTGEComponent extends React.Component {
         switch (this.props.activeTab) {
         case tabTypes.HOME:
             content = this.renderHomeTab();
+            this.props.stopDraw();
             break;
         case tabTypes.SELECT:
             content = this.renderSelectionTab();
@@ -606,6 +609,7 @@ export class RTGEComponent extends React.Component {
             } else {
                 content = this.renderSendTab();
             }
+            this.props.stopDraw();
             break;
         default:
             break;

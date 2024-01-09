@@ -157,11 +157,12 @@ export function removeSelectedTiles() {
  * @param row - row id of the clicked row
  * @returns - action click table
  */
-export function clickTable(feature, control) {
+export function clickTable(feature, control, shift) {
     return {
         type: actions.CLICK_TABLE,
         feature,
-        control
+        control,
+        shift
     };
 }
 

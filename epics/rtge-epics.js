@@ -13,7 +13,10 @@ import {
     getUserDetails,
     closeRtge,
     getUserRoles,
-    setUndergroundDataJustificationRequired
+    setUndergroundDataJustificationRequired,
+    changeTab,
+    tabTypes,
+    clickTable
 } from "../actions/rtge-action";
 import {
     toggleControl,
@@ -76,6 +79,7 @@ var rtgeMaxTiles;
 var rtgeTileIdAttribute;
 var rtgeUndergroundDataRoles;
 var currentLayout;
+var lastSelectedTile;
 const GeometryType = {
     POINT: "Point",
     LINE: "LineString",
@@ -122,7 +126,7 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
         let layout = store.getState().maplayout;
         layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT, boundingMapRect: {...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT}, boundingSidebarRect: layout.boundingSidebarRect};
         currentLayout = layout;
-        return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout), getUserDetails(), getUserRoles()]);
+        return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), updateMapLayout(layout), clickTable("", false), getUserDetails(), getUserRoles()]);
     });
 
 /**
@@ -142,7 +146,6 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
         if (action.type === actions.CLOSE_RTGE) {
             observableAction = [toggleControl('rtge', 'enabled')].concat(observableAction);
         }
-        store.getState().rtge.activeSelection = "";
         return Rx.Observable.from(observableAction);
     });
 
@@ -229,7 +232,8 @@ export const initDrawingModRTGEEpic = (action$) => action$.ofType(actions.INIT_D
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable with the list of actions to do after completing the function (trigger the change drawing status action)
  */
-export const stopDrawingRTGEEpic = (action$) => action$.ofType(actions.STOP_DRAW).switchMap(() => {
+export const stopDrawingRTGEEpic = (action$, store) => action$.ofType(actions.STOP_DRAW).switchMap(() => {
+    store.getState().rtge.activeSelection = "";
     return Rx.Observable.from([changeDrawingStatus("clean", "", 'rtge', [], {})]);
 });
 
@@ -402,18 +406,28 @@ export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.
  * @param intersectedFeature - all features clicked
  * @returns - return one or more feature with their style updated... or not
  */
-function featureSelection(currentFeatures, control, intersectedFeature, state) {
+function featureSelection(currentFeatures, control, shift, intersectedFeature, state) {
+    var currentSelectedTile = 0;
     return currentFeatures.map((feature) => {
         if (intersectedFeature?.properties?.id_case === feature.properties.id_case) {
             feature.properties.selected = !feature.properties.selected;
-            if (!control) {
-                // getSelectedRow(state).pop();
-                state.rtge.selectedRow = [];
+            if (!shift) {
+                if (!control) {
+                    state.rtge.selectedRow = [];
+                }
+                if (feature.properties.selected) {
+                    state.rtge.selectedRow.push(intersectedFeature);
+                }
+            } else {
+                currentFeatures.slice(lastSelectedTile, currentSelectedTile).forEach(minimalizedCurrentFeature => {
+                    state.rtge.selectedRow.push(minimalizedCurrentFeature);
+                });
+                state.rtge.selectedRow.forEach(row => {
+                    row.properties.selected = true;
+                    feature.style = styles.selected;
+                });
             }
-            if (feature.properties.selected) {
-                // getSelectedRow(state).push(intersectedFeature);
-                state.rtge.selectedRow.push(intersectedFeature);
-            }
+            lastSelectedTile = currentSelectedTile;
         } else if (!control) {
             feature.properties.selected = false;
         }
@@ -422,6 +436,7 @@ function featureSelection(currentFeatures, control, intersectedFeature, state) {
         } else {
             feature.style = styles.default;
         }
+        currentSelectedTile++;
         return {
             ...feature
         };
@@ -464,7 +479,7 @@ export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MA
  */
 export const clickTableRTGEEpic = (action$, store) => action$.ofType(actions.CLICK_TABLE).switchMap((action) => {
     const currentFeatures = getSelectedTiles(store.getState());
-    const features = featureSelection(currentFeatures, action.control, action.feature, store.getState());
+    const features = featureSelection(currentFeatures, action.control, action.shift, action.feature, store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
     return Rx.Observable.from([updateAdditionalLayer(
         selectedTilesLayerId,
@@ -587,7 +602,8 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
             // console.log(response);
             store.getState().rtge.requestStarted = false;
             store.getState().rtge.activeSelection = "";
-            return Rx.Observable.from([show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, 'success'), closeRtge(), stopDraw()]);
+            store.getState().rtge.selectedTiles = [];
+            return Rx.Observable.from([show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, 'success'), closeRtge(), stopDraw(), changeTab(tabTypes.HOME), clickTable("", false)]);
         })
         .catch((e) => {
             console.log(e);
@@ -633,7 +649,6 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
 export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER_ROLES).switchMap(() => {
     return Rx.Observable.defer(() => axios.get(rtgeUserRolesUrl, {responseType: "json"}))
         .switchMap((rolesResponse) => {
-            console.log(rolesResponse.data.User.groups.group);
             let includedRole = rolesResponse.data.User.groups.group.find(
                 (role) => rtgeUndergroundDataRoles.includes(role.groupName)
             );

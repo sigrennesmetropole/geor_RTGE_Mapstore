@@ -16,7 +16,8 @@ import {
     clickTable,
     sendMail,
     initConfigs,
-    removeAllTiles
+    removeAllTiles,
+    stopDraw
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
@@ -55,7 +56,8 @@ export default createPlugin(name, {
         removeAllTiles: removeAllTiles,
         clickTable,
         sendMail,
-        initConfigs
+        initConfigs,
+        stopDraw: stopDraw
     })(RTGEComponent),
     reducers: {
         rtge: rtgeReducer
