@@ -649,6 +649,7 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
 export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER_ROLES).switchMap(() => {
     return Rx.Observable.defer(() => axios.get(rtgeUserRolesUrl, {responseType: "json"}))
         .switchMap((rolesResponse) => {
+            console.log(rolesResponse);
             let includedRole = rolesResponse.data.User.groups.group.find(
                 (role) => rtgeUndergroundDataRoles.includes(role.groupName)
             );
