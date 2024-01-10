@@ -36,6 +36,7 @@ export class RTGEComponent extends React.Component {
         rtgeMaxTiles: PropTypes.string,
         requestStarted: PropTypes.bool,
         undergroundDataIsRequired: PropTypes.bool,
+        pluginIcon: PropTypes.string,
         dataSurf: PropTypes.bool,
         dataUnderSurf: PropTypes.bool,
         schematicalNetwork: PropTypes.bool,
@@ -68,6 +69,7 @@ export class RTGEComponent extends React.Component {
         rtgeMaxTiles: '',
         requestStarted: false,
         undergroundDataIsRequired: true,
+        pluginIcon: '',
         dataSurf: true,
         dataUnderSurf: false,
         schematicalNetwork: false,
@@ -100,7 +102,8 @@ export class RTGEComponent extends React.Component {
             rtgeHomeText: props.rtgeHomeText,
             rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
             rtgeUserRolesUrl: props.rtgeUserRolesUrl,
-            undergroundDataIsRequired: props.undergroundDataIsRequired
+            undergroundDataIsRequired: props.undergroundDataIsRequired,
+            pluginIcon: props.pluginIcon
         };
         props.initConfigs({
             rtgeBackendURLPrefix: props.rtgeBackendURLPrefix,
@@ -119,7 +122,8 @@ export class RTGEComponent extends React.Component {
             rtgeTilesAttributes: props.rtgeTilesAttributes,
             rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
             rtgeUserRolesUrl: props.rtgeUserRolesUrl,
-            undergroundDataIsRequired: props.undergroundDataIsRequired
+            undergroundDataIsRequired: props.undergroundDataIsRequired,
+            pluginIcon: props.pluginIcon
         });
     }
 
@@ -492,11 +496,11 @@ export class RTGEComponent extends React.Component {
                         </button>
                     </div>
                     <div className="col-sm-4 RTGE_right">
-                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
-                            <Glyphicon glyph="trash-square"/>
+                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
+                            <Glyphicon glyph="trash-square RTGE_trashSquare"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrashSquare'}/></span>
                         </button>
-                        <button className={this.props.selectedTiles.length === 0 ? "RTGE_selectorButton empty btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.removeAllTiles()}>
+                        <button className={this.props.selectedTiles.length === 0 ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain trash" : "RTGE_selectorButton btn-primary RTGE_tooltipMain RTGE_trashSquare trash"} onClick={() => this.props.removeAllTiles()}>
                             <Glyphicon glyph="trash"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
                         </button>
@@ -512,7 +516,7 @@ export class RTGEComponent extends React.Component {
                             })
                         }
                     </div>
-                    <div className="text-center">
+                    <div className="text-center RTGE_arrayContent">
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
@@ -624,6 +628,7 @@ export class RTGEComponent extends React.Component {
      */
     render = () => {
         if (this.props.active) {
+            console.log(this.state.pluginIcon);
             return (
                 <ResponsivePanel
                     containerStyle={this.props.dockStyle}
@@ -636,7 +641,7 @@ export class RTGEComponent extends React.Component {
                     size={this.props.width}
                     bsStyle="primary"
                     title={<Message msgId="RTGE.title"/>}
-                    glyph="map-marker"
+                    icon= {<img src={this.state.pluginIcon} className="iconSize" />}
                     onClose={() => this.props.toggleControl('rtge', null)}>
                     {this.renderTabMenu()}
                     {this.renderContent()}
@@ -711,7 +716,8 @@ export class RTGEComponent extends React.Component {
             dataSurf: !!this.props.dataSurf,
             dataUnderSurf: !!this.props.dataUnderSurf,
             schematicalNetwork: !!this.props.schematicalNetwork,
-            undergroundDataIsRequired: this.props.undergroundDataIsRequired
+            undergroundDataIsRequired: this.props.undergroundDataIsRequired,
+            pluginIcon: this.props.pluginIcon
         });
     }
 

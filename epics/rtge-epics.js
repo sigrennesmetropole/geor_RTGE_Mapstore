@@ -159,7 +159,7 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
 export const displayRTGEGridEpic = (action$, store) =>
     action$.ofType(actions.SHOW_GRID)
         .switchMap(() => {
-            const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.name === gridLayerNameRTGE ));
+            const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.title === RTGE_GRID_LAYER_TITLE ));
             gridLayer = {
                 handleClickOnLayer: true,
                 hideLoading: true,
@@ -419,16 +419,23 @@ function featureSelection(currentFeatures, control, shift, intersectedFeature, s
                     state.rtge.selectedRow.push(intersectedFeature);
                 }
             } else {
+                if (lastSelectedTile > currentSelectedTile) {
+                    let temp = lastSelectedTile;
+                    lastSelectedTile = currentSelectedTile;
+                    currentSelectedTile = temp;
+                }
                 currentFeatures.slice(lastSelectedTile, currentSelectedTile).forEach(minimalizedCurrentFeature => {
                     state.rtge.selectedRow.push(minimalizedCurrentFeature);
                 });
                 state.rtge.selectedRow.forEach(row => {
                     row.properties.selected = true;
-                    feature.style = styles.selected;
+                    row.style = styles.selected;
+                    console.log(row);
                 });
+                console.log(state.rtge.selectedRow);
             }
             lastSelectedTile = currentSelectedTile;
-        } else if (!control) {
+        } else if (!control && !shift) {
             feature.properties.selected = false;
         }
         if (feature.properties.selected) {
@@ -649,7 +656,6 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
 export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER_ROLES).switchMap(() => {
     return Rx.Observable.defer(() => axios.get(rtgeUserRolesUrl, {responseType: "json"}))
         .switchMap((rolesResponse) => {
-            console.log(rolesResponse);
             let includedRole = rolesResponse.data.User.groups.group.find(
                 (role) => rtgeUndergroundDataRoles.includes(role.groupName)
             );
@@ -716,9 +722,8 @@ export function onUpdatingLayoutWhenRTGEPanelOpenedEpic(action$, store) {
  * @returns - observable which update the layer and who update the feature list
  */
 export const removeAllFeaturesRTGEEpic = (action$, store) => action$.ofType(actions.REMOVE_ALL_TILES).switchMap(() => {
-    let currentFeatures = getSelectedTiles(store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
-    let emptiedFeatures = currentFeatures.filter(l => l.properties.selected);
+    let emptiedFeatures = [];
     store.getState().rtge.selectedRow = [];
     return Rx.Observable.from([updateAdditionalLayer(
         selectedTilesLayerId,

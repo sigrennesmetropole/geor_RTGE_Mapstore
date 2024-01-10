@@ -29,6 +29,7 @@
 
 .RTGE_rowTabs{
     padding: 10px;
+    margin-bottom: 20px;
 }
 
 .RTGE_homeButton, .RTGE_selectButton, .RTGE_sendButton {
@@ -111,10 +112,11 @@ button.RTGE_active{
     position: absolute;
     z-index: 1;
     font-size: small;
+    min-width: 100px;
   }
 
   .RTGE_tooltipMain .RTGE_tooltipContentLeft {
-    top: 2px;
+    top: -10px;
     right: 105%;
   }
 
@@ -153,6 +155,15 @@ button.RTGE_active{
     left: 20px;
 }
 
+.RTGE_trashSquare{
+    font-size: 20px;
+}
+
+.RTGE_trashSquare .glyphicon-trash{
+    font-size: 15px;
+    bottom: 3px;
+}
+
 /*Section sélection du plugin*/
 
 .RTGE_selectorButton{
@@ -161,6 +172,14 @@ button.RTGE_active{
     height: 40px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.RTGE_selectorButton.trash{
+    top: -1.5px
+}
+
+.RTGE_selectorButton.btn-primary.trash{
+    top: 0.3px
 }
 
 .RTGE_selectorButton.RTGE_active {
@@ -185,6 +204,10 @@ button.RTGE_active{
 
 .RTGE_tableOffset{
     margin-right: 15px!important;
+}
+
+.RTGE_arrayContent .RTGE_tableOffset:hover{
+    background: rgb(231, 231, 231);
 }
 
 .RTGE_scrollBar{
@@ -225,6 +248,7 @@ button.RTGE_active{
 
 .RTGE_arrayOffset{
     margin-left: 0px!important;
+    margin-top: 10px;
 }
 
 .RTGE_RowsOffset{
@@ -244,16 +268,32 @@ button.RTGE_active{
     font-size: inherit!important;
 }
 
+.RTGE_formUnit input:placeholder-shown{
+    border-color: red;
+}
+
+.RTGE_formUnit input:placeholder-shown.PhoneInputInput{
+    border-color: inherit;
+}
+
 .RTGE_formUnit input[type='checkbox']{
     margin-left: 33%!important;
     margin-right: 10px!important;
     width: auto!important;
 }
 
+.RTGE_formUnit input[type='checkbox']:empty{
+    border-color: red;
+}
+
 .RTGE_formUnit textarea {
     width: 100%!important;
     height: 110px!important;
     cursor: pointer!important;
+}
+
+.RTGE_formUnit textarea {
+    border-color: red;
 }
 
 .RTGE_checkbox{

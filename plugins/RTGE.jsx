@@ -46,7 +46,8 @@ export default createPlugin(name, {
         activeSelection: getActiveSelection(state),
         selectedRow: getSelectedRow(state),
         requestStarted: getRequestStarted(state),
-        undergroundDataIsRequired: isUndergroundDataRequired(state)
+        undergroundDataIsRequired: isUndergroundDataRequired(state),
+        pluginIcon
     }), {
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
