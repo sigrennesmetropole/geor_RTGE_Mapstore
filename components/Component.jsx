@@ -641,7 +641,6 @@ export class RTGEComponent extends React.Component {
                     size={this.props.width}
                     bsStyle="primary"
                     title={<Message msgId="RTGE.title"/>}
-                    icon= {<img src={this.state.pluginIcon} className="iconSize" />}
                     onClose={() => this.props.toggleControl('rtge', null)}>
                     {this.renderTabMenu()}
                     {this.renderContent()}

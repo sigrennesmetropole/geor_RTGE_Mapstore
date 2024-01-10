@@ -178,10 +178,6 @@ button.RTGE_active{
     top: -1.5px
 }
 
-.RTGE_selectorButton.btn-primary.trash{
-    top: 0.3px
-}
-
 .RTGE_selectorButton.RTGE_active {
     border: none;
 }
@@ -292,7 +288,7 @@ button.RTGE_active{
     cursor: pointer!important;
 }
 
-.RTGE_formUnit textarea {
+.RTGE_formUnit textarea:placeholder-shown {
     border-color: red;
 }
 
