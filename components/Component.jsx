@@ -524,7 +524,10 @@ export class RTGEComponent extends React.Component {
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
-                                                    <div className={attributeVal.attribute === 'nb_donnees_surf' || attributeVal.attribute === 'nb_donnees_ssol' ? attributeVal.colWidth + " RTGE_RowsOffset" : attributeVal.colWidth + " RTGE_RowsOffset"} key={attributeVal.attribute}>{val.properties[attributeVal.attribute]}</div>
+                                                    <div className={attributeVal.colWidth + " RTGE_RowsOffset RTGE_tooltipMain"} key={attributeVal.attribute}>
+                                                        {val.properties[attributeVal.attribute]}
+                                                        <span className="RTGE_tooltipContentArray">{val.properties[attributeVal.attribute]}</span>
+                                                    </div>
                                                 );
                                             })
                                         }
@@ -628,7 +631,6 @@ export class RTGEComponent extends React.Component {
      */
     render = () => {
         if (this.props.active) {
-            console.log(this.state.pluginIcon);
             return (
                 <ResponsivePanel
                     containerStyle={this.props.dockStyle}
@@ -641,6 +643,7 @@ export class RTGEComponent extends React.Component {
                     size={this.props.width}
                     bsStyle="primary"
                     title={<Message msgId="RTGE.title"/>}
+                    glyph=""
                     onClose={() => this.props.toggleControl('rtge', null)}>
                     {this.renderTabMenu()}
                     {this.renderContent()}

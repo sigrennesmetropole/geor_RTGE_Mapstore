@@ -67,7 +67,7 @@ button.RTGE_active{
   }
   
   /* Tooltip text */
-  .RTGE_tooltipMain .RTGE_tooltipContent {
+  .RTGE_tooltipMain .RTGE_tooltipContent, .RTGE_tooltipMain .RTGE_tooltipContentArray {
     visibility: hidden;
     background-color: #333333;
     color: #fff;
@@ -85,13 +85,19 @@ button.RTGE_active{
     left: 50%;
     margin-left: -100px; /* Use half of the width (120/2 = 60), to center the tooltip */
   }
+
+  .RTGE_tooltipMain .RTGE_tooltipContentArray {
+    top: 100%;
+    left: 10%;
+    margin-left: 10%; /* Use half of the width (120/2 = 60), to center the tooltip */
+  }
   
   /* Show the tooltip text when you mouse over the tooltip container */
-  .RTGE_tooltipMain:hover .RTGE_tooltipContent {
+  .RTGE_tooltipMain:hover .RTGE_tooltipContent, .RTGE_tooltipMain:hover .RTGE_tooltipContentArray {
     visibility: visible;
   }
 
-  .RTGE_tooltipMain .RTGE_tooltipContent::after {
+  .RTGE_tooltipMain .RTGE_tooltipContent::after, .RTGE_tooltipMain .RTGE_tooltipContentArray::after {
     content: " ";
     position: absolute;
     bottom: 100%;
@@ -247,9 +253,9 @@ button.RTGE_active{
     margin-top: 10px;
 }
 
-.RTGE_RowsOffset{
+/* .RTGE_RowsOffset{
     padding-right: 1px;
-}
+} */
 
 /* ==== Form Area ==== */
 
