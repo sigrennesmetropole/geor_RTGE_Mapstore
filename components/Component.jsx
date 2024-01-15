@@ -111,7 +111,10 @@ export class RTGEComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (!Object.keys(prevProps.user).length && this.props.user !== prevProps.user || this.props.undergroundDataIsRequired !== prevProps.undergroundDataIsRequired) {
+        if (!Object.keys(prevProps.user).length
+        && this.props.user !== prevProps.user
+        || this.props.undergroundDataIsRequired
+        !== prevProps.undergroundDataIsRequired) {
             this.setLocalState();
         }
     }
@@ -494,25 +497,40 @@ export class RTGEComponent extends React.Component {
                 <div className="row">
                     <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} / {this.props.rtgeMaxTiles} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
-                        <button className={this.props.activeSelection === 'Point' ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"} onClick={() => this.props.switchDraw('Point')}>
+                        <button className={this.props.activeSelection === 'Point'
+                            ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
+                            : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
+                        onClick={() => this.props.switchDraw('Point')}>
                             <Glyphicon glyph="map-marker"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPoint'}/></span>
                         </button>
-                        <button className={this.props.activeSelection === 'LineString' ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"} onClick={() => this.props.switchDraw('LineString')}>
+                        <button className={this.props.activeSelection === 'LineString'
+                            ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
+                            : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
+                        onClick={() => this.props.switchDraw('LineString')}>
                             <Glyphicon glyph="polyline"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSeclectLine'}/></span>
                         </button>
-                        <button className={this.props.activeSelection === 'Polygon' ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"} onClick={() => this.props.switchDraw('Polygon')}>
+                        <button className={this.props.activeSelection === 'Polygon'
+                            ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
+                            : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
+                        onClick={() => this.props.switchDraw('Polygon')}>
                             <Glyphicon glyph="polygon"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPolygon'}/></span>
                         </button>
                     </div>
                     <div className="col-sm-4 RTGE_right">
-                        <button className={this.getSelectedRows().length === 0 ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.getSelectedRows().length === 0 ? '' : this.props.removeSelectedTiles()}>
+                        <button className={this.getSelectedRows().length === 0
+                            ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain"
+                            : "RTGE_selectorButton btn-primary RTGE_tooltipMain"}
+                        onClick={() => this.getSelectedRows().length === 0 ? '' : this.props.removeSelectedTiles()}>
                             <Glyphicon glyph="trash-square RTGE_trashSquare"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrashSquare'}/></span>
                         </button>
-                        <button className={this.props.selectedTiles.length === 0 ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain trash" : "RTGE_selectorButton btn-primary RTGE_tooltipMain RTGE_trashSquare trash"} onClick={() => this.props.removeAllTiles()}>
+                        <button className={this.props.selectedTiles.length === 0
+                            ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain trash"
+                            : "RTGE_selectorButton btn-primary RTGE_tooltipMain RTGE_trashSquare trash"}
+                        onClick={() => this.props.removeAllTiles()}>
                             <Glyphicon glyph="trash"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
                         </button>
@@ -523,7 +541,12 @@ export class RTGEComponent extends React.Component {
                         {
                             this.props.rtgeTilesAttributes.map((val) => {
                                 return (
-                                    <div className={val.colWidth + " RTGE_v-align RTGE_delimitor"} key={val.attribute}><span>{val.title}</span></div>
+                                    <div className={val.colWidth + " RTGE_v-align RTGE_delimitor"}
+                                        key={val.attribute}>
+                                        <span>
+                                            {val.title}
+                                        </span>
+                                    </div>
                                 );
                             })
                         }
@@ -532,13 +555,20 @@ export class RTGEComponent extends React.Component {
                         {
                             this.props.selectedTiles.map((val, key) => {
                                 return (
-                                    <div className={val.properties.selected ? "row RTGE_arraySelected RTGE_tableOffset" : "row RTGE_tableOffset"} key={key} onClick={(e) => this.props.clickTable(val, e.ctrlKey, e.shiftKey)}>
+                                    <div className={val.properties.selected
+                                        ? "row RTGE_arraySelected RTGE_tableOffset"
+                                        : "row RTGE_tableOffset"}
+                                    key={key}
+                                    onClick={(e) => this.props.clickTable(val, e.ctrlKey, e.shiftKey)}>
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
-                                                    <div className={attributeVal.colWidth + " RTGE_RowsOffset RTGE_tooltipMain"} key={attributeVal.attribute}>
+                                                    <div className={attributeVal.colWidth + " RTGE_RowsOffset RTGE_tooltipMain"}
+                                                        key={attributeVal.attribute}>
                                                         {val.properties[attributeVal.attribute]}
-                                                        <span className="RTGE_tooltipContentArray">{val.properties[attributeVal.attribute]}</span>
+                                                        <span className="RTGE_tooltipContentArray">
+                                                            {val.properties[attributeVal.attribute]}
+                                                        </span>
                                                     </div>
                                                 );
                                             })
@@ -562,12 +592,16 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="row RTGE_rowTabs">
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === "RTGE:HOME" ? "RTGE_homeButton RTGE_active" : "RTGE_homeButton"} onClick={() => this.props.changeTab(tabTypes.HOME)}>
+                    <button className={this.props.activeTab === "RTGE:HOME"
+                        ? "RTGE_homeButton RTGE_active"
+                        : "RTGE_homeButton"} onClick={() => this.props.changeTab(tabTypes.HOME)}>
                         <Message msgId={'RTGE.welcome'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === "RTGE:SELECT" ? "RTGE_selectButton RTGE_active" : "RTGE_selectButton"} onClick={() => this.props.changeTab(tabTypes.SELECT)}>
+                    <button className={this.props.activeTab === "RTGE:SELECT"
+                        ? "RTGE_selectButton RTGE_active"
+                        : "RTGE_selectButton"} onClick={() => this.props.changeTab(tabTypes.SELECT)}>
                         <Message msgId={'RTGE.selection'}/>
                     </button>
                 </div>
@@ -581,7 +615,9 @@ export class RTGEComponent extends React.Component {
                     </>
                     }
                     {this.props.selectedTiles.length > 0 &&
-                        <button className={this.props.activeTab === "RTGE:SEND" ? "RTGE_sendButton RTGE_active" : "RTGE_sendButton" } onClick={() => this.props.changeTab(tabTypes.SEND)}>
+                        <button className={this.props.activeTab === "RTGE:SEND"
+                            ? "RTGE_sendButton RTGE_active"
+                            : "RTGE_sendButton" } onClick={() => this.props.changeTab(tabTypes.SEND)}>
                             <Message msgId={'RTGE.send'}/>
                         </button>
                     }
@@ -708,7 +744,12 @@ export class RTGEComponent extends React.Component {
     sendMail = (event) => {
         // Le preventDefault ci dessous permet de prévenir la double utilisation du bouton, ce qui recharche la page d'envoi de mail.
         event.preventDefault();
-        if (this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '') {
+        if (this.state.prenom !== ''
+        && this.state.nom !== ''
+        && this.state.collectivite !== ''
+        && this.state.service !== ''
+        && this.state.courriel !== ''
+        && this.state.motivation !== '') {
             this.props.sendMail(this.state);
         }
     }

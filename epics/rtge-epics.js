@@ -135,9 +135,29 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
     .filter(action => action.control === 'rtge' && !!store.getState() && !!isOpen(store.getState()))
     .switchMap(() => {
         let layout = store.getState().maplayout;
-        layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT, boundingMapRect: {...layout.boundingMapRect, right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT}, boundingSidebarRect: layout.boundingSidebarRect};
+        layout = {
+            transform: layout.layout.transform,
+            height: layout.layout.height,
+            rightPanel: true,
+            leftPanel: false,
+            ...layout.boundingMapRect,
+            right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT,
+            boundingMapRect: {
+                ...layout.boundingMapRect,
+                right: RTGE_PANEL_WIDTH + RIGHT_SIDEBAR_MARGIN_LEFT
+            },
+            boundingSidebarRect: layout.boundingSidebarRect
+        };
         currentLayout = layout;
-        return Rx.Observable.from([initProjections(), updateDockPanelsList('rtge', 'add', 'right'), showGrid(), initDrawingMod(), rtgeUpdateMapLayout(layout), clickTable("", false), getUserDetails(), getUserRoles()]);
+        return Rx.Observable.from([
+            initProjections(),
+            updateDockPanelsList('rtge', 'add', 'right'),
+            showGrid(),
+            initDrawingMod(),
+            rtgeUpdateMapLayout(layout),
+            clickTable("", false),
+            getUserDetails(),
+            getUserRoles()]);
     });
 
 /**
@@ -148,12 +168,30 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
  * @returns - observable with the list of actions to do after completing the function (the dock panel and the map layout update actions)
  */
 export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_RTGE)
-    .filter(action => action.control === 'rtge' && !!store.getState() && !isOpen(store.getState()) || action.type === actions.CLOSE_RTGE )
+    .filter(action => action.control === 'rtge'
+    && !!store.getState()
+    && !isOpen(store.getState()) || action.type === actions.CLOSE_RTGE )
     .switchMap((action) => {
         let layout = store.getState().maplayout;
-        layout = {transform: layout.layout.transform, height: layout.layout.height, rightPanel: true, leftPanel: false, ...layout.boundingMapRect, right: layout.boundingSidebarRect.right, boundingMapRect: {...layout.boundingMapRect, right: layout.boundingSidebarRect.right}, boundingSidebarRect: layout.boundingSidebarRect};
+        layout = {
+            transform: layout.layout.transform,
+            height: layout.layout.height,
+            rightPanel: true,
+            leftPanel: false,
+            ...layout.boundingMapRect,
+            right: layout.boundingSidebarRect.right,
+            boundingMapRect: {
+                ...layout.boundingMapRect,
+                right: layout.boundingSidebarRect.right
+            },
+            boundingSidebarRect: layout.boundingSidebarRect
+        };
         currentLayout = layout;
-        let observableAction = [updateDockPanelsList('rtge', 'remove', 'right'), rtgeUpdateMapLayout(currentLayout), stopDraw()];
+        let observableAction = [
+            updateDockPanelsList('rtge', 'remove', 'right'),
+            rtgeUpdateMapLayout(currentLayout),
+            stopDraw()
+        ];
         if (action.type === actions.CLOSE_RTGE) {
             observableAction = [toggleControl('rtge', 'enabled')].concat(observableAction);
         }
@@ -353,7 +391,8 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                 },
                 pagination: {
                     startIndex: 0,
-                    maxFeatures: maxFeatures + 1 // le +1 est nécessaire pour le calcul du retour de cases, si 51 alors trop de cases sont sélectionnées
+                    maxFeatures: maxFeatures + 1
+                    // le +1 est nécessaire pour le calcul du retour de cases, si 51 alors trop de cases sont sélectionnées
                 }
             };
             return getLayerFeatures(gridLayer, filter)
@@ -367,7 +406,9 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                     var tilesSelected = getSelectedTiles(store.getState());
                     var finalElements = features.filter((feat) => !tilesSelected.find((selected) => selected.properties[rtgeTileIdAttribute] === feat.properties[rtgeTileIdAttribute] ));
                     if (features.length > maxFeatures) {
-                        return Rx.Observable.from([show({ title: "RTGE.alertMaxFeatures.title", message: "RTGE.alertMaxFeatures.message" }, "warning"), startDraw(getSelectionGeometryType(store.getState()))]);
+                        return Rx.Observable.from([
+                            show({ title: "RTGE.alertMaxFeatures.title", message: "RTGE.alertMaxFeatures.message" }, "warning"),
+                            startDraw(getSelectionGeometryType(store.getState()))]);
                     }
                     const vectorLayer = getSelectedTilesLayer(store.getState());
                     finalElements = [...vectorLayer.options.features, ...finalElements];
@@ -476,6 +517,8 @@ function featureSelection(currentFeatures, control, shift, intersectedFeature) {
  * @returns - observable with tiles selected inside and their new styles
  */
 export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).switchMap((action) => {
+    console.log('CLICK_ON_MAP');
+    console.log(action);
     const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
     const intersectedFeature = layer?.features[0];
     const currentFeatures = getSelectedTiles(store.getState());
