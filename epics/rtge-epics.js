@@ -381,6 +381,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
             console.log('getFeatures');
             console.log(action);
             console.log(gridLayer);
+            console.log(rtgeGridLayerGeometryAttribute);
             const maxFeatures = rtgeMaxTiles - getSelectedTiles(store.getState()).length;
             const filter = {
                 filterType: "OGC",
@@ -398,6 +399,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                     // le +1 est nécessaire pour le calcul du retour de cases, si 51 alors trop de cases sont sélectionnées
                 }
             };
+            console.log(filter);
             return getLayerFeatures(gridLayer, filter)
                 .map( ({features = [], ...rest} = {}) => {
                     return {
