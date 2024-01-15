@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
+import {UPDATE_MAP_LAYOUT} from "@mapstore/actions/maplayout";
+
 export const actions = {
-    INCREASE_COUNTER: 'RTGE:INCREASE_COUNTER',
     OPEN_PANEL: 'RTGE:OPEN_PANEL',
     CHANGE_TAB: 'RTGE:CHANGE_TAB',
     START_DRAW: 'RTGE:START_DRAW',
@@ -22,7 +23,8 @@ export const actions = {
     CLOSE_RTGE: "RTGE:CLOSE_RTGE",
     GET_USER_ROLES: "RTGE:GET_USER_ROLES",
     UNDERGROUND_DATA_JUSTIFICATION_REQUIRED: "RTGE:UNDERGROUND_DATA_JUSTIFICATION_REQUIRED",
-    REMOVE_ALL_TILES: "RTGE:REMOVE_ALL_TILES"
+    REMOVE_ALL_TILES: "RTGE:REMOVE_ALL_TILES",
+    MAIL_SENT: "RTGE:MAIL_SENT"
 };
 
 export const tabTypes = {
@@ -261,5 +263,31 @@ export function setUndergroundDataJustificationRequired(undergroundDataIsRequire
 export function removeAllTiles() {
     return {
         type: actions.REMOVE_ALL_TILES
+    };
+}
+
+/**
+ * TODO
+ * removeAllTiles actions to remove the tiles
+ * @memberof rtge.actions
+ * @returns - action remove selected tiles
+ */
+export function mailSent() {
+    return {
+        type: actions.MAIL_SENT
+    };
+}
+
+/**
+ * TODO
+ * removeAllTiles actions to remove the tiles
+ * @memberof rtge.actions
+ * @returns - action remove selected tiles
+ */
+export function rtgeUpdateMapLayout(layout) {
+    return {
+        type: UPDATE_MAP_LAYOUT,
+        layout,
+        source: 'rtge'
     };
 }

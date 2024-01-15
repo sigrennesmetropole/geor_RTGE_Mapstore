@@ -6,7 +6,7 @@ const initialState = {
     value: 1,
     activeTab: tabTypes.HOME,
     selectedTiles: [],
-    selectedRow: []
+    selectedRows: []
 };
 
 /**
@@ -17,11 +17,7 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
-    // console.log(action);
-    // console.log(state);
     switch (action.type) {
-    case actions.INCREASE_COUNTER:
-        return assign({}, state, { value: state.value + 1 });
     case actions.CHANGE_TAB:
         return assign({}, state, { activeTab: action.tab });
     case actions.ADD_FEATURES:
@@ -38,6 +34,10 @@ export default (state = initialState, action) => {
         return assign({}, state, { configs: action.configs });
     case actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED:
         return assign({}, state, { undergroundDataIsRequired: action.undergroundDataIsRequired });
+    case actions.SEND_MAIL:
+        return assign({}, state, { mailRequestInProgress: true });
+    case actions.MAIL_SENT:
+        return assign({}, state, { mailRequestInProgress: false });
     default:
         return state;
     }

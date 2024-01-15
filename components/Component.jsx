@@ -34,7 +34,7 @@ export class RTGEComponent extends React.Component {
         rtgeHomeText: PropTypes.string,
         rtgeTilesAttributes: PropTypes.array,
         rtgeMaxTiles: PropTypes.string,
-        requestStarted: PropTypes.bool,
+        mailRequestInProgress: PropTypes.bool,
         undergroundDataIsRequired: PropTypes.bool,
         pluginIcon: PropTypes.string,
         dataSurf: PropTypes.bool,
@@ -67,7 +67,7 @@ export class RTGEComponent extends React.Component {
         selectedRow: [],
         rtgeTilesAttributes: [],
         rtgeMaxTiles: '',
-        requestStarted: false,
+        mailRequestInProgress: false,
         undergroundDataIsRequired: true,
         pluginIcon: '',
         dataSurf: true,
@@ -106,24 +106,7 @@ export class RTGEComponent extends React.Component {
             pluginIcon: props.pluginIcon
         };
         props.initConfigs({
-            rtgeBackendURLPrefix: props.rtgeBackendURLPrefix,
-            rtgeEmailUrl: props.rtgeEmailUrl,
-            rtgeGridLayerId: props.rtgeGridLayerId,
-            rtgeGridLayerName: props.rtgeGridLayerName,
-            rtgeGridLayerProjection: props.rtgeGridLayerProjection,
-            rtgeGridLayerTitle: props.rtgeGridLayerTitle,
-            rtgeUserDetailsUrl: props.rtgeUserDetailsUrl,
-            rtgeHomeText: props.rtgeHomeText,
-            rtgeMailTemplate: props.rtgeMailTemplate,
-            rtgeMailRecipients: props.rtgeMailRecipients,
-            rtgeMailSubject: props.rtgeMailSubject,
-            rtgeMaxTiles: props.rtgeMaxTiles,
-            rtgeTileIdAttribute: props.rtgeTileIdAttribute,
-            rtgeTilesAttributes: props.rtgeTilesAttributes,
-            rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
-            rtgeUserRolesUrl: props.rtgeUserRolesUrl,
-            undergroundDataIsRequired: props.undergroundDataIsRequired,
-            pluginIcon: props.pluginIcon
+            ...props
         });
     }
 
@@ -143,6 +126,16 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
+     * TODO
+     * setLocalState Initializes the object for user data and is used to populate it
+     * @memberof rtge.component
+     * @returns - latest user data in state
+     */
+    getSelectedRows() {
+        return this.props.selectedTiles.filter(feature => feature.properties.selected);
+    }
+
+    /**
      * renderPrenomField Renders prenom field for the form
      * @memberof rtge.component
      * @returns - dom parts for the prenom field
@@ -157,6 +150,7 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9">
                             <FormControl
+                                name="prenom"
                                 type="text"
                                 placeholder=""
                                 value={this.state.prenom}
@@ -185,6 +179,7 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9">
                             <FormControl
+                                name="nom"
                                 type="text"
                                 placeholder=""
                                 value={this.state.nom}
@@ -213,6 +208,7 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9">
                             <FormControl
+                                name="collectivite"
                                 type="text"
                                 placeholder=""
                                 value={this.state.collectivite}
@@ -241,6 +237,7 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9">
                             <FormControl
+                                name="service"
                                 type="text"
                                 placeholder=""
                                 value={this.state.service}
@@ -269,6 +266,7 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9">
                             <FormControl
+                                name="courriel"
                                 type="text"
                                 placeholder=""
                                 value={this.state.courriel}
@@ -297,6 +295,7 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9">
                             <PhoneInput
+                                name="telephone"
                                 defaultCountry="FR"
                                 placeholder="Entrez un numéro de téléphone"
                                 value={this.state.telephone}
@@ -320,6 +319,7 @@ export class RTGEComponent extends React.Component {
                     <InputGroup>
                         <Message msgId="RTGE.motivation" />
                         <FormControl
+                            name="motivation"
                             componentClass="textarea"
                             placeholder=""
                             value={this.state.motivation}
@@ -349,6 +349,7 @@ export class RTGEComponent extends React.Component {
                     <div className="col-sm-8">
                         <div className="col-sm-3 RTGE_v-align">
                             <Checkbox
+                                name="donneesSurface"
                                 defaultChecked={this.state.dataSurf}
                                 onChange={() => this.handleBooleanFieldChange('dataSurf')}
                                 className="RTGE_checkbox"
@@ -376,6 +377,7 @@ export class RTGEComponent extends React.Component {
                     <div className="col-sm-8">
                         <div className="col-sm-3 RTGE_v-align">
                             <Checkbox
+                                name="donneesSousSol"
                                 defaultChecked={this.state.dataUnderSurf}
                                 onChange={() => this.handleBooleanFieldChange('dataUnderSurf')}
                                 className="RTGE_checkbox"
@@ -409,6 +411,7 @@ export class RTGEComponent extends React.Component {
                     <div className="col-sm-8">
                         <div className="col-sm-3 RTGE_v-align">
                             <Checkbox
+                                name="ReseauxSchematiques"
                                 defaultChecked={this.state.schematicalNetwork}
                                 onChange={() => this.handleBooleanFieldChange('schematicalNetwork')}
                                 className="RTGE_checkbox"
@@ -462,9 +465,18 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataSurf()}
                     {this.renderDataUnderSurf()}
                     {this.renderSchematicalNetwork()}
-                    {this.state.prenom !== '' && this.state.nom !== '' && this.state.collectivite !== '' && this.state.service !== '' && this.state.courriel !== '' && this.state.motivation !== '' && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary" onClick={(e) => {this.sendMail(e);}}><Message msgId={'RTGE.sendTab.button'}/></button>
-                        : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default"><Message msgId={'RTGE.sendTab.button'}/></button>
+                    {this.state.prenom !== ''
+                    && this.state.nom !== ''
+                    && this.state.collectivite !== ''
+                    && this.state.service !== ''
+                    && this.state.courriel !== ''
+                    && this.state.motivation !== ''
+                    && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
+                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary"
+                            onClick={(e) => {this.sendMail(e);}}><Message msgId={'RTGE.sendTab.button'}/></button>
+                        : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default">
+                            <Message msgId={'RTGE.sendTab.button'}/>
+                        </button>
                     }
                 </Form>
             </div>
@@ -496,7 +508,7 @@ export class RTGEComponent extends React.Component {
                         </button>
                     </div>
                     <div className="col-sm-4 RTGE_right">
-                        <button className={this.props.selectedRow.length === 0 ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.props.selectedRow.length === 0 ? '' : this.props.removeSelectedTiles()}>
+                        <button className={this.getSelectedRows().length === 0 ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain" : "RTGE_selectorButton btn-primary RTGE_tooltipMain"} onClick={() => this.getSelectedRows().length === 0 ? '' : this.props.removeSelectedTiles()}>
                             <Glyphicon glyph="trash-square RTGE_trashSquare"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrashSquare'}/></span>
                         </button>
@@ -611,7 +623,7 @@ export class RTGEComponent extends React.Component {
             content = this.renderSelectionTab();
             break;
         case tabTypes.SEND:
-            if (this.props.requestStarted) {
+            if (this.props.mailRequestInProgress) {
                 content = this.renderSpinner("RTGE.spinnerMsg");
             } else {
                 content = this.renderSendTab();
@@ -724,5 +736,3 @@ export class RTGEComponent extends React.Component {
     }
 
 }
-
-
