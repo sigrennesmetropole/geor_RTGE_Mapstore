@@ -378,6 +378,9 @@ const getLayerFeatures = (layer, filter) => {
 export const getFeaturesRTGEEpic = (action$, store) =>
     action$.ofType(actions.GET_FEATURES)
         .switchMap( (action) => {
+            console.log('getFeatures');
+            console.log(action);
+            console.log(gridLayer);
             const maxFeatures = rtgeMaxTiles - getSelectedTiles(store.getState()).length;
             const filter = {
                 filterType: "OGC",
