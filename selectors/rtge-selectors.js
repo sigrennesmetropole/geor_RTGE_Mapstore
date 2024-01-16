@@ -77,7 +77,7 @@ export const getActiveSelection = (state) => get(state, 'rtge.activeSelection');
  * @param state - application state
  * @returns - returns the current table row selected
  */
-export const getSelectedRow = (state) => get(state, 'rtge.selectedRow');
+export const getSelectedRow = (state) => get(state, 'rtge.selectedRows');
 
 /**
  * getUserDetails get user object in state
@@ -104,10 +104,17 @@ export const getConfigs = (state) => get(state, 'rtge.configs');
 export const getRequestStarted = (state) => get(state, 'rtge.requestStarted');
 
 /**
- * TODO
- * getRequestStarted gets spinner status in state
+ * isUndergroundDataRequired gets underground data role
  * @memberof rtge.selectors
  * @param state - application state
- * @returns - returns if true or false the spinner should be shown
+ * @returns - returns the asked role if user has it
  */
 export const isUndergroundDataRequired = (state) => get(state, 'rtge.undergroundDataIsRequired');
+
+/**
+ * getMailRequestInProgress gets if the request is in progress
+ * @memberof rtge.selectors
+ * @param state - application state
+ * @returns - returns if the spinner has to be hidden
+ */
+export const getMailRequestInProgress = (state) => get(state, 'rtge.mailRequestInProgress');

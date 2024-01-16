@@ -30,7 +30,7 @@ export class RTGEComponent extends React.Component {
         activeSelection: PropTypes.string,
         selectedTiles: PropTypes.array,
         user: PropTypes.object,
-        selectedRow: PropTypes.array,
+        selectedRows: PropTypes.array,
         rtgeHomeText: PropTypes.string,
         rtgeTilesAttributes: PropTypes.array,
         rtgeMaxTiles: PropTypes.string,
@@ -64,7 +64,7 @@ export class RTGEComponent extends React.Component {
         selectedTiles: [],
         user: {},
         activeSelection: '',
-        selectedRow: [],
+        selectedRows: [],
         rtgeTilesAttributes: [],
         rtgeMaxTiles: '',
         mailRequestInProgress: false,
@@ -113,8 +113,7 @@ export class RTGEComponent extends React.Component {
     componentDidUpdate(prevProps) {
         if (!Object.keys(prevProps.user).length
         && this.props.user !== prevProps.user
-        || this.props.undergroundDataIsRequired
-        !== prevProps.undergroundDataIsRequired) {
+        || this.props.undergroundDataIsRequired !== prevProps.undergroundDataIsRequired) {
             this.setLocalState();
         }
     }
@@ -129,10 +128,9 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
-     * TODO
-     * setLocalState Initializes the object for user data and is used to populate it
+     * getSelectedRows allows to know if there are selected rows in table
      * @memberof rtge.component
-     * @returns - latest user data in state
+     * @returns - the list of those rows
      */
     getSelectedRows() {
         return this.props.selectedTiles.filter(feature => feature.properties.selected);
@@ -627,10 +625,9 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
-     * TODO
-     * renderContent organise which tab is active
+     * renderSpinner places a spinner on waiting times
      * @memberof rtge.component
-     * @returns - tab dom content
+     * @returns - spinner dom content
      */
     renderSpinner(msgId) {
         return (
@@ -750,7 +747,7 @@ export class RTGEComponent extends React.Component {
         && this.state.service !== ''
         && this.state.courriel !== ''
         && this.state.motivation !== '') {
-            this.props.sendMail(this.state);
+            this.props.sendMail(this.state, this.state.undergroundDataIsRequired);
         }
     }
 

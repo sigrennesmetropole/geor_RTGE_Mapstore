@@ -6,7 +6,8 @@ const initialState = {
     value: 1,
     activeTab: tabTypes.HOME,
     selectedTiles: [],
-    selectedRows: []
+    selectedRows: [],
+    mailRequestInProgress: false
 };
 
 /**

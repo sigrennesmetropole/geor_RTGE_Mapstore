@@ -174,10 +174,11 @@ export function clickTable(feature, control, shift) {
  * @param form - form content
  * @returns - action send mail and corresponding data
  */
-export function sendMail(form) {
+export function sendMail(form, undergroundDataIsRequired) {
     return {
         type: actions.SEND_MAIL,
-        form
+        form,
+        undergroundDataIsRequired
     };
 }
 
@@ -230,10 +231,9 @@ export function closeRtge() {
 }
 
 /**
- * TODO
- * closeRtge action to close configs
+ * getUserRoles action to get roles of users
  * @memberof rtge.actions
- * @returns - action close rtge plugin
+ * @returns - action get user roles
  */
 export function getUserRoles() {
     return {
@@ -242,10 +242,9 @@ export function getUserRoles() {
 }
 
 /**
- * TODO
- * closeRtge action to close configs
+ * setUndergroundDataJustificationRequired action throw when you egt the underground role for justification to obtain data
  * @memberof rtge.actions
- * @returns - action close rtge plugin
+ * @returns - action underground data justification required
  */
 export function setUndergroundDataJustificationRequired(undergroundDataIsRequired) {
     return {
@@ -255,10 +254,9 @@ export function setUndergroundDataJustificationRequired(undergroundDataIsRequire
 }
 
 /**
- * TODO
- * removeAllTiles actions to remove the tiles
+ * removeAllTiles actions to remove all tiles
  * @memberof rtge.actions
- * @returns - action remove selected tiles
+ * @returns - action remove all tiles
  */
 export function removeAllTiles() {
     return {
@@ -267,10 +265,9 @@ export function removeAllTiles() {
 }
 
 /**
- * TODO
- * removeAllTiles actions to remove the tiles
+ * mailSent actions to tell mail has been sent, stop the spinner
  * @memberof rtge.actions
- * @returns - action remove selected tiles
+ * @returns - action mail sent
  */
 export function mailSent() {
     return {
@@ -279,10 +276,9 @@ export function mailSent() {
 }
 
 /**
- * TODO
- * removeAllTiles actions to remove the tiles
+ * rtgeUpdateMapLayout action to update map layout at plugin start
  * @memberof rtge.actions
- * @returns - action remove selected tiles
+ * @returns - action starts plugin page with source set
  */
 export function rtgeUpdateMapLayout(layout) {
     return {

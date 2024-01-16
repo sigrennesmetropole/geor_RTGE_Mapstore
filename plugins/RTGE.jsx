@@ -29,7 +29,8 @@ import {
     getSelectedRow,
     getUserDetails,
     getRequestStarted,
-    isUndergroundDataRequired
+    isUndergroundDataRequired,
+    getMailRequestInProgress
 } from "../selectors/rtge-selectors";
 import '../assets/style.css';
 
@@ -43,10 +44,11 @@ export default createPlugin(name, {
         selectedTiles: getSelectedTiles(state),
         user: getUserDetails(state),
         activeSelection: getActiveSelection(state),
-        selectedRow: getSelectedRow(state),
+        selectedRows: getSelectedRow(state),
         requestStarted: getRequestStarted(state),
         undergroundDataIsRequired: isUndergroundDataRequired(state),
-        pluginIcon
+        pluginIcon,
+        mailRequestInProgress: getMailRequestInProgress(state)
     }), {
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
