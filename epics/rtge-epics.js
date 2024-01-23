@@ -340,6 +340,10 @@ export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DR
  */
 export const geometryChangeRTGEEpic = (action$, store) =>
     action$.ofType(GEOMETRY_CHANGED)
+    .filter((action) => 
+        !!store.getState()
+        && !!isOpen(store.getState())
+    )
         .switchMap( (action) => {
             let geometrySelection = {};
             if (action.features && action.features.length > 0) {
@@ -533,7 +537,13 @@ function featureSelection(currentFeatures, control, shift, intersectedFeature) {
  * @param store - list the content of variables inputted with the actions
  * @returns - observable with tiles selected inside and their new styles
  */
-export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MAP).switchMap((action) => {
+export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MAP)
+.filter((action) => 
+    !!store.getState()
+    && !!isOpen(store.getState())
+    )
+.switchMap((action) => {
+    //ajouter un filtre à l'ouverture pour s'assurer que c'est bien rtge qui ouvre
     const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
     const intersectedFeature = layer?.features[0];
     const currentFeatures = getSelectedTiles(store.getState());
