@@ -56,6 +56,9 @@ import {
     GEOMETRY_CHANGED,
     endDrawing
 } from "@mapstore/actions/draw";
+import {
+    drawSupportActiveSelector
+} from "@mapstore/selectors/draw";
 import { getLayerJSONFeature } from "@mapstore/observables/wfs";
 import Proj4js from 'proj4';
 import { updateAdditionalLayer } from "@mapstore/actions/additionallayers";
@@ -176,37 +179,39 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
  * @returns - observable with the list of actions to do after completing the function (the dock panel and the map layout update actions)
  */
 export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_RTGE)
-    .filter(action => action.control === 'rtge'
-    && !!store.getState()
+    .filter(action => !!store.getState()
     && !isOpen(store.getState()) || action.type === actions.CLOSE_RTGE )
     .switchMap((action) => {
-        let layout = store.getState().maplayout;
-        layout = {
-            transform: layout.layout.transform,
-            height: layout.layout.height,
-            rightPanel: true,
-            leftPanel: false,
-            ...layout.boundingMapRect,
-            right: layout.boundingSidebarRect.right,
-            boundingMapRect: {
+        let observableAction = [
+            updateDockPanelsList('rtge', 'remove', 'right'),
+            changeMapInfoState(true)
+        ];
+        if (action.control === 'rtge') {
+            let layout = store.getState().maplayout;
+            layout = {
+                transform: layout.layout.transform,
+                height: layout.layout.height,
+                rightPanel: true,
+                leftPanel: false,
                 ...layout.boundingMapRect,
-                right: layout.boundingSidebarRect.right
-            },
-            boundingSidebarRect: layout.boundingSidebarRect
-        };
+                right: layout.boundingSidebarRect.right,
+                boundingMapRect: {
+                    ...layout.boundingMapRect,
+                    right: layout.boundingSidebarRect.right
+                },
+                boundingSidebarRect: layout.boundingSidebarRect
+            };
+            currentLayout = layout;
+            observableAction.push(rtgeUpdateMapLayout(currentLayout));
+        }
         let selectedTiles = getSelectedTiles(store.getState());
         selectedTiles.forEach(tile => {
             tile.style = styles.hidden;
         });
-        currentLayout = layout;
-        let observableAction = [
-            updateDockPanelsList('rtge', 'remove', 'right'),
-            rtgeUpdateMapLayout(currentLayout),
-            // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
-            resizeMap(),
-            addFeatures(selectedTiles)
-        ];
-        if (getActiveTab(store.getState()) === "RTGE:SELECT") {
+        // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
+        observableAction.push(resizeMap());
+        observableAction.push(addFeatures(selectedTiles));
+        if (drawSupportActiveSelector(store.getState())) {
             observableAction.push(stopDraw());
         }
         if (action.type === actions.CLOSE_RTGE) {
