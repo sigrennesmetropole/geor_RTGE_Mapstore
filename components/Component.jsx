@@ -106,21 +106,21 @@ export class RTGEComponent extends React.Component {
             pluginIcon: props.pluginIcon
         };
         props.rtgeinitConfigs({
-            rtgeGridLayerId: props.rtgeGridLayerId;
-            rtgeBackendURLPrefix: props.rtgeBackendURLPrefix;
-            rtgeGridLayerName:props.rtgeGridLayerName;
-            rtgeGridLayerTitle: props.rtgeGridLayerTitle;
-            rtgeGridLayerProjection: props.rtgeGridLayerProjection;
-            rtgeGridLayerGeometryAttribute: props.rtgeGridLayerGeometryAttribute;
-            rtgeEmailUrl: props.rtgeEmailUrl;
-            rtgeUserDetailsUrl: props.rtgeUserDetailsUrl;
-            rtgeMailTemplate: props.rtgeMailTemplate;
-            rtgeMailRecipients: props.rtgeMailRecipients;
-            rtgeMailSubject: props.rtgeMailSubject;
-            rtgeMaxTiles: props.rtgeMaxTiles;
-            rtgeTileIdAttribute: props.rtgeTileIdAttribute;
-            rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles;
-            rtgeUserRolesUrl: props.rtgeUserRolesUrl;
+            rtgeGridLayerId: props.rtgeGridLayerId,
+            rtgeBackendURLPrefix: props.rtgeBackendURLPrefix,
+            rtgeGridLayerName:props.rtgeGridLayerName,
+            rtgeGridLayerTitle: props.rtgeGridLayerTitle,
+            rtgeGridLayerProjection: props.rtgeGridLayerProjection,
+            rtgeGridLayerGeometryAttribute: props.rtgeGridLayerGeometryAttribute,
+            rtgeEmailUrl: props.rtgeEmailUrl,
+            rtgeUserDetailsUrl: props.rtgeUserDetailsUrl,
+            rtgeMailTemplate: props.rtgeMailTemplate,
+            rtgeMailRecipients: props.rtgeMailRecipients,
+            rtgeMailSubject: props.rtgeMailSubject,
+            rtgeMaxTiles: props.rtgeMaxTiles,
+            rtgeTileIdAttribute: props.rtgeTileIdAttribute,
+            rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
+            rtgeUserRolesUrl: props.rtgeUserRolesUrl
         });
     }
 
