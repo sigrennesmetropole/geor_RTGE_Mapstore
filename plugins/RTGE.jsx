@@ -9,14 +9,14 @@ import pluginIcon from "../assets/images/registration.svg";
 
 import { changeZoomLevel } from "@mapstore/actions/map";
 import {
-    changeTab,
-    switchDraw,
-    removeSelectedTiles,
-    clickTable,
-    sendMail,
-    initConfigs,
-    removeAllTiles,
-    stopDraw
+    rtgechangeTab,
+    rtgeswitchDraw,
+    rtgeremoveSelectedTiles,
+    rtgeclickTable,
+    rtgesendMail,
+    rtgeinitConfigs,
+    rtgeremoveAllTiles,
+    rtgestopDraw
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
@@ -27,7 +27,7 @@ import {
     getSelectedTiles,
     getActiveSelection,
     getSelectedRow,
-    getUserDetails,
+    rtgegetUserDetails,
     getRequestStarted,
     isUndergroundDataRequired,
     getMailRequestInProgress
@@ -42,7 +42,7 @@ export default createPlugin(name, {
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         activeTab: getActiveTab(state),
         selectedTiles: getSelectedTiles(state),
-        user: getUserDetails(state),
+        user: rtgegetUserDetails(state),
         activeSelection: getActiveSelection(state),
         selectedRows: getSelectedRow(state),
         requestStarted: getRequestStarted(state),
@@ -52,14 +52,14 @@ export default createPlugin(name, {
     }), {
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
-        changeTab: changeTab,
-        switchDraw: switchDraw,
-        removeSelectedTiles: removeSelectedTiles,
-        removeAllTiles: removeAllTiles,
-        clickTable,
-        sendMail,
-        initConfigs,
-        stopDraw: stopDraw
+        rtgechangeTab: rtgechangeTab,
+        rtgeswitchDraw: rtgeswitchDraw,
+        rtgeremoveSelectedTiles: rtgeremoveSelectedTiles,
+        rtgeremoveAllTiles: rtgeremoveAllTiles,
+        rtgeclickTable,
+        rtgesendMail,
+        rtgeinitConfigs,
+        rtgestopDraw: rtgestopDraw
     })(RTGEComponent),
     reducers: {
         rtge: rtgeReducer

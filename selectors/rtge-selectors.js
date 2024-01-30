@@ -80,12 +80,12 @@ export const getActiveSelection = (state) => get(state, 'rtge.activeSelection');
 export const getSelectedRow = (state) => get(state, 'rtge.selectedRows');
 
 /**
- * getUserDetails get user object in state
+ * rtgegetUserDetails get user object in state
  * @memberof rtge.selectors
  * @param state - application state
  * @returns - returns the latest user datas
  */
-export const getUserDetails = (state) => get(state, 'rtge.user');
+export const rtgegetUserDetails = (state) => get(state, 'rtge.user');
 
 /**
  * getConfigs gets configs in state

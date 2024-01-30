@@ -2,23 +2,23 @@
 import Rx from "rxjs";
 import {
     actions,
-    showGrid,
-    initDrawingMod,
-    getFeatures,
-    startDraw,
-    initProjections,
-    addFeatures,
-    stopDraw,
-    updateUser,
-    getUserDetails,
-    closeRtge,
-    getUserRoles,
-    setUndergroundDataJustificationRequired,
-    changeTab,
+    rtgeshowGrid,
+    rtgeinitDrawingMod,
+    rtgegetFeatures,
+    rtgestartDraw,
+    rtgeinitProjections,
+    rtgeaddFeatures,
+    rtgestopDraw,
+    rtgeupdateUser,
+    rtgegetUserDetails,
+    rtgecloseRtge,
+    rtgegetUserRoles,
+    rtgesetUndergroundDataJustificationRequired,
+    rtgechangeTab,
     tabTypes,
-    clickTable,
-    switchDraw,
-    mailSent,
+    rtgeclickTable,
+    rtgeswitchDraw,
+    rtgemailSent,
     rtgeUpdateMapLayout
 } from "../actions/rtge-action";
 import {
@@ -159,14 +159,14 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
         };
         currentLayout = layout;
         let observables = [
-            initProjections(),
+            rtgeinitProjections(),
             updateDockPanelsList('rtge', 'add', 'right'),
-            showGrid(),
-            initDrawingMod(),
+            rtgeshowGrid(),
+            rtgeinitDrawingMod(),
             rtgeUpdateMapLayout(layout),
-            clickTable("", false),
-            getUserDetails(),
-            getUserRoles()
+            rtgeclickTable("", false),
+            rtgegetUserDetails(),
+            rtgegetUserRoles()
         ];
         return Rx.Observable.from(observables);
     });
@@ -210,9 +210,9 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
         });
         // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
         observableAction.push(resizeMap());
-        observableAction.push(addFeatures(selectedTiles));
+        observableAction.push(rtgeaddFeatures(selectedTiles));
         if (drawSupportActiveSelector(store.getState())) {
-            observableAction.push(stopDraw());
+            observableAction.push(rtgestopDraw());
         }
         if (action.type === actions.CLOSE_RTGE) {
             observableAction = [toggleControl('rtge', 'enabled')].concat(observableAction);
@@ -304,7 +304,7 @@ export const initDrawingModRTGEEpic = (action$) => action$.ofType(actions.INIT_D
  * @returns - observable with the list of actions to do after completing the function (trigger the change drawing status action)
  */
 export const stopDrawingRTGEEpic = (action$) => action$.ofType(actions.STOP_DRAW).switchMap(() => {
-    return Rx.Observable.from([switchDraw(''), changeDrawingStatus("clean", "", 'rtge', [], {})]);
+    return Rx.Observable.from([rtgeswitchDraw(''), changeDrawingStatus("clean", "", 'rtge', [], {})]);
 });
 
 /**
@@ -370,12 +370,12 @@ export const geometryChangeRTGEEpic = (action$, store) =>
                     projection: RTGEGridLayerProjection
                 };
                 return Rx.Observable.from([
-                    startDraw(geometrySelection.type),
-                    getFeatures(geometrySelection)
+                    rtgestartDraw(geometrySelection.type),
+                    rtgegetFeatures(geometrySelection)
                 ]);
             }
             return Rx.Observable.from([
-                startDraw(getSelectionGeometryType(store.getState()))
+                rtgestartDraw(getSelectionGeometryType(store.getState()))
             ]);
         });
 
@@ -395,7 +395,7 @@ const getLayerFeatures = (layer, filter) => {
 };
 
 /**
- * getFeaturesEpic get feature tiles data
+ * getFeaturesRTGEEpic get feature tiles data
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
@@ -434,7 +434,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                     if (features.length > maxFeatures) {
                         return Rx.Observable.from([
                             show({ title: "RTGE.alertMaxFeatures.title", message: "RTGE.alertMaxFeatures.message" }, "warning"),
-                            startDraw(getSelectionGeometryType(store.getState()))]);
+                            rtgestartDraw(getSelectionGeometryType(store.getState()))]);
                     }
                     const vectorLayer = getSelectedTilesLayer(store.getState());
                     finalElements = [...vectorLayer.options.features, ...finalElements];
@@ -444,7 +444,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                         }
                     );
                     return Rx.Observable.from([
-                        addFeatures(finalElements),
+                        rtgeaddFeatures(finalElements),
                         updateAdditionalLayer(
                             selectedTilesLayerId,
                             "RTGE",
@@ -454,7 +454,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                                 features: finalElements
                             }
                         ),
-                        startDraw(getSelectionGeometryType(store.getState()))
+                        rtgestartDraw(getSelectionGeometryType(store.getState()))
                     ]);
                 });
         });
@@ -469,20 +469,20 @@ export const getFeaturesRTGEEpic = (action$, store) =>
 export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
     if (action.geometryType === activeSelectionGeometryType) {
-        return Rx.Observable.from([stopDraw()]);
+        return Rx.Observable.from([rtgestopDraw()]);
     }
-    return Rx.Observable.from([startDraw(action.geometryType)]);
+    return Rx.Observable.from([rtgestartDraw(action.geometryType)]);
 });
 
 /**
- * featureSelection tells us if the selected feature is already selected and gives styles according this state
+ * featureSelectionRTGE tells us if the selected feature is already selected and gives styles according this state
  * @memberof rtge.epics
  * @param currentFeatures - current features
  * @param control - is the user pressing control key
  * @param intersectedFeature - all features clicked
  * @returns - return one or more feature with their style updated... or not
  */
-function featureSelection(currentFeatures, control, shift, intersectedFeature) {
+function featureSelectionRTGE(currentFeatures, control, shift, intersectedFeature) {
     var currentSelectedTile = 0;
     var selectedRow = [];
     var currentFeatureList = currentFeatures.map((feature) => {
@@ -553,7 +553,7 @@ export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MA
     const intersectedFeature = layer?.features[0];
     const currentFeatures = getSelectedTiles(store.getState());
     const vectorLayer = getSelectedTilesLayer(store.getState());
-    const features = featureSelection(currentFeatures, action.point.modifiers.ctrl, false, intersectedFeature);
+    const features = featureSelectionRTGE(currentFeatures, action.point.modifiers.ctrl, false, intersectedFeature);
     return Rx.Observable.from([updateAdditionalLayer(
         selectedTilesLayerId,
         "RTGE",
@@ -565,7 +565,7 @@ export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MA
     ),
     // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
     resizeMap(),
-    addFeatures(features)]);
+    rtgeaddFeatures(features)]);
 });
 
 /**
@@ -577,7 +577,7 @@ export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MA
  */
 export const clickTableRTGEEpic = (action$, store) => action$.ofType(actions.CLICK_TABLE).switchMap((action) => {
     const currentFeatures = getSelectedTiles(store.getState());
-    const features = featureSelection(currentFeatures, action.control, action.shift, action.feature);
+    const features = featureSelectionRTGE(currentFeatures, action.control, action.shift, action.feature);
     const vectorLayer = getSelectedTilesLayer(store.getState());
     return Rx.Observable.from([updateAdditionalLayer(
         selectedTilesLayerId,
@@ -590,7 +590,7 @@ export const clickTableRTGEEpic = (action$, store) => action$.ofType(actions.CLI
     ),
     // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
     resizeMap(),
-    addFeatures(features)]);
+    rtgeaddFeatures(features)]);
 });
 
 /**
@@ -614,7 +614,7 @@ export const removeSelectedFeaturesRTGEEpic = (action$, store) => action$.ofType
                 features: emptiedFeatures
             }
         ),
-        addFeatures(emptiedFeatures)]);
+        rtgeaddFeatures(emptiedFeatures)]);
 });
 
 /**
@@ -649,10 +649,10 @@ const dropPopUp = (level) => {
     case "success":
         return Rx.Observable.from([
             show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, level),
-            closeRtge()]);
+            rtgecloseRtge()]);
     case "error":
         return Rx.Observable.from([
-            mailSent(),
+            rtgemailSent(),
             show({ title: "RTGE.sendMailFailure.title", message: "RTGE.sendMailFailure.message" }, level)]);
     default:
         break;
@@ -702,12 +702,12 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
     return Rx.Observable.defer(() => axios.post(rtgeEmailUrl, mailContent, params))
         .switchMap(() => {
             return Rx.Observable.from([
-                addFeatures([]),
+                rtgeaddFeatures([]),
                 show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, 'success'),
-                closeRtge(),
-                changeTab(tabTypes.HOME),
-                clickTable("", false),
-                mailSent()
+                rtgecloseRtge(),
+                rtgechangeTab(tabTypes.HOME),
+                rtgeclickTable("", false),
+                rtgemailSent()
             ]);
         })
         .catch((e) => {
@@ -736,7 +736,7 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
                 courriel: html.getElementsByClassName("form-group")[2].children[1].firstElementChild.innerHTML.trim(),
                 telephone: html.getElementById("phone").value
             };
-            return Rx.Observable.from([updateUser(newUserDetails)]);
+            return Rx.Observable.from([rtgeupdateUser(newUserDetails)]);
         })
         .catch((e) => {
             console.log(e);
@@ -757,7 +757,7 @@ export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER
                 (role) => rtgeUndergroundDataRoles.includes(role.groupName)
             );
             if (includedRole) {
-                return Rx.Observable.from([setUndergroundDataJustificationRequired(false)]);
+                return Rx.Observable.from([rtgesetUndergroundDataJustificationRequired(false)]);
             }
             return Rx.Observable.empty();
         })
@@ -843,5 +843,5 @@ export const removeAllFeaturesRTGEEpic = (action$, store) => action$.ofType(acti
             features: emptiedFeatures
         }
     ),
-    addFeatures(emptiedFeatures)]);
+    rtgeaddFeatures(emptiedFeatures)]);
 });
