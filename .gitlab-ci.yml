@@ -15,5 +15,5 @@ trigger_job:
     PARENT_COMMIT_BRANCH: $CI_COMMIT_BRANCH
     PARENT_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
-    project: sig/ed/geor_pluginsRM_mapstore/geor_MapstoreExtension
-    branch: rm/RTGE
+    project: sig/ed/mapstore/MapStoreExtension
+    branch: RM/RTGE_main
