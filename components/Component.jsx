@@ -50,7 +50,7 @@ export class RTGEComponent extends React.Component {
         rtgesendMail: PropTypes.func,
         formValidationError: PropTypes.func,
         rtgeinitConfigs: PropTypes.func,
-        rtgestopDraw: PropTypes.func
+        rtgeStopDraw: PropTypes.func
     }
 
     static defaultProps= {
@@ -83,7 +83,7 @@ export class RTGEComponent extends React.Component {
         rtgesendMail: ()=>{},
         formValidationError: ()=>{},
         rtgeinitConfigs: ()=>{},
-        rtgestopDraw: ()=>{}
+        rtgeStopDraw: ()=>{}
     }
 
     constructor(props) {
@@ -664,7 +664,7 @@ export class RTGEComponent extends React.Component {
         switch (this.props.activeTab) {
         case tabTypes.HOME:
             content = this.renderHomeTab();
-            this.props.rtgestopDraw();
+            this.props.rtgeStopDraw();
             break;
         case tabTypes.SELECT:
             content = this.renderSelectionTab();
@@ -675,7 +675,7 @@ export class RTGEComponent extends React.Component {
             } else {
                 content = this.renderSendTab();
             }
-            this.props.rtgestopDraw();
+            this.props.rtgeStopDraw();
             break;
         default:
             break;

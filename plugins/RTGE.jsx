@@ -16,7 +16,7 @@ import {
     rtgesendMail,
     rtgeinitConfigs,
     rtgeremoveAllTiles,
-    rtgestopDraw
+    rtgeStopDraw
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
 import * as epics from "../epics/rtge-epics";
@@ -59,7 +59,7 @@ export default createPlugin(name, {
         rtgeclickTable,
         rtgesendMail,
         rtgeinitConfigs,
-        rtgestopDraw: rtgestopDraw
+        rtgeStopDraw: rtgeStopDraw
     })(RTGEComponent),
     reducers: {
         rtge: rtgeReducer

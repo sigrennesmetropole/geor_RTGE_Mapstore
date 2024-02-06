@@ -8,7 +8,7 @@ import {
     rtgestartDraw,
     rtgeinitProjections,
     rtgeaddFeatures,
-    rtgestopDraw,
+    rtgeStopDraw,
     rtgeupdateUser,
     rtgegetUserDetails,
     rtgecloseRtge,
@@ -212,7 +212,7 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
         observableAction.push(resizeMap());
         observableAction.push(rtgeaddFeatures(selectedTiles));
         if (drawSupportActiveSelector(store.getState())) {
-            observableAction.push(rtgestopDraw());
+            observableAction.push(rtgeStopDraw());
         }
         if (action.type === actions.CLOSE_RTGE) {
             observableAction = [toggleControl('rtge', 'enabled')].concat(observableAction);
@@ -469,7 +469,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
 export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.SWITCH_DRAW).switchMap((action) => {
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
     if (action.geometryType === activeSelectionGeometryType) {
-        return Rx.Observable.from([rtgestopDraw()]);
+        return Rx.Observable.from([rtgeStopDraw()]);
     }
     return Rx.Observable.from([rtgestartDraw(action.geometryType)]);
 });
