@@ -1,4 +1,4 @@
-[Version française](https://github.com/sigrennesmetropole/geor_RTGE_Mapstore/docs/readme-git_geor_RTGE_FR.pdf)
+[Version française](https://gitlab2.si.rennes.fr/sig/ed/mapstore/RTGE/-/blob/main/docs/readme-git_geor_RTGE_FR.pdf)
 
 [[_TOC_]]
 
