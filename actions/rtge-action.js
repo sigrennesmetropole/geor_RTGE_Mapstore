@@ -34,12 +34,12 @@ export const tabTypes = {
 };
 
 /**
- * rtgechangeTab start action to change tab
+ * rtgeChangeTab start action to change tab
  * @memberof rtge.actions
  * @param tab - the tab string we should use
  * @returns - action change tab
  */
-export function rtgechangeTab(tab) {
+export function rtgeChangeTab(tab) {
     return {
         type: actions.CHANGE_TAB,
         tab
@@ -47,12 +47,12 @@ export function rtgechangeTab(tab) {
 }
 
 /**
- * rtgestartDraw start action to draw
+ * rtgeStartDraw start action to draw
  * @memberof rtge.actions
  * @param geometryType - the geometry type we want to use
  * @returns - action start draw
  */
-export function rtgestartDraw(geometryType) {
+export function rtgeStartDraw(geometryType) {
     return {
         type: actions.START_DRAW,
         geometryType
@@ -60,7 +60,7 @@ export function rtgestartDraw(geometryType) {
 }
 
 /**
- * rtgestopDraw start action to stop drawing
+ * rtgeStopDraw start action to stop drawing
  * @memberof rtge.actions
  * @returns - action stop draw
  */
@@ -71,34 +71,34 @@ export function rtgeStopDraw() {
 }
 
 /**
- * rtgeshowGrid start action to show tiles grid on map
+ * rtgeShowGrid start action to show tiles grid on map
  * @memberof rtge.actions
  * @returns - action show grid
  */
-export function rtgeshowGrid() {
+export function rtgeShowGrid() {
     return {
         type: actions.SHOW_GRID
     };
 }
 
 /**
- * rtgeinitDrawingMod start action to init drawing
+ * rtgeInitDrawingMod start action to init drawing
  * @memberof rtge.actions
  * @returns - action init drawing
  */
-export function rtgeinitDrawingMod() {
+export function rtgeInitDrawingMod() {
     return {
         type: actions.INIT_DRAWING_MOD
     };
 }
 
 /**
- * rtgegetFeatures start action get features from the draw
+ * rtgeGetFeatures start action get features from the draw
  * @memberof rtge.actions
  * @param geometry - the geometry we made on the map
  * @returns - action get features and the geometry itself
  */
-export function rtgegetFeatures(geometry) {
+export function rtgeGetFeatures(geometry) {
     return {
         type: actions.GET_FEATURES,
         geometry
@@ -106,23 +106,23 @@ export function rtgegetFeatures(geometry) {
 }
 
 /**
- * rtgeinitProjections start action project projections
+ * rtgeInitProjections start action project projections
  * @memberof rtge.actions
  * @returns - action init projections
  */
-export function rtgeinitProjections() {
+export function rtgeInitProjections() {
     return {
         type: actions.INIT_PROJECTIONS
     };
 }
 
 /**
- * rtgeaddFeatures start action to add new features
+ * rtgeAddFeatures start action to add new features
  * @memberof rtge.actions
  * @param features - list of features to save in the table
  * @returns - action add features and the list of features
  */
-export function rtgeaddFeatures(features) {
+export function rtgeAddFeatures(features) {
     return {
         type: actions.ADD_FEATURES,
         features
@@ -130,12 +130,12 @@ export function rtgeaddFeatures(features) {
 }
 
 /**
- * rtgeswitchDraw switch the drawing tool
+ * rtgeSwitchDraw switch the drawing tool
  * @memberof rtge.actions
  * @param geometryType - the new geometry we want to use as drawing method
  * @returns - action switch draw and the geometryType
  */
-export function rtgeswitchDraw(geometryType) {
+export function rtgeSwitchDraw(geometryType) {
     return {
         type: actions.SWITCH_DRAW,
         geometryType
@@ -143,23 +143,23 @@ export function rtgeswitchDraw(geometryType) {
 }
 
 /**
- * rtgeremoveSelectedTiles actions to remove the tiles
+ * rtgeRemoveSelectedTiles actions to remove the tiles
  * @memberof rtge.actions
  * @returns - action remove selected tiles
  */
-export function rtgeremoveSelectedTiles() {
+export function rtgeRemoveSelectedTiles() {
     return {
         type: actions.REMOVE_SELECTED_TILES
     };
 }
 
 /**
- * rtgeclickTable actions when table is clicked
+ * rtgeClickTable actions when table is clicked
  * @memberof rtge.actions
  * @param row - row id of the clicked row
  * @returns - action click table
  */
-export function rtgeclickTable(feature, control, shift) {
+export function rtgeClickTable(feature, control, shift) {
     return {
         type: actions.CLICK_TABLE,
         feature,
@@ -169,26 +169,25 @@ export function rtgeclickTable(feature, control, shift) {
 }
 
 /**
- * rtgesendMail actions form button to populate mail is pressed
+ * rtgeSendMail actions form button to populate mail is pressed
  * @memberof rtge.actions
  * @param form - form content
  * @returns - action send mail and corresponding data
  */
-export function rtgesendMail(form, undergroundDataIsRequired) {
+export function rtgeSendMail(form) {
     return {
         type: actions.SEND_MAIL,
-        form,
-        undergroundDataIsRequired
+        form
     };
 }
 
 /**
- * rtgeupdateUser actions to call when user data is available
+ * rtgeUpdateUser actions to call when user data is available
  * @memberof rtge.actions
  * @param newUserDetails - list of user data to store in state
  * @returns - action update user
  */
-export function rtgeupdateUser(newUserDetails) {
+export function rtgeUpdateUser(newUserDetails) {
     return {
         type: actions.UPDATE_USER,
         newUserDetails
@@ -196,23 +195,23 @@ export function rtgeupdateUser(newUserDetails) {
 }
 
 /**
- * rtgegetUserDetails action triggered when we look to get user data
+ * rtgeGetUserDetails action triggered when we look to get user data
  * @memberof rtge.actions
  * @returns - action get user details
  */
-export function rtgegetUserDetails() {
+export function rtgeGetUserDetails() {
     return {
         type: actions.GET_USER_DETAILS
     };
 }
 
 /**
- * rtgeinitConfigs action triggered to initialize or reinitialize plugin basic configs
+ * rtgeInitConfigs action triggered to initialize or reinitialize plugin basic configs
  * @memberof rtge.actions
  * @param configs - configs object
  * @returns - action init configs with those configs
  */
-export function rtgeinitConfigs(configs) {
+export function rtgeInitConfigs(configs) {
     return {
         type: actions.INIT_CONFIGS,
         configs
@@ -220,33 +219,33 @@ export function rtgeinitConfigs(configs) {
 }
 
 /**
- * rtgecloseRtge action to close configs
+ * rtgeCloseRtge action to close configs
  * @memberof rtge.actions
  * @returns - action close rtge plugin
  */
-export function rtgecloseRtge() {
+export function rtgeCloseRtge() {
     return {
         type: actions.CLOSE_RTGE
     };
 }
 
 /**
- * rtgegetUserRoles action to get roles of users
+ * rtgeGetUserRoles action to get roles of users
  * @memberof rtge.actions
  * @returns - action get user roles
  */
-export function rtgegetUserRoles() {
+export function rtgeGetUserRoles() {
     return {
         type: actions.GET_USER_ROLES
     };
 }
 
 /**
- * rtgesetUndergroundDataJustificationRequired action throw when you egt the underground role for justification to obtain data
+ * rtgeSetUndergroundDataJustificationRequired action throw when you egt the underground role for justification to obtain data
  * @memberof rtge.actions
  * @returns - action underground data justification required
  */
-export function rtgesetUndergroundDataJustificationRequired(undergroundDataIsRequired) {
+export function rtgeSetUndergroundDataJustificationRequired(undergroundDataIsRequired) {
     return {
         type: actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED,
         undergroundDataIsRequired
@@ -254,22 +253,22 @@ export function rtgesetUndergroundDataJustificationRequired(undergroundDataIsReq
 }
 
 /**
- * rtgeremoveAllTiles actions to remove all tiles
+ * rtgeRemoveAllTiles actions to remove all tiles
  * @memberof rtge.actions
  * @returns - action remove all tiles
  */
-export function rtgeremoveAllTiles() {
+export function rtgeRemoveAllTiles() {
     return {
         type: actions.REMOVE_ALL_TILES
     };
 }
 
 /**
- * rtgemailSent actions to tell mail has been sent, stop the spinner
+ * rtgeMailSent actions to tell mail has been sent, stop the spinner
  * @memberof rtge.actions
  * @returns - action mail sent
  */
-export function rtgemailSent() {
+export function rtgeMailSent() {
     return {
         type: actions.MAIL_SENT
     };

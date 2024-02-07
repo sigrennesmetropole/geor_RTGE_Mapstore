@@ -42,14 +42,14 @@ export class RTGEComponent extends React.Component {
         schematicalNetwork: PropTypes.bool,
         changeZoomLevel: PropTypes.func,
         toggleControl: PropTypes.func,
-        rtgechangeTab: PropTypes.func,
-        rtgeswitchDraw: PropTypes.func,
-        rtgeremoveSelectedTiles: PropTypes.func,
-        rtgeremoveAllTiles: PropTypes.func,
-        rtgeclickTable: PropTypes.func,
-        rtgesendMail: PropTypes.func,
+        rtgeChangeTab: PropTypes.func,
+        rtgeSwitchDraw: PropTypes.func,
+        rtgeRemoveSelectedTiles: PropTypes.func,
+        rtgeRemoveAllTiles: PropTypes.func,
+        rtgeClickTable: PropTypes.func,
+        rtgeSendMail: PropTypes.func,
         formValidationError: PropTypes.func,
-        rtgeinitConfigs: PropTypes.func,
+        rtgeInitConfigs: PropTypes.func,
         rtgeStopDraw: PropTypes.func
     }
 
@@ -75,14 +75,14 @@ export class RTGEComponent extends React.Component {
         schematicalNetwork: false,
         changeZoomLevel: ()=>{},
         toggleControl: ()=>{},
-        rtgechangeTab: ()=>{},
-        rtgeswitchDraw: ()=>{},
-        rtgeremoveSelectedTiles: ()=>{},
-        rtgeremoveAllTiles: ()=>{},
-        rtgeclickTable: ()=>{},
-        rtgesendMail: ()=>{},
+        rtgeChangeTab: ()=>{},
+        rtgeSwitchDraw: ()=>{},
+        rtgeRemoveSelectedTiles: ()=>{},
+        rtgeRemoveAllTiles: ()=>{},
+        rtgeClickTable: ()=>{},
+        rtgeSendMail: ()=>{},
         formValidationError: ()=>{},
-        rtgeinitConfigs: ()=>{},
+        rtgeInitConfigs: ()=>{},
         rtgeStopDraw: ()=>{}
     }
 
@@ -103,9 +103,10 @@ export class RTGEComponent extends React.Component {
             rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
             rtgeUserRolesUrl: props.rtgeUserRolesUrl,
             undergroundDataIsRequired: props.undergroundDataIsRequired,
-            pluginIcon: props.pluginIcon
+            pluginIcon: props.pluginIcon,
+            mailFormValidity: false
         };
-        props.rtgeinitConfigs({
+        props.rtgeInitConfigs({
             rtgeGridLayerId: props.rtgeGridLayerId,
             rtgeBackendURLPrefix: props.rtgeBackendURLPrefix,
             rtgeGridLayerName:props.rtgeGridLayerName,
@@ -448,6 +449,23 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
+     * TODO
+     * renderDataUnderSurf Renders data under surface checkbox field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the data under surface checkbox field
+     */
+    checkFormValidity() {
+        this.state.mailFormValidity = this.state.prenom !== ''
+        && this.state.nom !== ''
+        && this.state.collectivite !== ''
+        && this.state.service !== ''
+        && this.state.courriel !== ''
+        && this.state.motivation !== ''
+        && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
+        this.setState(this.state);
+    }
+
+    /**
      * renderHomeTab home tab content
      * @memberof rtge.component
      * @returns - dom of the home tab content
@@ -480,18 +498,9 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataSurf()}
                     {this.renderDataUnderSurf()}
                     {this.renderSchematicalNetwork()}
-                    {this.state.prenom !== ''
-                    && this.state.nom !== ''
-                    && this.state.collectivite !== ''
-                    && this.state.service !== ''
-                    && this.state.courriel !== ''
-                    && this.state.motivation !== ''
-                    && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
-                        ? <button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary"
-                            onClick={(e) => {this.rtgesendMail(e);}}><Message msgId={'RTGE.sendTab.button'}/></button>
-                        : <button className="RTGE_buttonForm RTGE_gray RTGE_buttonToRight btn btn-default">
-                            <Message msgId={'RTGE.sendTab.button'}/>
-                        </button>
+                    {<button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary"
+                        onClick={(e) => {this.rtgeSendMail(e);}} disabled={!this.state.mailFormValidity}><Message msgId={'RTGE.sendTab.button'}/>
+                    </button>
                     }
                 </Form>
             </div>
@@ -512,21 +521,21 @@ export class RTGEComponent extends React.Component {
                         <button className={this.props.activeSelection === 'Point'
                             ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
                             : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
-                        onClick={() => this.props.rtgeswitchDraw('Point')}>
+                        onClick={() => this.props.rtgeSwitchDraw('Point')}>
                             <Glyphicon glyph="map-marker"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPoint'}/></span>
                         </button>
                         <button className={this.props.activeSelection === 'LineString'
                             ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
                             : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
-                        onClick={() => this.props.rtgeswitchDraw('LineString')}>
+                        onClick={() => this.props.rtgeSwitchDraw('LineString')}>
                             <Glyphicon glyph="polyline"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSeclectLine'}/></span>
                         </button>
                         <button className={this.props.activeSelection === 'Polygon'
                             ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
                             : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
-                        onClick={() => this.props.rtgeswitchDraw('Polygon')}>
+                        onClick={() => this.props.rtgeSwitchDraw('Polygon')}>
                             <Glyphicon glyph="polygon"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPolygon'}/></span>
                         </button>
@@ -535,14 +544,14 @@ export class RTGEComponent extends React.Component {
                         <button className={this.getSelectedRows().length === 0
                             ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain"
                             : "RTGE_selectorButton btn-primary RTGE_tooltipMain"}
-                        onClick={() => this.getSelectedRows().length === 0 ? '' : this.props.rtgeremoveSelectedTiles()}>
+                        onClick={() => this.getSelectedRows().length === 0 ? '' : this.props.rtgeRemoveSelectedTiles()}>
                             <Glyphicon glyph="trash-square RTGE_trashSquare"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrashSquare'}/></span>
                         </button>
                         <button className={this.props.selectedTiles.length === 0
                             ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain trash"
                             : "RTGE_selectorButton btn-primary RTGE_tooltipMain RTGE_trashSquare trash"}
-                        onClick={() => this.props.rtgeremoveAllTiles()}>
+                        onClick={() => this.props.rtgeRemoveAllTiles()}>
                             <Glyphicon glyph="trash"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
                         </button>
@@ -571,7 +580,7 @@ export class RTGEComponent extends React.Component {
                                         ? "row RTGE_arraySelected RTGE_tableOffset"
                                         : "row RTGE_tableOffset"}
                                     key={key}
-                                    onClick={(e) => this.props.rtgeclickTable(val, e.ctrlKey, e.shiftKey)}>
+                                    onClick={(e) => this.props.rtgeClickTable(val, e.ctrlKey, e.shiftKey)}>
                                         {
                                             this.props.rtgeTilesAttributes.map((attributeVal) => {
                                                 return (
@@ -606,14 +615,14 @@ export class RTGEComponent extends React.Component {
                 <div className="col-sm-4 text-center">
                     <button className={this.props.activeTab === "RTGE:HOME"
                         ? "RTGE_homeButton RTGE_active"
-                        : "RTGE_homeButton"} onClick={() => this.props.rtgechangeTab(tabTypes.HOME)}>
+                        : "RTGE_homeButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.HOME)}>
                         <Message msgId={'RTGE.welcome'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
                     <button className={this.props.activeTab === "RTGE:SELECT"
                         ? "RTGE_selectButton RTGE_active"
-                        : "RTGE_selectButton"} onClick={() => this.props.rtgechangeTab(tabTypes.SELECT)}>
+                        : "RTGE_selectButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.SELECT)}>
                         <Message msgId={'RTGE.selection'}/>
                     </button>
                 </div>
@@ -629,7 +638,7 @@ export class RTGEComponent extends React.Component {
                     {this.props.selectedTiles.length > 0 &&
                         <button className={this.props.activeTab === "RTGE:SEND"
                             ? "RTGE_sendButton RTGE_active"
-                            : "RTGE_sendButton" } onClick={() => this.props.rtgechangeTab(tabTypes.SEND)}>
+                            : "RTGE_sendButton" } onClick={() => this.props.rtgeChangeTab(tabTypes.SEND)}>
                             <Message msgId={'RTGE.send'}/>
                         </button>
                     }
@@ -721,6 +730,7 @@ export class RTGEComponent extends React.Component {
      */
     handleTextFieldChange(e, fieldName) {
         this.state[fieldName] = e.target.value;
+        this.checkFormValidity();
         this.setState(this.state);
     }
 
@@ -733,6 +743,7 @@ export class RTGEComponent extends React.Component {
      */
     handlePhoneFieldChange(e, fieldName) {
         this.state[fieldName] = e;
+        this.checkFormValidity();
         this.setState(this.state);
     }
 
@@ -744,15 +755,16 @@ export class RTGEComponent extends React.Component {
      */
     handleBooleanFieldChange(fieldName) {
         this.state[fieldName] = !this.state[fieldName];
+        this.checkFormValidity();
         this.setState(this.state);
     }
 
     /**
-     * rtgesendMail sends the email action if all mandatory fields are not empty
+     * rtgeSendMail sends the email action if all mandatory fields are not empty
      * @memberof rtge.component
      * @returns - send mail action when available or nothing
      */
-    rtgesendMail = (event) => {
+    rtgeSendMail = (event) => {
         // Le preventDefault ci dessous permet de prévenir la double utilisation du bouton, ce qui recharche la page d'envoi de mail.
         event.preventDefault();
         if (this.state.prenom !== ''
@@ -761,7 +773,7 @@ export class RTGEComponent extends React.Component {
         && this.state.service !== ''
         && this.state.courriel !== ''
         && this.state.motivation !== '') {
-            this.props.rtgesendMail(this.state, this.state.undergroundDataIsRequired);
+            this.props.rtgeSendMail(this.state);
         }
     }
 

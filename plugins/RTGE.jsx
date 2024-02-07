@@ -9,13 +9,13 @@ import pluginIcon from "../assets/images/registration.svg";
 
 import { changeZoomLevel } from "@mapstore/actions/map";
 import {
-    rtgechangeTab,
-    rtgeswitchDraw,
-    rtgeremoveSelectedTiles,
-    rtgeclickTable,
-    rtgesendMail,
-    rtgeinitConfigs,
-    rtgeremoveAllTiles,
+    rtgeChangeTab,
+    rtgeSwitchDraw,
+    rtgeRemoveSelectedTiles,
+    rtgeClickTable,
+    rtgeSendMail,
+    rtgeInitConfigs,
+    rtgeRemoveAllTiles,
     rtgeStopDraw
 } from "../actions/rtge-action";
 import rtgeReducer from "../reducers/rtge-reducer";
@@ -27,7 +27,7 @@ import {
     getSelectedTiles,
     getActiveSelection,
     getSelectedRow,
-    rtgegetUserDetails,
+    rtgeGetUserDetails,
     getRequestStarted,
     isUndergroundDataRequired,
     getMailRequestInProgress
@@ -42,7 +42,7 @@ export default createPlugin(name, {
         dockStyle: mapLayoutValuesSelector(state, {right: true, height: true}, true),
         activeTab: getActiveTab(state),
         selectedTiles: getSelectedTiles(state),
-        user: rtgegetUserDetails(state),
+        user: rtgeGetUserDetails(state),
         activeSelection: getActiveSelection(state),
         selectedRows: getSelectedRow(state),
         requestStarted: getRequestStarted(state),
@@ -52,13 +52,13 @@ export default createPlugin(name, {
     }), {
         changeZoomLevel: changeZoomLevel,
         toggleControl: toggleControl,
-        rtgechangeTab: rtgechangeTab,
-        rtgeswitchDraw: rtgeswitchDraw,
-        rtgeremoveSelectedTiles: rtgeremoveSelectedTiles,
-        rtgeremoveAllTiles: rtgeremoveAllTiles,
-        rtgeclickTable,
-        rtgesendMail,
-        rtgeinitConfigs,
+        rtgeChangeTab: rtgeChangeTab,
+        rtgeSwitchDraw: rtgeSwitchDraw,
+        rtgeRemoveSelectedTiles: rtgeRemoveSelectedTiles,
+        rtgeRemoveAllTiles: rtgeRemoveAllTiles,
+        rtgeClickTable,
+        rtgeSendMail,
+        rtgeInitConfigs,
         rtgeStopDraw: rtgeStopDraw
     })(RTGEComponent),
     reducers: {

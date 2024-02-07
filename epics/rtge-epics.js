@@ -2,23 +2,23 @@
 import Rx from "rxjs";
 import {
     actions,
-    rtgeshowGrid,
-    rtgeinitDrawingMod,
-    rtgegetFeatures,
-    rtgestartDraw,
-    rtgeinitProjections,
-    rtgeaddFeatures,
+    rtgeShowGrid,
+    rtgeInitDrawingMod,
+    rtgeGetFeatures,
+    rtgeStartDraw,
+    rtgeInitProjections,
+    rtgeAddFeatures,
     rtgeStopDraw,
-    rtgeupdateUser,
-    rtgegetUserDetails,
-    rtgecloseRtge,
-    rtgegetUserRoles,
-    rtgesetUndergroundDataJustificationRequired,
-    rtgechangeTab,
+    rtgeUpdateUser,
+    rtgeGetUserDetails,
+    rtgeCloseRtge,
+    rtgeGetUserRoles,
+    rtgeSetUndergroundDataJustificationRequired,
+    rtgeChangeTab,
     tabTypes,
-    rtgeclickTable,
-    rtgeswitchDraw,
-    rtgemailSent,
+    rtgeClickTable,
+    rtgeSwitchDraw,
+    rtgeMailSent,
     rtgeUpdateMapLayout
 } from "../actions/rtge-action";
 import {
@@ -73,8 +73,8 @@ import axios from 'axios';
 var gridLayerIdRTGE;
 var backendURLPrefixRTGE;
 var gridLayerNameRTGE;
-var RTGE_GRID_LAYER_TITLE;
-var RTGEGridLayerProjection;
+var rtgeGridLayerTitle;
+var rtgeGridLayerProjection;
 var rtgeGridLayerGeometryAttribute;
 var rtgeEmailUrl;
 var rtgeUserDetailsUrl;
@@ -159,14 +159,14 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
         };
         currentLayout = layout;
         let observables = [
-            rtgeinitProjections(),
+            rtgeInitProjections(),
             updateDockPanelsList('rtge', 'add', 'right'),
-            rtgeshowGrid(),
-            rtgeinitDrawingMod(),
+            rtgeShowGrid(),
+            rtgeInitDrawingMod(),
             rtgeUpdateMapLayout(layout),
-            rtgeclickTable("", false),
-            rtgegetUserDetails(),
-            rtgegetUserRoles()
+            rtgeClickTable("", false),
+            rtgeGetUserDetails(),
+            rtgeGetUserRoles()
         ];
         return Rx.Observable.from(observables);
     });
@@ -210,7 +210,7 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
         });
         // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
         observableAction.push(resizeMap());
-        observableAction.push(rtgeaddFeatures(selectedTiles));
+        observableAction.push(rtgeAddFeatures(selectedTiles));
         if (drawSupportActiveSelector(store.getState())) {
             observableAction.push(rtgeStopDraw());
         }
@@ -230,13 +230,13 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
 export const displayRTGEGridEpic = (action$, store) =>
     action$.ofType(actions.SHOW_GRID)
         .switchMap(() => {
-            const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.title === RTGE_GRID_LAYER_TITLE ));
+            const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.title === rtgeGridLayerTitle ));
             gridLayer = {
                 handleClickOnLayer: true,
                 hideLoading: true,
                 id: gridLayerIdRTGE,
                 name: gridLayerNameRTGE,
-                title: RTGE_GRID_LAYER_TITLE,
+                title: rtgeGridLayerTitle,
                 tiled: false,
                 type: "wms",
                 search: {
@@ -246,7 +246,7 @@ export const displayRTGEGridEpic = (action$, store) =>
                 params: {
                     exceptions: 'application/vnd.ogc.se_xml'
                 },
-                allowedSRS: RTGEGridLayerProjection,
+                allowedSRS: rtgeGridLayerProjection,
                 format: "image/png",
                 singleTile: false,
                 url: backendURLPrefixRTGE + "/geoserver/ref_topo/wms",
@@ -304,7 +304,7 @@ export const initDrawingModRTGEEpic = (action$) => action$.ofType(actions.INIT_D
  * @returns - observable with the list of actions to do after completing the function (trigger the change drawing status action)
  */
 export const stopDrawingRTGEEpic = (action$) => action$.ofType(actions.STOP_DRAW).switchMap(() => {
-    return Rx.Observable.from([rtgeswitchDraw(''), changeDrawingStatus("clean", "", 'rtge', [], {})]);
+    return Rx.Observable.from([rtgeSwitchDraw(''), changeDrawingStatus("clean", "", 'rtge', [], {})]);
 });
 
 /**
@@ -326,7 +326,7 @@ export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DR
     const options = {
         drawEnabled: true,
         editEnabled: false,
-        featureProjection: RTGEGridLayerProjection,
+        featureProjection: rtgeGridLayerProjection,
         selectEnabled: false,
         stopAfterDrawing: false,
         transformToFeatureCollection: false,
@@ -355,27 +355,27 @@ export const geometryChangeRTGEEpic = (action$, store) =>
                 const geometry = action.features[0].geometry;
                 if (GeometryType.POINT === geometry.type) {
                     // eslint-disable-next-line new-cap
-                    geometry.coordinates = Proj4js('EPSG:4326', RTGEGridLayerProjection, geometry.coordinates);
+                    geometry.coordinates = Proj4js('EPSG:4326', rtgeGridLayerProjection, geometry.coordinates);
                 }
                 if (GeometryType.LINE === geometry.type) {
                     // eslint-disable-next-line new-cap
-                    geometry.coordinates = geometry.coordinates.map((coord) => Proj4js('EPSG:4326', RTGEGridLayerProjection, coord));
+                    geometry.coordinates = geometry.coordinates.map((coord) => Proj4js('EPSG:4326', rtgeGridLayerProjection, coord));
                 }
                 if (GeometryType.POLYGON === geometry.type) {
                     // eslint-disable-next-line new-cap
-                    geometry.coordinates = [geometry.coordinates[0].map((coord) => Proj4js('EPSG:4326', RTGEGridLayerProjection, coord))];
+                    geometry.coordinates = [geometry.coordinates[0].map((coord) => Proj4js('EPSG:4326', rtgeGridLayerProjection, coord))];
                 }
                 geometrySelection = {
                     ...geometry,
-                    projection: RTGEGridLayerProjection
+                    projection: rtgeGridLayerProjection
                 };
                 return Rx.Observable.from([
-                    rtgestartDraw(geometrySelection.type),
-                    rtgegetFeatures(geometrySelection)
+                    rtgeStartDraw(geometrySelection.type),
+                    rtgeGetFeatures(geometrySelection)
                 ]);
             }
             return Rx.Observable.from([
-                rtgestartDraw(getSelectionGeometryType(store.getState()))
+                rtgeStartDraw(getSelectionGeometryType(store.getState()))
             ]);
         });
 
@@ -434,7 +434,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                     if (features.length > maxFeatures) {
                         return Rx.Observable.from([
                             show({ title: "RTGE.alertMaxFeatures.title", message: "RTGE.alertMaxFeatures.message" }, "warning"),
-                            rtgestartDraw(getSelectionGeometryType(store.getState()))]);
+                            rtgeStartDraw(getSelectionGeometryType(store.getState()))]);
                     }
                     const vectorLayer = getSelectedTilesLayer(store.getState());
                     finalElements = [...vectorLayer.options.features, ...finalElements];
@@ -444,7 +444,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                         }
                     );
                     return Rx.Observable.from([
-                        rtgeaddFeatures(finalElements),
+                        rtgeAddFeatures(finalElements),
                         updateAdditionalLayer(
                             selectedTilesLayerId,
                             "RTGE",
@@ -454,7 +454,7 @@ export const getFeaturesRTGEEpic = (action$, store) =>
                                 features: finalElements
                             }
                         ),
-                        rtgestartDraw(getSelectionGeometryType(store.getState()))
+                        rtgeStartDraw(getSelectionGeometryType(store.getState()))
                     ]);
                 });
         });
@@ -471,7 +471,7 @@ export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.
     if (action.geometryType === activeSelectionGeometryType) {
         return Rx.Observable.from([rtgeStopDraw()]);
     }
-    return Rx.Observable.from([rtgestartDraw(action.geometryType)]);
+    return Rx.Observable.from([rtgeStartDraw(action.geometryType)]);
 });
 
 /**
@@ -565,7 +565,7 @@ export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MA
     ),
     // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
     resizeMap(),
-    rtgeaddFeatures(features)]);
+    rtgeAddFeatures(features)]);
 });
 
 /**
@@ -590,7 +590,7 @@ export const clickTableRTGEEpic = (action$, store) => action$.ofType(actions.CLI
     ),
     // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
     resizeMap(),
-    rtgeaddFeatures(features)]);
+    rtgeAddFeatures(features)]);
 });
 
 /**
@@ -614,7 +614,7 @@ export const removeSelectedFeaturesRTGEEpic = (action$, store) => action$.ofType
                 features: emptiedFeatures
             }
         ),
-        rtgeaddFeatures(emptiedFeatures)]);
+        rtgeAddFeatures(emptiedFeatures)]);
 });
 
 /**
@@ -649,10 +649,10 @@ const dropPopUp = (level) => {
     case "success":
         return Rx.Observable.from([
             show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, level),
-            rtgecloseRtge()]);
+            rtgeCloseRtge()]);
     case "error":
         return Rx.Observable.from([
-            rtgemailSent(),
+            rtgeMailSent(),
             show({ title: "RTGE.sendMailFailure.title", message: "RTGE.sendMailFailure.message" }, level)]);
     default:
         break;
@@ -702,12 +702,12 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
     return Rx.Observable.defer(() => axios.post(rtgeEmailUrl, mailContent, params))
         .switchMap(() => {
             return Rx.Observable.from([
-                rtgeaddFeatures([]),
+                rtgeAddFeatures([]),
                 show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, 'success'),
-                rtgecloseRtge(),
-                rtgechangeTab(tabTypes.HOME),
-                rtgeclickTable("", false),
-                rtgemailSent()
+                rtgeCloseRtge(),
+                rtgeChangeTab(tabTypes.HOME),
+                rtgeClickTable("", false),
+                rtgeMailSent()
             ]);
         })
         .catch((e) => {
@@ -736,7 +736,7 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
                 courriel: html.getElementsByClassName("form-group")[2].children[1].firstElementChild.innerHTML.trim(),
                 telephone: html.getElementById("phone").value
             };
-            return Rx.Observable.from([rtgeupdateUser(newUserDetails)]);
+            return Rx.Observable.from([rtgeUpdateUser(newUserDetails)]);
         })
         .catch((e) => {
             console.log(e);
@@ -757,7 +757,7 @@ export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER
                 (role) => rtgeUndergroundDataRoles.includes(role.groupName)
             );
             if (includedRole) {
-                return Rx.Observable.from([rtgesetUndergroundDataJustificationRequired(false)]);
+                return Rx.Observable.from([rtgeSetUndergroundDataJustificationRequired(false)]);
             }
             return Rx.Observable.empty();
         })
@@ -777,8 +777,8 @@ export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFI
     gridLayerIdRTGE = action.configs.rtgeGridLayerId;
     backendURLPrefixRTGE = action.configs.rtgeBackendURLPrefix;
     gridLayerNameRTGE = action.configs.rtgeGridLayerName;
-    RTGE_GRID_LAYER_TITLE = action.configs.rtgeGridLayerTitle;
-    RTGEGridLayerProjection = action.configs.rtgeGridLayerProjection;
+    rtgeGridLayerTitle = action.configs.rtgeGridLayerTitle;
+    rtgeGridLayerProjection = action.configs.rtgeGridLayerProjection;
     rtgeGridLayerGeometryAttribute = action.configs.rtgeGridLayerGeometryAttribute;
     rtgeEmailUrl = action.configs.rtgeEmailUrl;
     rtgeUserDetailsUrl = action.configs.rtgeUserDetailsUrl;
@@ -843,5 +843,5 @@ export const removeAllFeaturesRTGEEpic = (action$, store) => action$.ofType(acti
             features: emptiedFeatures
         }
     ),
-    rtgeaddFeatures(emptiedFeatures)]);
+    rtgeAddFeatures(emptiedFeatures)]);
 });
