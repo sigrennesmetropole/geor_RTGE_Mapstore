@@ -1,4 +1,4 @@
-[Version française](https://github.com/sigrennesmetropole/geor_RTGE_Mapstore/docs/readme-git_geor_RTGE_FR.docx)
+[Version française](https://github.com/sigrennesmetropole/geor_RTGE_Mapstore/docs/readme-git_geor_RTGE_FR.pdf)
 
 [[_TOC_]]
 
