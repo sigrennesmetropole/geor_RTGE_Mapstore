@@ -28,7 +28,7 @@ II.2.1 - Mise en place du dépôt
 
 Pour mettre en place le dépôt il faut suivre la procédure suivante : 
 
-`git clone --recursive https://github.com/sigrennesmetropole/geor_pluginsRM_mapstore/ geor_MapstoreExtension`
+`git clone --recursive https://github.com/sigrennesmetropole/geor_MapstoreExtension`
 
 Puis il faut sélectionner la bonne branche
 
