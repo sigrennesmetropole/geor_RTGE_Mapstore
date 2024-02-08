@@ -1,6 +1,6 @@
 # geor_RTGE_Mapstore
 
-[Version française](https://gitlab2.si.rennes.fr/sig/ed/mapstore/RTGE/-/blob/main/docs/readme-git_geor_RTGE_FR.pdf)
+:fr: [Version française](https://github.com/sigrennesmetropole/geor_RTGE_Mapstore/blob/main/docs/README_FR.MD)
 
 ## I - General Information
 
