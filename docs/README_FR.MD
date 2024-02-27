@@ -4,7 +4,7 @@
 
 ## I - Généralités
 
-![Presentation image of RTGE](docs/images/RTGE_Documentation_home.png "Welcome inside RTGE Plugin for MapStore")
+![Presentation image of RTGE](images/RTGE_Documentation_home.png "Welcome inside RTGE Plugin for MapStore")
 
 Ce plugin MapStore2 permet d'effectuer des demandes d'extraction de données à partir d'une couche de carroyage. Les dalles couvrant l'emprise géographique doivent être sélectionnées, puis un formulaire permettant de formuler sa demande est à compléter. Un mail est ensuite envoyé au service chargé d'effectuer l'extraction de ces données.
 
@@ -82,7 +82,7 @@ Ce plugin est une MapstoreExtension. Il suffit pour l'installer d'accéder à l'
 
 **III.2 - Configuration du plugin**
 
-![Interface d'installation du plugin](docs/images/RTGE_Documentation_3_2.png "Interface d'installation du plugin")
+![Interface d'installation du plugin](images/RTGE_Documentation_3_2.png "Interface d'installation du plugin")
 
 Lors de l'ajout du plugin dans un contexte MapStore pour geOrchestra, celui-ci doit être configuré pour fonctionner correctement. Ces paramètres de configuration sont les suivants : 
 
