@@ -40,7 +40,7 @@ cd MapStore2
 npm i
 cd ../mapstore2-georchestra
 npm i
-npm fe:start
+npm run fe:start
 ```
 The application runs at http://localhost:8081 afterwards.
 
