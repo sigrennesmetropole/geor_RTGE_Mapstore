@@ -118,6 +118,7 @@ const styles = {
 var gridLayer = {};
 
 /**
+ * TODO: revue de code ici avec https://github.com/sigrennesmetropole/geor_urbanisme_mapstore/blob/229b0325d6255cc85254a44010d95ad33471072a/js/extension/epics/urbanisme.js#L123-L126
  * initProjectionsEpic init plugin projection
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
@@ -768,6 +769,7 @@ export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER
 });
 
 /**
+ * TODO: revue de code - voir avec Raoul
  * getConfigsRTGEEpic get RTGE Configs and init them
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context

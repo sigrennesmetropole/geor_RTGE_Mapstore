@@ -5,7 +5,7 @@ import { name } from '../../../config';
 import {createPlugin} from "@mapstore/utils/PluginsUtils";
 import { toggleControl } from '@mapstore/actions/controls';
 import { RTGEComponent } from "../components/Component";
-import pluginIcon from "../assets/images/registration.svg";
+import pluginIcon from "../assets/images/icoPluginRTGE.svg";
 
 import { changeZoomLevel } from "@mapstore/actions/map";
 import {

@@ -449,10 +449,8 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
-     * TODO
-     * renderDataUnderSurf Renders data under surface checkbox field for the form
+     * checkFormValidity checks validity of the form
      * @memberof rtge.component
-     * @returns - dom parts for the data under surface checkbox field
      */
     checkFormValidity() {
         this.state.mailFormValidity = this.state.prenom !== ''
@@ -519,21 +517,21 @@ export class RTGEComponent extends React.Component {
                     <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} / {this.props.rtgeMaxTiles} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
                         <button className={this.props.activeSelection === 'Point'
-                            ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
+                            ? "RTGE_selectorButton btn btn-success RTGE_tooltipMain"
                             : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
                         onClick={() => this.props.rtgeSwitchDraw('Point')}>
                             <Glyphicon glyph="map-marker"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSelectPoint'}/></span>
                         </button>
                         <button className={this.props.activeSelection === 'LineString'
-                            ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
+                            ? "RTGE_selectorButton btn btn-success RTGE_tooltipMain"
                             : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
                         onClick={() => this.props.rtgeSwitchDraw('LineString')}>
                             <Glyphicon glyph="polyline"/>
                             <span className="RTGE_tooltipContent"><Message msgId={'RTGE.tooltips.tooltipSeclectLine'}/></span>
                         </button>
                         <button className={this.props.activeSelection === 'Polygon'
-                            ? "RTGE_selectorButton btn btn-active RTGE_tooltipMain"
+                            ? "RTGE_selectorButton btn btn-success RTGE_tooltipMain"
                             : "RTGE_selectorButton btn btn-primary RTGE_tooltipMain"}
                         onClick={() => this.props.rtgeSwitchDraw('Polygon')}>
                             <Glyphicon glyph="polygon"/>
@@ -729,9 +727,11 @@ export class RTGEComponent extends React.Component {
      * @returns - nothing
      */
     handleTextFieldChange(e, fieldName) {
-        this.state[fieldName] = e.target.value;
         this.checkFormValidity();
-        this.setState(this.state);
+        this.setState({
+            ...this.state,
+            [fieldName]: e.target.value
+        })
     }
 
     /**
@@ -742,9 +742,11 @@ export class RTGEComponent extends React.Component {
      * @returns - nothing
      */
     handlePhoneFieldChange(e, fieldName) {
-        this.state[fieldName] = e;
         this.checkFormValidity();
-        this.setState(this.state);
+        this.setState({
+            ...this.state,
+            [fieldName]: e
+        })
     }
 
     /**
@@ -754,9 +756,11 @@ export class RTGEComponent extends React.Component {
      * @returns - nothing
      */
     handleBooleanFieldChange(fieldName) {
-        this.state[fieldName] = !this.state[fieldName];
         this.checkFormValidity();
-        this.setState(this.state);
+        this.setState({
+            ...this.state,
+            [fieldName]: !this.state[fieldName]
+        })
     }
 
     /**
