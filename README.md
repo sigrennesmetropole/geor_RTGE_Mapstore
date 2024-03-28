@@ -25,7 +25,7 @@ II.2.1 - Setting up the repository
 
 To deploy this repository locally, the follow the steps below:
 
-`git clone --recursive https://github.com/sigrennesmetropole/geor_pluginsRM_mapstore/ geor_MapstoreExtension`
+`git clone --recursive https://github.com/sigrennesmetropole/geor_MapstoreExtension`
 
 Select the desired branch: 
 
@@ -40,7 +40,7 @@ cd MapStore2
 npm i
 cd ../mapstore2-georchestra
 npm i
-npm fe:start
+npm run fe:start
 ```
 The application runs at http://localhost:8081 afterwards.
 
