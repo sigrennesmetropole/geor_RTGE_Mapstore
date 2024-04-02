@@ -16,4 +16,4 @@ trigger_job:
     PARENT_COMMIT_SHA: $CI_COMMIT_SHA
   trigger:
     project: sig/ed/mapstore/MapStoreExtension
-    branch: RM/RTGE_V1.1.0
+    branch: RM/RTGE_main
