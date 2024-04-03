@@ -118,7 +118,7 @@ const styles = {
 var gridLayer = {};
 
 /**
- * TODO: revue de code ici avec https://github.com/sigrennesmetropole/geor_urbanisme_mapstore/blob/229b0325d6255cc85254a44010d95ad33471072a/js/extension/epics/urbanisme.js#L123-L126
+ * TODO: revue de code ici
  * initProjectionsEpic init plugin projection
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
