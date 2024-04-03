@@ -95,7 +95,7 @@ const GeometryType = {
 const styles = {
     "selected": {
         fillColor: "#18BEF7",
-        fillOpacity: 0,
+        fillOpacity: 0.3,
         opacity: 1,
         color: "#18BEF7",
         weight: 4
