@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
 import { RTGE_PANEL_WIDTH } from "../constants/rtge-constants.js";
 import { tabTypes } from "../actions/rtge-action.js";
+import { getHealth } from "../api/api";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
 import {
@@ -15,8 +16,9 @@ import {
     Checkbox
 } from 'react-bootstrap';
 import 'react-phone-number-input/style.css';
-import PhoneInput from 'react-phone-number-input';
+/*import PhoneInput from 'react-phone-number-input';*/
 import LoadingSpinner from '@mapstore/components/misc/LoadingSpinner';
+import {getMessageById} from '@mapstore/utils/LocaleUtils';
 export class RTGEComponent extends React.Component {
 
     static propTypes= {
@@ -30,6 +32,7 @@ export class RTGEComponent extends React.Component {
         activeSelection: PropTypes.string,
         selectedTiles: PropTypes.array,
         user: PropTypes.object,
+        finalUser: PropTypes.object,
         selectedRows: PropTypes.array,
         rtgeHomeText: PropTypes.string,
         rtgeTilesAttributes: PropTypes.array,
@@ -52,6 +55,10 @@ export class RTGEComponent extends React.Component {
         rtgeInitConfigs: PropTypes.func,
         rtgeStopDraw: PropTypes.func
     }
+    
+    static contextTypes = {
+        messages: PropTypes.object
+    };
 
     static defaultProps= {
         active: false,
@@ -63,6 +70,7 @@ export class RTGEComponent extends React.Component {
         activeTab: tabTypes.HOME,
         selectedTiles: [],
         user: {},
+        finalUser: {},
         activeSelection: '',
         selectedRows: [],
         rtgeTilesAttributes: [],
@@ -96,6 +104,10 @@ export class RTGEComponent extends React.Component {
             courriel: props.user.courriel || '',
             telephone: props.user.telephone || '',
             motivation: props.user.motivation || '',
+            finalUse: props.finalUser.type || '',
+            finalUser: props.finalUser.name || '',
+            finalUserEMail: props.finalUser.email || '',
+            finalUserAddress: props.finalUser.address || '',
             dataSurf: props.dataSurf,
             dataUnderSurf: props.dataUnderSurf,
             schematicalNetwork: props.schematicalNetwork,
@@ -161,10 +173,10 @@ export class RTGEComponent extends React.Component {
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.prenom" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
-                        <div className="col-sm-3">
+                        <div className="col-sm-4">
                             <Message msgId="RTGE.prenom" />
                         </div>
-                        <div className="col-sm-9">
+                        <div className="col-sm-8">
                             <FormControl
                                 name="prenom"
                                 type="text"
@@ -190,10 +202,10 @@ export class RTGEComponent extends React.Component {
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.nom" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
-                        <div className="col-sm-3">
+                        <div className="col-sm-4">
                             <Message msgId="RTGE.nom" />
                         </div>
-                        <div className="col-sm-9">
+                        <div className="col-sm-8">
                             <FormControl
                                 name="nom"
                                 type="text"
@@ -219,10 +231,10 @@ export class RTGEComponent extends React.Component {
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.collectivite" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
-                        <div className="col-sm-3">
+                        <div className="col-sm-4">
                             <Message msgId="RTGE.collectivite" />
                         </div>
-                        <div className="col-sm-9">
+                        <div className="col-sm-8">
                             <FormControl
                                 name="collectivite"
                                 type="text"
@@ -248,10 +260,10 @@ export class RTGEComponent extends React.Component {
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.service" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
-                        <div className="col-sm-3">
+                        <div className="col-sm-4">
                             <Message msgId="RTGE.service" />
                         </div>
-                        <div className="col-sm-9">
+                        <div className="col-sm-8">
                             <FormControl
                                 name="service"
                                 type="text"
@@ -277,10 +289,10 @@ export class RTGEComponent extends React.Component {
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.courriel" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
-                        <div className="col-sm-3">
+                        <div className="col-sm-4">
                             <Message msgId="RTGE.courriel" />
                         </div>
-                        <div className="col-sm-9">
+                        <div className="col-sm-8">
                             <FormControl
                                 name="courriel"
                                 type="text"
@@ -306,20 +318,152 @@ export class RTGEComponent extends React.Component {
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.telephone" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
-                        <div className="col-sm-3">
+                        <div className="col-sm-4">
                             <Message msgId="RTGE.telephone" />
                         </div>
-                        <div className="col-sm-9">
-                            <PhoneInput
+                        <div className="col-sm-8">
+                            <FormControl
                                 name="telephone"
-                                defaultCountry="FR"
-                                placeholder="Entrez un numéro de téléphone"
+                                type="text"
+                                placeholder=""
                                 value={this.state.telephone}
-                                onChange={(e) => this.handlePhoneFieldChange(e, 'telephone')}/>
+                                onChange={(e) => this.handleTextFieldChange(e, 'telephone')}
+                            />
                         </div>
                     </InputGroup>
                 </FormGroup>
             </div>
+        );
+    }
+
+    /**
+     * renderFinalUse Renders final use field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the final use field
+     */
+    renderFinalUse() {
+        return (
+            <div className="RTGE_formUnit">
+                <FormGroup controlId="rtgeForm.finalUse" className="RTGE_form-group">
+                    <InputGroup className="RTGE_inputGroupStyles">
+                        <div className="col-sm-4">
+                            <Message msgId="RTGE.finalUse" />
+                        </div>
+                        <div className="col-sm-8">
+                            <FormControl componentClass="select"
+                                className="RTGE_finalUseFormValues" 
+                                name="finalUse"
+                                placeholder=""
+                                required
+                                onChange={(e) => {this.handleTextFieldChange(e, 'finalUse');}} 
+                                style={this.state.finalUse === '' ? {"borderColor": "red"} : {"borderColor": "inherit"}}>
+                                <option className="RTGE_finalUseFormDropDown" value=''>{getMessageById(this.context.messages, 'RTGE.finalUseSelectValue')}</option>
+                                <option className="RTGE_finalUseFormDropDown" value="Interne">{getMessageById(this.context.messages, 'RTGE.internalUsage')}</option>
+                                <option className="RTGE_finalUseFormDropDown" value="Externe">{getMessageById(this.context.messages, 'RTGE.externalUsage')}</option>
+                            </FormControl>
+                        </div>
+                    </InputGroup>
+                </FormGroup>
+            </div>
+        );
+    }
+    /**
+     * renderFinalUser Renders final user field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the final user field
+     */
+    renderFinalUser() {
+        return (
+            <>
+            {this.state.finalUse === "Externe" && 
+            <>
+            <div className="col-sm-1"></div><div className="col-sm-11 RTGE_ExtUserInfoLabel">{getMessageById(this.context.messages, 'RTGE.finalUserInfoLabel')}</div>
+            <div className="RTGE_formUnit">
+                <FormGroup controlId="rtgeForm.finalUser" className="RTGE_form-group">
+                    <InputGroup className="RTGE_inputGroupStyles">
+                        <div className="col-sm-1"></div>
+                        <div className="col-sm-4">
+                            <Message msgId="RTGE.finalUser" />
+                        </div>
+                        <div className="col-sm-7">
+                            <FormControl
+                                name="finalUser"
+                                type="text"
+                                placeholder=""
+                                value={this.state.finalUser}
+                                required
+                                onChange={(e) => this.handleTextFieldChange(e, 'finalUser')}
+                            />
+                        </div>
+                    </InputGroup>
+                </FormGroup>
+            </div>
+            </>}
+            </>
+        );
+    }
+    /**
+     * renderFinalUserEMail Renders final user E-Mail field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the final user E-Mail field
+     */
+    renderFinalUserEMail() {
+        return (
+            <>
+                {this.state.finalUse === 'Externe' &&
+                <div className="RTGE_formUnit">
+                    <FormGroup controlId="rtgeForm.finalUser" className="RTGE_form-group">
+                        <InputGroup className="RTGE_inputGroupStyles">
+                            <div className="col-sm-1"></div>
+                            <div className="col-sm-4">
+                                <Message msgId="RTGE.finalUserEMail" />
+                            </div>
+                            <div className="col-sm-7">
+                                <FormControl
+                                    name="finalUserEMail"
+                                    type="text"
+                                    placeholder=""
+                                    value={this.state.finalUserEMail}
+                                    required
+                                    onChange={(e) => this.handleTextFieldChange(e, 'finalUserEMail')}
+                                />
+                            </div>
+                        </InputGroup>
+                    </FormGroup>
+                </div>}
+            </>
+        );
+    }
+    /**
+     * renderFinalUserAddress Renders final user Address field for the form
+     * @memberof rtge.component
+     * @returns - dom parts for the final user Address field
+     */
+    renderFinalUserAddress() {
+        return (
+            <>
+                {this.state.finalUse === 'Externe' &&
+                <div className="RTGE_formUnit">
+                    <FormGroup controlId="rtgeForm.finalUser" className="RTGE_form-group">
+                        <InputGroup className="RTGE_inputGroupStyles">
+                            <div className="col-sm-1"></div>
+                            <div className="col-sm-4">
+                                <Message msgId="RTGE.finalUserAddress" />
+                            </div>
+                            <div className="col-sm-7">
+                                <FormControl
+                                    name="finalUserAddress"
+                                    type="text"
+                                    placeholder=""
+                                    value={this.state.finalUserAddress}
+                                    required
+                                    onChange={(e) => this.handleTextFieldChange(e, 'finalUserAddress')}
+                                />
+                            </div>
+                        </InputGroup>
+                    </FormGroup>
+                </div>}
+            </>
         );
     }
 
@@ -333,17 +477,21 @@ export class RTGEComponent extends React.Component {
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.motivation" className="RTGE_form-group">
                     <InputGroup>
-                        <Message msgId="RTGE.motivation" />
-                        <FormControl
-                            name="motivation"
-                            componentClass="textarea"
-                            placeholder=""
-                            value={this.state.motivation}
-                            required
-                            onChange={(e) => this.handleTextFieldChange(e, 'motivation')}
-                            rows={4}
-                            cols={50}
-                        />
+                        <div className="col-sm-12">
+                            <Message msgId="RTGE.motivation" />
+                        </div>
+                        <div className="col-sm-12">
+                            <FormControl
+                                name="motivation"
+                                componentClass="textarea"
+                                placeholder=""
+                                value={this.state.motivation}
+                                required
+                                onChange={(e) => this.handleTextFieldChange(e, 'motivation')}
+                                rows={4}
+                                cols={50}
+                            />
+                        </div>
                     </InputGroup>
                 </FormGroup>
             </div>
@@ -421,6 +569,9 @@ export class RTGEComponent extends React.Component {
      */
     renderSchematicalNetwork() {
         return (
+            <>
+            {this.state.dataUnderSurf && 
+            <>
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.schematicalNetwork"  className="RTGE_form-group">
                     <div className="col-sm-4"></div>
@@ -431,6 +582,7 @@ export class RTGEComponent extends React.Component {
                                 defaultChecked={this.state.schematicalNetwork}
                                 onChange={() => this.handleBooleanFieldChange('schematicalNetwork')}
                                 className="RTGE_checkbox"
+                                disabled={!this.state.dataUnderSurf}
                             />
                         </div>
                         <div className="col-sm-9 RTGE_notBold">
@@ -445,6 +597,8 @@ export class RTGEComponent extends React.Component {
                     </div>
                 </FormGroup>
             </div>
+            </>}
+            </>
         );
     }
 
@@ -458,10 +612,11 @@ export class RTGEComponent extends React.Component {
         && this.state.collectivite !== ''
         && this.state.service !== ''
         && this.state.courriel !== ''
+        && (this.state.finalUse === 'Interne' || (this.state.finalUse === 'Externe' && this.state.finalUser && this.state.finalUserEMail && this.state.finalUserAddress))
         && this.state.motivation !== ''
-        && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)
+        && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false);
         this.setState(this.state);
-    }
+        }
 
     /**
      * renderHomeTab home tab content
@@ -481,6 +636,7 @@ export class RTGEComponent extends React.Component {
      * renderSendTab renders all the form elements in one place
      * @memberof rtge.component
      * @returns - organise the plugins form
+     * onClick={(e) => {this.rtgeSendMail(e);}} disabled={!this.state.mailFormValidity}><Message msgId={'RTGE.sendTab.button'}
      */
     renderSendTab = () => {
         return (
@@ -491,13 +647,17 @@ export class RTGEComponent extends React.Component {
                     {this.renderCollectiviteField()}
                     {this.renderService()}
                     {this.renderCourriel()}
-                    {this.renderTelephone()}
+                    {this.renderTelephone()}                    
+                    {this.renderFinalUse()}
+                    {this.renderFinalUser()}
+                    {this.renderFinalUserEMail()}
+                    {this.renderFinalUserAddress()}
                     {this.renderMotivation()}
                     {this.renderDataSurf()}
                     {this.renderDataUnderSurf()}
                     {this.renderSchematicalNetwork()}
                     {<button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary"
-                        onClick={(e) => {this.rtgeSendMail(e);}} disabled={!this.state.mailFormValidity}><Message msgId={'RTGE.sendTab.button'}/>
+                       onClick={(e) => {this.rtgeSendMail(e);}}><Message msgId={'RTGE.sendTab.button'} />
                     </button>
                     }
                 </Form>
@@ -741,13 +901,13 @@ export class RTGEComponent extends React.Component {
      * @param fieldName - name of the field which is to update
      * @returns - nothing
      */
-    handlePhoneFieldChange(e, fieldName) {
+    /*handlePhoneFieldChange(e, fieldName) {
         this.checkFormValidity();
         this.setState({
             ...this.state,
             [fieldName]: e
         })
-    }
+    }*/
 
     /**
      * handleBooleanFieldChange when the booleans fields change, it updates their state
@@ -769,15 +929,21 @@ export class RTGEComponent extends React.Component {
      * @returns - send mail action when available or nothing
      */
     rtgeSendMail = (event) => {
-        // Le preventDefault ci dessous permet de prévenir la double utilisation du bouton, ce qui recharche la page d'envoi de mail.
+        // Le preventDefault ci dessous permet de prévenir la double utilisation du bouton, ce qui recharge la page d'envoi de mail.
         event.preventDefault();
         if (this.state.prenom !== ''
         && this.state.nom !== ''
         && this.state.collectivite !== ''
         && this.state.service !== ''
         && this.state.courriel !== ''
-        && this.state.motivation !== '') {
+        && (this.state.finalUse === 'Interne' || (this.state.finalUse === 'Externe' && this.state.finalUser && this.state.finalUserEMail && this.state.finalUserAddress))
+        && this.state.motivation !== ''
+        && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)) {
+            console.log('formOK')
             this.props.rtgeSendMail(this.state);
+        }
+        else{
+            console.log('Nope');
         }
     }
 
@@ -794,6 +960,10 @@ export class RTGEComponent extends React.Component {
             service: this.props.user.service || '',
             courriel: this.props.user.courriel || '',
             telephone: this.props.user.telephone || '',
+            finalUse: this.props.finalUser.type || '',
+            finalUser: this.props.finalUser.name || '',
+            finalUserEMail: this.props.finalUser.email || '',
+            finalUserAddress: this.props.finalUser.address || '',
             motivation: this.props.user.motivation || '',
             dataSurf: !!this.props.dataSurf,
             dataUnderSurf: !!this.props.dataUnderSurf,

@@ -269,7 +269,7 @@ button.RTGE_active{
     font-size: inherit!important;
 }
 
-.RTGE_formUnit input:placeholder-shown{
+.RTGE_formUnit input:required:placeholder-shown{
     border-color: red;
 }
 
@@ -286,6 +286,15 @@ button.RTGE_active{
 .RTGE_formUnit input[type='checkbox']:empty{
     border-color: red;
 }
+
+.RTGE_finalUseFormValues{ font-weight:initial !important;}
+
+.RTGE_finalUseFormDropDown{
+    background-color: var(--ms-main-bg, #ffffff) !important;
+    border-radius: 0px !important;
+}
+
+.RTGE_ExtUserInfoLabel{ margin-bottom:15px!important;}
 
 .RTGE_formUnit textarea {
     width: 100%!important;

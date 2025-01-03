@@ -19,6 +19,7 @@ import {
     rtgeClickTable,
     rtgeSwitchDraw,
     rtgeMailSent,
+    rtgeMailNotSent,
     rtgeUpdateMapLayout
 } from "../actions/rtge-action";
 import {
@@ -35,15 +36,20 @@ import {
     UPDATE_MAP_LAYOUT,
     FORCE_UPDATE_MAP_LAYOUT
 } from "@mapstore/actions/maplayout";
-
+import {
+    OPEN_FEATURE_GRID
+} from "@mapstore/actions/featuregrid";
 import {
     isOpen,
     getSelectedTiles,
     getSelectedTilesLayer,
-    getSelectionGeometryType,
-    getActiveTab
+    getSelectionGeometryType
 } from "../selectors/rtge-selectors";
 import { head } from "lodash";
+import {
+    setAPIURL,
+    postNewRequest
+} from '../api/api';
 import {
     addLayer,
     refreshLayerVersion,
@@ -67,7 +73,6 @@ import {
     CLICK_ON_MAP,
     resizeMap
 } from "@mapstore/actions/map";
-import Xtemplate from 'xtemplate';
 import axios from 'axios';
 
 var gridLayerIdRTGE;
@@ -179,7 +184,7 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
  * @param store - list the content of variables inputted with the actions
  * @returns - observable with the list of actions to do after completing the function (the dock panel and the map layout update actions)
  */
-export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, actions.CLOSE_RTGE)
+export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTROL, OPEN_FEATURE_GRID, actions.CLOSE_RTGE)
     .filter(action => !!store.getState()
     && !isOpen(store.getState()) || action.type === actions.CLOSE_RTGE )
     .switchMap((action) => {
@@ -222,6 +227,7 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
     });
 
 /**
+ * TODO : remplacer les url par les valeurs de la config
  * displayRTGEGridEpic displays the grid on the map
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
@@ -242,7 +248,7 @@ export const displayRTGEGridEpic = (action$, store) =>
                 type: "wms",
                 search: {
                     type: "wfs",
-                    url: backendURLPrefixRTGE + "/geoserver/ref_topo/ows"
+                    url: "/geoserver/ref_topo/ows"
                 },
                 params: {
                     exceptions: 'application/vnd.ogc.se_xml'
@@ -250,7 +256,7 @@ export const displayRTGEGridEpic = (action$, store) =>
                 allowedSRS: rtgeGridLayerProjection,
                 format: "image/png",
                 singleTile: false,
-                url: backendURLPrefixRTGE + "/geoserver/ref_topo/wms",
+                url: "/geoserver/ref_topo/wms",
                 visibility: true,
                 featureInfo: {
                     format: "PROPERTIES"
@@ -627,97 +633,79 @@ export const removeSelectedFeaturesRTGEEpic = (action$, store) => action$.ofType
 function getFormattedTiles(state) {
     var selectedTiles = getSelectedTiles(state);
     var formattedTiles = '';
-    for (let index = 0; index < selectedTiles.length; index = index + 2) {
+    for (let index = 0; index < selectedTiles.length; index ++) {
         formattedTiles += selectedTiles[index]?.properties?.cases_200;
-        if (selectedTiles[index + 1]) {
-            formattedTiles += ", " + selectedTiles[index + 1]?.properties?.cases_200;
-            if (index + 1 < selectedTiles.length - 1) {
-                formattedTiles += ",\n";
-            }
+        if (index < selectedTiles.length - 1) {
+            formattedTiles += ",";
         }
     }
     return formattedTiles;
 }
 
 /**
- * dropPopUp drop popup according to level
- * @memberof rtge.epics
- * @param level - popup level e.g: success | error
- * @returns - observable containing popup or empty observable
- */
-const dropPopUp = (level) => {
-    switch (level) {
-    case "success":
-        return Rx.Observable.from([
-            show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, level),
-            rtgeCloseRtge()]);
-    case "error":
-        return Rx.Observable.from([
-            rtgeMailSent(),
-            show({ title: "RTGE.sendMailFailure.title", message: "RTGE.sendMailFailure.message" }, level)]);
-    default:
-        break;
-    }
-    return Rx.Observable.empty();
-};
-
-/**
- * sendMailEpic send email to selected adresse in mailContent.to
+ * sendMailRTGEEpic send email to selected adresse in mailContent.to
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
  * @param store - list the content of variables inputted with the actions
  * @returns - empty observable
  */
 export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_MAIL).switchMap((action) => {
-    let mailContent = {
-        "subject": rtgeMailSubject,
-        "to": rtgeMailRecipients,
-        "cc": [],
-        "bcc": []
-    };
-    let template = rtgeMailTemplate;
+    //gestion des datas
+    let datas = [];
     let formatedTiles = getFormattedTiles(store.getState());
-    template = new Xtemplate(template).render({
-        first_name: action.form.prenom,
-        last_name: action.form.nom,
-        email: action.form.courriel,
-        tel: action.form.telephone,
-        service: action.form.service,
-        company: action.form.collectivite,
-        underground: action.form.dataUnderSurf,
-        undergroundDataIsRequired: action.form.undergroundDataIsRequired,
-        aboveground: action.form.dataSurf,
-        schematicalnetwork: action.form.schematicalNetwork,
-        comments: action.form.motivation,
-        tiles: formatedTiles
-    });
-    let subjectTemplate = new Xtemplate(mailContent.subject).render({
-        count: getSelectedTiles(store.getState()).length
-    });
-    mailContent.body = template;
-    mailContent.subject = subjectTemplate;
-    const params = {
-        timeout: 30000,
-        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
-    };
-    return Rx.Observable.defer(() => axios.post(rtgeEmailUrl, mailContent, params))
-        .switchMap(() => {
+    datas.push(
+        formatedTiles,
+        action.form.prenom,
+        action.form.nom,
+        action.form.collectivite,
+        action.form.service,
+        action.form.courriel,
+        action.form.telephone,
+        action.form.motivation,
+        action.form.dataSurf,
+        action.form.dataUnderSurf
+    );
+    // - gestion donnees schematiques (obligatoirement false si donnees sous-sol non cochees)
+    let schematical = (action.form.dataUnderSurf) ? action.form.schematicalNetwork : false;
+    datas.push(schematical);
+    // - gestion infos utilisateur externe
+    datas.push(action.form.finalUse)
+    if (action.form.finalUse === 'Externe'){
+        datas.push(
+            action.form.finalUser,
+            action.form.finalUserEMail,
+            action.form.finalUserAddress
+        )
+    }
+
+    //send request
+    return Rx.Observable.forkJoin(
+        postNewRequest(datas)
+    ).switchMap((response) => {
+        response = response[0];
+        console.log(response);
+        if (response.status === 200){
             return Rx.Observable.from([
                 rtgeAddFeatures([]),
-                show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, 'success'),
-                rtgeCloseRtge(),
                 rtgeChangeTab(tabTypes.HOME),
                 rtgeClickTable("", false),
-                rtgeMailSent()
+                rtgeMailSent(),
+                show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, "success"),
+                rtgeCloseRtge()
             ]);
-        })
-        .catch((e) => {
-            console.log(e);
-            return dropPopUp("error");
-        });
+        }
+        else {
+            var popUpMessage = 'Error '+response.status.toString()+': '+response.statusText;
+            return Rx.Observable.from([
+                rtgeMailNotSent(),
+                show({ title: "RTGE.sendMailFailure.title", message: popUpMessage }, "error")
+            ]);
+        }
+    });
 });
 
 /**
+ * TODO : change when route available on backend
  * getUserDetailsEpic get user details when called
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
@@ -790,7 +778,11 @@ export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFI
     rtgeMaxTiles = action.configs.rtgeMaxTiles;
     rtgeTileIdAttribute = action.configs.rtgeTileIdAttribute;
     rtgeUndergroundDataRoles = action.configs.rtgeUndergroundDataRoles;
-    rtgeUserRolesUrl = action.configs.rtgeUserRolesUrl;
+    rtgeUserRolesUrl = action.configs.rtgeUserRolesUrl; 
+    /*update v2.0 : setting url for backend is now required*/ 
+    if (backendURLPrefixRTGE != ""){
+        setAPIURL(backendURLPrefixRTGE);
+    }
     return Rx.Observable.empty();
 });
 

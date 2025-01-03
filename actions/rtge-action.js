@@ -24,7 +24,8 @@ export const actions = {
     GET_USER_ROLES: "RTGE:GET_USER_ROLES",
     UNDERGROUND_DATA_JUSTIFICATION_REQUIRED: "RTGE:UNDERGROUND_DATA_JUSTIFICATION_REQUIRED",
     REMOVE_ALL_TILES: "RTGE:REMOVE_ALL_TILES",
-    MAIL_SENT: "RTGE:MAIL_SENT"
+    MAIL_SENT: "RTGE:MAIL_SENT",
+    MAIL_NOT_SENT: "RTGE:MAIL_NOT_SENT"
 };
 
 export const tabTypes = {
@@ -271,6 +272,17 @@ export function rtgeRemoveAllTiles() {
 export function rtgeMailSent() {
     return {
         type: actions.MAIL_SENT
+    };
+}
+
+/**
+ * rtgeMailNotSent actions to tell mail has been sent, stop the spinner
+ * @memberof rtge.actions
+ * @returns - action mail sent
+ */
+export function rtgeMailNotSent() {
+    return {
+        type: actions.MAIL_NOT_SENT
     };
 }
 

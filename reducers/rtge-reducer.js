@@ -18,6 +18,8 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
+    //console.log(action);
+    //console.log(state);
     switch (action.type) {
     case actions.CHANGE_TAB:
         return assign({}, state, { activeTab: action.tab });
@@ -38,6 +40,8 @@ export default (state = initialState, action) => {
     case actions.SEND_MAIL:
         return assign({}, state, { mailRequestInProgress: true });
     case actions.MAIL_SENT:
+        return assign({}, state, { mailRequestInProgress: false });
+    case actions.MAIL_NOT_SENT:
         return assign({}, state, { mailRequestInProgress: false });
     default:
         return state;
