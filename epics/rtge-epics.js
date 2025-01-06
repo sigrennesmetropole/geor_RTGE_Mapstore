@@ -697,7 +697,7 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
 });
 
 /**
- * TODO : change when route available on backend
+ * TODO : change when route available on backend - changer dom assignement
  * getUserDetailsEpic get user details when called
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
