@@ -357,6 +357,7 @@ button.RTGE_active{
 
 .RTGE_buttonToRight{
     float: right;
+    margin-right: 30px !important;
 }
 
 .RTGE_undergroundWarning{

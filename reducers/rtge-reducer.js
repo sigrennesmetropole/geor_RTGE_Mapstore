@@ -35,8 +35,6 @@ export default (state = initialState, action) => {
         return assign({}, state, { user: action.newUserDetails });
     case actions.INIT_CONFIGS:
         return assign({}, state, { configs: action.configs });
-    case actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED:
-        return assign({}, state, { undergroundDataIsRequired: action.undergroundDataIsRequired });
     case actions.SEND_MAIL:
         return assign({}, state, { mailRequestInProgress: true });
     case actions.MAIL_SENT:

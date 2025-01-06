@@ -12,8 +12,6 @@ import {
     rtgeUpdateUser,
     rtgeGetUserDetails,
     rtgeCloseRtge,
-    rtgeGetUserRoles,
-    rtgeSetUndergroundDataJustificationRequired,
     rtgeChangeTab,
     tabTypes,
     rtgeClickTable,
@@ -81,15 +79,9 @@ var gridLayerNameRTGE;
 var rtgeGridLayerTitle;
 var rtgeGridLayerProjection;
 var rtgeGridLayerGeometryAttribute;
-var rtgeEmailUrl;
 var rtgeUserDetailsUrl;
-var rtgeUserRolesUrl;
-var rtgeMailTemplate;
-var rtgeMailRecipients;
-var rtgeMailSubject;
 var rtgeMaxTiles;
 var rtgeTileIdAttribute;
-var rtgeUndergroundDataRoles;
 var currentLayout;
 var lastSelectedTile;
 const GeometryType = {
@@ -171,8 +163,7 @@ export const openRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONTR
             rtgeInitDrawingMod(),
             rtgeUpdateMapLayout(layout),
             rtgeClickTable("", false),
-            rtgeGetUserDetails(),
-            rtgeGetUserRoles()
+            rtgeGetUserDetails()
         ];
         return Rx.Observable.from(observables);
     });
@@ -238,6 +229,7 @@ export const displayRTGEGridEpic = (action$, store) =>
     action$.ofType(actions.SHOW_GRID)
         .switchMap(() => {
             const mapstoreGridLayer = head(store.getState().layers.flat.filter(l => l.title === rtgeGridLayerTitle ));
+            const geoserverWorkspace = gridLayerIdRTGE.split(':')[0];
             gridLayer = {
                 handleClickOnLayer: true,
                 hideLoading: true,
@@ -248,7 +240,7 @@ export const displayRTGEGridEpic = (action$, store) =>
                 type: "wms",
                 search: {
                     type: "wfs",
-                    url: "/geoserver/ref_topo/ows"
+                    url: "/geoserver/"+geoserverWorkspace+"/ows"
                 },
                 params: {
                     exceptions: 'application/vnd.ogc.se_xml'
@@ -256,7 +248,7 @@ export const displayRTGEGridEpic = (action$, store) =>
                 allowedSRS: rtgeGridLayerProjection,
                 format: "image/png",
                 singleTile: false,
-                url: "/geoserver/ref_topo/wms",
+                url: "/geoserver/"+geoserverWorkspace+"/wms",
                 visibility: true,
                 featureInfo: {
                     format: "PROPERTIES"
@@ -734,29 +726,6 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
 });
 
 /**
- * getUserRolesRTGEEpic get user roles when called
- * @memberof rtge.epics
- * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable or underground special role if needed
- */
-export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER_ROLES).switchMap(() => {
-    return Rx.Observable.defer(() => axios.get(rtgeUserRolesUrl, {responseType: "json"}))
-        .switchMap((rolesResponse) => {
-            let includedRole = rolesResponse.data.User.groups.group.find(
-                (role) => rtgeUndergroundDataRoles.includes(role.groupName)
-            );
-            if (includedRole) {
-                return Rx.Observable.from([rtgeSetUndergroundDataJustificationRequired(false)]);
-            }
-            return Rx.Observable.empty();
-        })
-        .catch((e) => {
-            console.log(e);
-            return Rx.Observable.empty();
-        });
-});
-
-/**
  * TODO: revue de code - voir avec Raoul
  * getConfigsRTGEEpic get RTGE Configs and init them
  * @memberof rtge.epics
@@ -770,15 +739,9 @@ export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFI
     rtgeGridLayerTitle = action.configs.rtgeGridLayerTitle;
     rtgeGridLayerProjection = action.configs.rtgeGridLayerProjection;
     rtgeGridLayerGeometryAttribute = action.configs.rtgeGridLayerGeometryAttribute;
-    rtgeEmailUrl = action.configs.rtgeEmailUrl;
     rtgeUserDetailsUrl = action.configs.rtgeUserDetailsUrl;
-    rtgeMailTemplate = action.configs.rtgeMailTemplate;
-    rtgeMailRecipients = action.configs.rtgeMailRecipients;
-    rtgeMailSubject = action.configs.rtgeMailSubject;
     rtgeMaxTiles = action.configs.rtgeMaxTiles;
     rtgeTileIdAttribute = action.configs.rtgeTileIdAttribute;
-    rtgeUndergroundDataRoles = action.configs.rtgeUndergroundDataRoles;
-    rtgeUserRolesUrl = action.configs.rtgeUserRolesUrl; 
     /*update v2.0 : setting url for backend is now required*/ 
     if (backendURLPrefixRTGE != ""){
         setAPIURL(backendURLPrefixRTGE);

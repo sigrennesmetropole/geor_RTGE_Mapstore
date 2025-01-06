@@ -92,16 +92,10 @@ When the plugin is added to a MapStore context for geOrchestra, it needs to be c
 | rtgeGridLayerTitle | "RTGE : Carroyage au 1/200" | Title, in the map context, gaved to the grid layer used to select the data extraction zones. |
 | rtgeGridLayerProjection | "EPSG:3948" | EPSG code of the native projection system used by the grid layer. |
 | rtgeGridLayerGeometryAttribute | "shape" | Name of the attribute of the grid layer containing the tile geometry. |
-| rtgeEmailUrl | "/console/emailProxy" | Link to the SMTP server to use. |
 | rtgeUserDetailsUrl | "/console/account/userdetails" | Link to retrieve the logged-in user's information to pre-fill the form. |
-| rtgeUserRolesUrl | "/mapstore/rest/geostore/users/user/details?includeattributes=true" | Link to retrieve the logged-in user's role information to check their rights to view restricted data. |
 | rtgeHomeText | "" | Text (HTML) that is displayed on the home tab of the RTGE plugin. |
-| rtgeMailRecipients | "" | List containing the email addresses of the recipients of the data extraction request in text format. These addresses must first be added to the emailProxyRecipientWhitelist whitelist in the geOrchestra console.properties file. |
-| RtgeMailSubject | "" | Body text of the email to be sent. It will contain the variables replaced by the values in the form:<br>-{{first_name}}<br>-{{last_name}}<br>-{{email}}<br>-{{tel}}<br>-{{service}} <br>-{{company}}<br>-{{aboveground}}<br>-{{underground}}<br>-{{undergroundDataIsRequired}}<br>-{{schematicalnetwork}}<br>-{{comments}} |
-| rtgeMailSubject | "" | Subject of the email sent. Can contain the number of tiles selected: {{count}} |
 | rtgeMaxTiles | "50" | Maximum number of tiles that can be selected. |
 | rtgeTileIdAttribute | "id_case" | Name of the attribute field containing the tiles Ids. These ids are sent as a text list in the extraction request email. |
 | rtgeTilesAttributes | [{<br>"attribute": "id",<br>"title":"Identifiant",<br>"colWidth": "col-sm-5"<br>},<br>{<br>"attribute":"date ",<br>"title": "Date MAJ",<br>"colWidth":"col-sm-3"<br>}] | List of attributes that will be displayed in the table of selected tiles. For each attribute :<br>-	Attribute : name of the attribute to display<br>-	Title : alias to be displayed in the column header<br>-	colWidth : column width value in the form "col-sm-X" where X is the desired width value.<br>It is recommended that the sum of the column width values does not exceed 12.|
-| rtgeUndergroundDataRoles | "EL_APPLIS_RMTR_SSOL" | Name of the user role authorised to view restricted data. |
 
 The plugin is optimised for use in a map context using the EPSG:3857 projection system, and has been tested in an environment using the EPSG:3948 projection system.

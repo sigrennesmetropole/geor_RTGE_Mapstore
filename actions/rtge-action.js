@@ -21,8 +21,6 @@ export const actions = {
     GET_USER_DETAILS: 'RTGE:GET_USER_DETAILS',
     INIT_CONFIGS: "RTGE:INIT_CONFIGS",
     CLOSE_RTGE: "RTGE:CLOSE_RTGE",
-    GET_USER_ROLES: "RTGE:GET_USER_ROLES",
-    UNDERGROUND_DATA_JUSTIFICATION_REQUIRED: "RTGE:UNDERGROUND_DATA_JUSTIFICATION_REQUIRED",
     REMOVE_ALL_TILES: "RTGE:REMOVE_ALL_TILES",
     MAIL_SENT: "RTGE:MAIL_SENT",
     MAIL_NOT_SENT: "RTGE:MAIL_NOT_SENT"
@@ -227,29 +225,6 @@ export function rtgeInitConfigs(configs) {
 export function rtgeCloseRtge() {
     return {
         type: actions.CLOSE_RTGE
-    };
-}
-
-/**
- * rtgeGetUserRoles action to get roles of users
- * @memberof rtge.actions
- * @returns - action get user roles
- */
-export function rtgeGetUserRoles() {
-    return {
-        type: actions.GET_USER_ROLES
-    };
-}
-
-/**
- * rtgeSetUndergroundDataJustificationRequired action throw when you egt the underground role for justification to obtain data
- * @memberof rtge.actions
- * @returns - action underground data justification required
- */
-export function rtgeSetUndergroundDataJustificationRequired(undergroundDataIsRequired) {
-    return {
-        type: actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED,
-        undergroundDataIsRequired
     };
 }
 

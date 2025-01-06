@@ -38,7 +38,6 @@ export class RTGEComponent extends React.Component {
         rtgeTilesAttributes: PropTypes.array,
         rtgeMaxTiles: PropTypes.string,
         mailRequestInProgress: PropTypes.bool,
-        undergroundDataIsRequired: PropTypes.bool,
         pluginIcon: PropTypes.string,
         dataSurf: PropTypes.bool,
         dataUnderSurf: PropTypes.bool,
@@ -76,7 +75,6 @@ export class RTGEComponent extends React.Component {
         rtgeTilesAttributes: [],
         rtgeMaxTiles: '',
         mailRequestInProgress: false,
-        undergroundDataIsRequired: true,
         pluginIcon: '',
         dataSurf: true,
         dataUnderSurf: false,
@@ -112,9 +110,6 @@ export class RTGEComponent extends React.Component {
             dataUnderSurf: props.dataUnderSurf,
             schematicalNetwork: props.schematicalNetwork,
             rtgeHomeText: props.rtgeHomeText,
-            rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
-            rtgeUserRolesUrl: props.rtgeUserRolesUrl,
-            undergroundDataIsRequired: props.undergroundDataIsRequired,
             pluginIcon: props.pluginIcon,
             mailFormValidity: false
         };
@@ -125,22 +120,15 @@ export class RTGEComponent extends React.Component {
             rtgeGridLayerTitle: props.rtgeGridLayerTitle,
             rtgeGridLayerProjection: props.rtgeGridLayerProjection,
             rtgeGridLayerGeometryAttribute: props.rtgeGridLayerGeometryAttribute,
-            rtgeEmailUrl: props.rtgeEmailUrl,
             rtgeUserDetailsUrl: props.rtgeUserDetailsUrl,
-            rtgeMailTemplate: props.rtgeMailTemplate,
-            rtgeMailRecipients: props.rtgeMailRecipients,
-            rtgeMailSubject: props.rtgeMailSubject,
             rtgeMaxTiles: props.rtgeMaxTiles,
             rtgeTileIdAttribute: props.rtgeTileIdAttribute,
-            rtgeUndergroundDataRoles: props.rtgeUndergroundDataRoles,
-            rtgeUserRolesUrl: props.rtgeUserRolesUrl
         });
     }
 
     componentDidUpdate(prevProps) {
         if (!Object.keys(prevProps.user).length
-        && this.props.user !== prevProps.user
-        || this.props.undergroundDataIsRequired !== prevProps.undergroundDataIsRequired) {
+        && this.props.user !== prevProps.user) {
             this.setLocalState();
         }
     }
@@ -342,6 +330,12 @@ export class RTGEComponent extends React.Component {
      * @returns - dom parts for the final use field
      */
     renderFinalUse() {
+        //variable pour le formulaire - contenant les options d'utilisation finale possible et le message de traduction associé
+        var options = [ 
+            {'value':'','transl':'RTGE.finalUseSelectValue'},
+            {'value':'Interne','transl':'RTGE.internalUsage'},
+            {'value':'Externe','transl':'RTGE.externalUsage'}
+        ];
         return (
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.finalUse" className="RTGE_form-group">
@@ -357,9 +351,18 @@ export class RTGEComponent extends React.Component {
                                 required
                                 onChange={(e) => {this.handleTextFieldChange(e, 'finalUse');}} 
                                 style={this.state.finalUse === '' ? {"borderColor": "red"} : {"borderColor": "inherit"}}>
-                                <option className="RTGE_finalUseFormDropDown" value=''>{getMessageById(this.context.messages, 'RTGE.finalUseSelectValue')}</option>
-                                <option className="RTGE_finalUseFormDropDown" value="Interne">{getMessageById(this.context.messages, 'RTGE.internalUsage')}</option>
-                                <option className="RTGE_finalUseFormDropDown" value="Externe">{getMessageById(this.context.messages, 'RTGE.externalUsage')}</option>
+                                    {      
+                                        //generation des options via map pour definir selected value
+                                        options.map((option) => {
+                                            let message=option.transl;
+                                            if(option.value === this.state.finalUse){
+                                                return (<option className="RTGE_finalUseFormDropDown" value={option.value} selected>{getMessageById(this.context.messages, message)}</option>);
+                                            }
+                                            else{
+                                                return (<option className="RTGE_finalUseFormDropDown" value={option.value}>{getMessageById(this.context.messages, message)}</option>);
+                                            }
+                                        })
+                                    }
                             </FormControl>
                         </div>
                     </InputGroup>
@@ -549,12 +552,6 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9 RTGE_notBold">
                             <Message msgId="RTGE.dataUnderSurf"/>
-                            {this.state.dataUnderSurf && this.state.undergroundDataIsRequired
-                                ? <div className="row RTGE_undergroundWarning text-center">
-                                    <Message msgId="RTGE.dataUnderSurfWarning"/>
-                                </div>
-                                : ''
-                            }
                         </div>
                     </div>
                 </FormGroup>
@@ -895,21 +892,6 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
-     * handlePhoneFieldChange when the phone field change, it updates the state
-     * @memberof rtge.component
-     * @param e - javascript event object
-     * @param fieldName - name of the field which is to update
-     * @returns - nothing
-     */
-    /*handlePhoneFieldChange(e, fieldName) {
-        this.checkFormValidity();
-        this.setState({
-            ...this.state,
-            [fieldName]: e
-        })
-    }*/
-
-    /**
      * handleBooleanFieldChange when the booleans fields change, it updates their state
      * @memberof rtge.component
      * @param fieldName - name of the field which is to update
@@ -968,7 +950,6 @@ export class RTGEComponent extends React.Component {
             dataSurf: !!this.props.dataSurf,
             dataUnderSurf: !!this.props.dataUnderSurf,
             schematicalNetwork: !!this.props.schematicalNetwork,
-            undergroundDataIsRequired: this.props.undergroundDataIsRequired,
             pluginIcon: this.props.pluginIcon
         });
     }

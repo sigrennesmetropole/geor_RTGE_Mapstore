@@ -94,16 +94,10 @@ Lors de l'ajout du plugin dans un contexte MapStore pour geOrchestra, celui-ci d
 | rtgeGridLayerTitle | "RTGE : Carroyage au 1/200" | Titre dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
 | rtgeGridLayerProjection | "EPSG:3948" | EPSG du système de projection natif utilisée par la couche de carroyage |
 | rtgeGridLayerGeometryAttribute | "shape" | Nom de l'attribut de la couche de carroyage contenant la géométrie des dalles. |
-| rtgeEmailUrl | "/console/emailProxy" | Lien vers le serveur de mail à utiliser. |
 | rtgeUserDetailsUrl | "/console/account/userdetails" | Lien à partir duquel les informations de l’utilisateur connecté sont récupérée pour pré-remplir le formulaire. |
-| rtgeUserRolesUrl | "/mapstore/rest/geostore/users/user/details?includeattributes=true" | Lien à partir duquel les informations de rôle de l’utilisateur connecté sont récupérée pour vérifier ses droits à consulter les données à accès restreint. |
 | rtgeHomeText | "" | Texte au format html qui sera affiché sur l'onglet accueil du plugin RTGE. |
-| rtgeMailRecipients | "" | Liste contenant au format texte les adresses mèl des destinataires de la demande d'extraction de données. Ces adresses doivent être préalablement ajoutées dans la liste  blanche emailProxyRecipientWhitelist du fichier console.properties de geOrchestra. |
-| RtgeMailSubject | "" | Corps de texte du mail à envoyer. Il contiendra les variables remplacées par les valeurs du formulaire : <br>-{{first_name}}<br>-{{last_name}}<br>-{{email}}<br>-{{tel}}<br>-{{service}} <br>-{{company}}<br>-{{aboveground}}<br>-{{underground}}<br>-{{undergroundDataIsRequired}}<br>-{{schematicalnetwork}}<br>-{{comments}} |
-| rtgeMailSubject | "" | Objet du mail envoyé. Peut contenir le nombre de dalles sélectionnées : {{count}} |
 | rtgeMaxTiles | "50" | Nombre maximal de dalles pouvant être sélectionnées. |
 | rtgeTileIdAttribute | "id_case" | Nom du champ attributaire contenant l'identifiant de la dalle. Ce sont ces identifiants qui sont envoyés sous forme de liste dans le mail de demande d'extraction. |
 | rtgeTilesAttributes | [{<br>"attribute": "id",<br>"title":"Identifiant",<br>"colWidth": "col-sm-5"<br>},<br>{<br>"attribute":"date ",<br>"title": "Date MAJ",<br>"colWidth":"col-sm-3"<br>}] | Liste contenant les attributs qui seront affichés dans le tableau des dalles sélectionnées. Pour Chaque attributs : <br>-	Attribute : nom de l'attribut à afficher<br>-	Title : alias qui sera affiché en en-tête de colonne<br>-	colWidth : valeur de largeur de la colonne de la forme "col-sm-X" X étant la valeur de la largeur souhaitée. Il est recommandé que le total des valeurs de largeurs de colonnes ne dépasse pas 12. |
-| rtgeUndergroundDataRoles | "EL_APPLIS_RMTR_SSOL" | Nom du rôle utilisateur autorisé à consulter les données à accès restreint. |
 
 Le plugin est optimisé pour une utilisation dans un contexte de carte utilisant le système de projection EPSG:3857, et a été testé dans un environnement utilisant le système de projection EPSG:3948.

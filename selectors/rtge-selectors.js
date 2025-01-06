@@ -104,14 +104,6 @@ export const getConfigs = (state) => get(state, 'rtge.configs');
 export const getRequestStarted = (state) => get(state, 'rtge.requestStarted');
 
 /**
- * isUndergroundDataRequired gets underground data role
- * @memberof rtge.selectors
- * @param state - application state
- * @returns - returns the asked role if user has it
- */
-export const isUndergroundDataRequired = (state) => get(state, 'rtge.undergroundDataIsRequired');
-
-/**
  * getMailRequestInProgress gets if the request is in progress
  * @memberof rtge.selectors
  * @param state - application state
