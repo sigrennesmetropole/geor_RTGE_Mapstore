@@ -697,7 +697,7 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
 });
 
 /**
- * TODO : change when route available on backend - changer dom assignement
+ * TODO : change when route available on backend
  * getUserDetailsEpic get user details when called
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
@@ -733,15 +733,15 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
  * @returns - empty observable
  */
 export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFIGS).switchMap((action) => {
-    gridLayerIdRTGE = action.configs.rtgeGridLayerId;
-    backendURLPrefixRTGE = action.configs.rtgeBackendURLPrefix;
-    gridLayerNameRTGE = action.configs.rtgeGridLayerName;
-    rtgeGridLayerTitle = action.configs.rtgeGridLayerTitle;
-    rtgeGridLayerProjection = action.configs.rtgeGridLayerProjection;
-    rtgeGridLayerGeometryAttribute = action.configs.rtgeGridLayerGeometryAttribute;
-    rtgeUserDetailsUrl = action.configs.rtgeUserDetailsUrl;
-    rtgeMaxTiles = action.configs.rtgeMaxTiles;
-    rtgeTileIdAttribute = action.configs.rtgeTileIdAttribute;
+    gridLayerIdRTGE = action.configs.rtgegridlayerid;
+    backendURLPrefixRTGE = action.configs.rtgebackendurlprefix;
+    gridLayerNameRTGE = action.configs.rtgegridlayername;
+    rtgeGridLayerTitle = action.configs.rtgegridlayertitle;
+    rtgeGridLayerProjection = action.configs.rtgegridlayerprojection;
+    rtgeGridLayerGeometryAttribute = action.configs.rtgegridlayergeometryattribute;
+    rtgeUserDetailsUrl = action.configs.rtgeuserdetailsurl;
+    rtgeMaxTiles = action.configs.rtgemaxtiles;
+    rtgeTileIdAttribute = action.configs.rtgetileidattribute;
     /*update v2.0 : setting url for backend is now required*/ 
     if (backendURLPrefixRTGE != ""){
         setAPIURL(backendURLPrefixRTGE);

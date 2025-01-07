@@ -34,9 +34,9 @@ export class RTGEComponent extends React.Component {
         user: PropTypes.object,
         finalUser: PropTypes.object,
         selectedRows: PropTypes.array,
-        rtgeHomeText: PropTypes.string,
-        rtgeTilesAttributes: PropTypes.array,
-        rtgeMaxTiles: PropTypes.string,
+        rtgehometext: PropTypes.string,
+        rtgetilesattributes: PropTypes.array,
+        rtgemaxtiles: PropTypes.string,
         mailRequestInProgress: PropTypes.bool,
         pluginIcon: PropTypes.string,
         dataSurf: PropTypes.bool,
@@ -72,8 +72,8 @@ export class RTGEComponent extends React.Component {
         finalUser: {},
         activeSelection: '',
         selectedRows: [],
-        rtgeTilesAttributes: [],
-        rtgeMaxTiles: '',
+        rtgetilesattributes: [],
+        rtgemaxtiles: '',
         mailRequestInProgress: false,
         pluginIcon: '',
         dataSurf: true,
@@ -109,20 +109,20 @@ export class RTGEComponent extends React.Component {
             dataSurf: props.dataSurf,
             dataUnderSurf: props.dataUnderSurf,
             schematicalNetwork: props.schematicalNetwork,
-            rtgeHomeText: props.rtgeHomeText,
+            rtgehometext: props.rtgehometext,
             pluginIcon: props.pluginIcon,
             mailFormValidity: false
         };
         props.rtgeInitConfigs({
-            rtgeGridLayerId: props.rtgeGridLayerId,
-            rtgeBackendURLPrefix: props.rtgeBackendURLPrefix,
-            rtgeGridLayerName:props.rtgeGridLayerName,
-            rtgeGridLayerTitle: props.rtgeGridLayerTitle,
-            rtgeGridLayerProjection: props.rtgeGridLayerProjection,
-            rtgeGridLayerGeometryAttribute: props.rtgeGridLayerGeometryAttribute,
-            rtgeUserDetailsUrl: props.rtgeUserDetailsUrl,
-            rtgeMaxTiles: props.rtgeMaxTiles,
-            rtgeTileIdAttribute: props.rtgeTileIdAttribute,
+            rtgegridlayerid: props.rtgegridlayerid,
+            rtgebackendurlprefix: props.rtgebackendurlprefix,
+            rtgegridlayername:props.rtgegridlayername,
+            rtgegridlayertitle: props.rtgegridlayertitle,
+            rtgegridlayerprojection: props.rtgegridlayerprojection,
+            rtgegridlayergeometryattribute: props.rtgegridlayergeometryattribute,
+            rtgeuserdetailsurl: props.rtgeuserdetailsurl,
+            rtgemaxtiles: props.rtgemaxtiles,
+            rtgetileidattribute: props.rtgetileidattribute,
         });
     }
 
@@ -330,12 +330,6 @@ export class RTGEComponent extends React.Component {
      * @returns - dom parts for the final use field
      */
     renderFinalUse() {
-        //variable pour le formulaire - contenant les options d'utilisation finale possible et le message de traduction associé
-        var options = [ 
-            {'value':'','transl':'RTGE.finalUseSelectValue'},
-            {'value':'Interne','transl':'RTGE.internalUsage'},
-            {'value':'Externe','transl':'RTGE.externalUsage'}
-        ];
         return (
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.finalUse" className="RTGE_form-group">
@@ -349,20 +343,12 @@ export class RTGEComponent extends React.Component {
                                 name="finalUse"
                                 placeholder=""
                                 required
+                                value={this.state.finalUse}
                                 onChange={(e) => {this.handleTextFieldChange(e, 'finalUse');}} 
                                 style={this.state.finalUse === '' ? {"borderColor": "red"} : {"borderColor": "inherit"}}>
-                                    {      
-                                        //generation des options via map pour definir selected value
-                                        options.map((option) => {
-                                            let message=option.transl;
-                                            if(option.value === this.state.finalUse){
-                                                return (<option className="RTGE_finalUseFormDropDown" value={option.value} selected>{getMessageById(this.context.messages, message)}</option>);
-                                            }
-                                            else{
-                                                return (<option className="RTGE_finalUseFormDropDown" value={option.value}>{getMessageById(this.context.messages, message)}</option>);
-                                            }
-                                        })
-                                    }
+                                    <option key='optDefault' className="RTGE_finalUseFormDropDown" value=''>{getMessageById(this.context.messages, 'RTGE.finalUseSelectValue')}</option>
+                                    <option key='optInt' className="RTGE_finalUseFormDropDown" value='Interne'>{getMessageById(this.context.messages, 'RTGE.internalUsage')}</option>
+                                    <option key='optExt' className="RTGE_finalUseFormDropDown" value='Externe'>{getMessageById(this.context.messages, 'RTGE.externalUsage')}</option>
                             </FormControl>
                         </div>
                     </InputGroup>
@@ -623,7 +609,7 @@ export class RTGEComponent extends React.Component {
     renderHomeTab() {
         return (
             <div id="RTGE_EXTENSION RTGE_scrollBar">
-                <div className="RTGE_paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtgeHomeText}}>
+                <div className="RTGE_paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtgehometext}}>
                 </div>
             </div>
         );
@@ -671,7 +657,7 @@ export class RTGEComponent extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} / {this.props.rtgeMaxTiles} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
+                    <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} / {this.props.rtgemaxtiles} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
                         <button className={this.props.activeSelection === 'Point'
                             ? "RTGE_selectorButton btn btn-success RTGE_tooltipMain"
@@ -715,7 +701,7 @@ export class RTGEComponent extends React.Component {
                 <div className="row RTGE_arrayOffset">
                     <div className="row RTGE_tableOffset RTGE_selectTitle text-center">
                         {
-                            this.props.rtgeTilesAttributes.map((val) => {
+                            this.props.rtgetilesattributes.map((val) => {
                                 return (
                                     <div className={val.colWidth + " RTGE_v-align RTGE_delimitor"}
                                         key={val.attribute}>
@@ -737,7 +723,7 @@ export class RTGEComponent extends React.Component {
                                     key={key}
                                     onClick={(e) => this.props.rtgeClickTable(val, e.ctrlKey, e.shiftKey)}>
                                         {
-                                            this.props.rtgeTilesAttributes.map((attributeVal) => {
+                                            this.props.rtgetilesattributes.map((attributeVal) => {
                                                 return (
                                                     <div className={attributeVal.colWidth + " RTGE_RowsOffset RTGE_tooltipMain"}
                                                         key={attributeVal.attribute}>
@@ -770,7 +756,7 @@ export class RTGEComponent extends React.Component {
                 <div className="col-sm-4 text-center">
                     <button className={this.props.activeTab === "RTGE:HOME"
                         ? "RTGE_homeButton RTGE_active"
-                        : "RTGE_homeButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.HOME)}>
+                        : "RTGE_homeButton"} onClick={() => {this.props.rtgeChangeTab(tabTypes.HOME); this.props.rtgeStopDraw()}}>
                         <Message msgId={'RTGE.welcome'}/>
                     </button>
                 </div>
@@ -793,7 +779,7 @@ export class RTGEComponent extends React.Component {
                     {this.props.selectedTiles.length > 0 &&
                         <button className={this.props.activeTab === "RTGE:SEND"
                             ? "RTGE_sendButton RTGE_active"
-                            : "RTGE_sendButton" } onClick={() => this.props.rtgeChangeTab(tabTypes.SEND)}>
+                            : "RTGE_sendButton" } onClick={() => {this.props.rtgeChangeTab(tabTypes.SEND); this.props.rtgeStopDraw()}}>
                             <Message msgId={'RTGE.send'}/>
                         </button>
                     }
@@ -828,7 +814,6 @@ export class RTGEComponent extends React.Component {
         switch (this.props.activeTab) {
         case tabTypes.HOME:
             content = this.renderHomeTab();
-            this.props.rtgeStopDraw();
             break;
         case tabTypes.SELECT:
             content = this.renderSelectionTab();
@@ -839,7 +824,6 @@ export class RTGEComponent extends React.Component {
             } else {
                 content = this.renderSendTab();
             }
-            this.props.rtgeStopDraw();
             break;
         default:
             break;
@@ -921,11 +905,7 @@ export class RTGEComponent extends React.Component {
         && (this.state.finalUse === 'Interne' || (this.state.finalUse === 'Externe' && this.state.finalUser && this.state.finalUserEMail && this.state.finalUserAddress))
         && this.state.motivation !== ''
         && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false)) {
-            console.log('formOK')
             this.props.rtgeSendMail(this.state);
-        }
-        else{
-            console.log('Nope');
         }
     }
 
