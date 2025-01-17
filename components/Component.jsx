@@ -31,12 +31,13 @@ export class RTGEComponent extends React.Component {
         activeTab: PropTypes.string,
         activeSelection: PropTypes.string,
         selectedTiles: PropTypes.array,
+        selectionGeometryType: PropTypes.string,
         user: PropTypes.object,
         finalUser: PropTypes.object,
         selectedRows: PropTypes.array,
-        rtgehometext: PropTypes.string,
-        rtgetilesattributes: PropTypes.array,
-        rtgemaxtiles: PropTypes.string,
+        rtge_home_text: PropTypes.string,
+        rtge_tiles_attributes: PropTypes.array,
+        rtge_max_tiles: PropTypes.string,
         mailRequestInProgress: PropTypes.bool,
         pluginIcon: PropTypes.string,
         dataSurf: PropTypes.bool,
@@ -68,12 +69,13 @@ export class RTGEComponent extends React.Component {
         width: RTGE_PANEL_WIDTH,
         activeTab: tabTypes.HOME,
         selectedTiles: [],
+        selectionGeometryType: undefined,
         user: {},
         finalUser: {},
         activeSelection: '',
         selectedRows: [],
-        rtgetilesattributes: [],
-        rtgemaxtiles: '',
+        rtge_tiles_attributes: [],
+        rtge_max_tiles: '',
         mailRequestInProgress: false,
         pluginIcon: '',
         dataSurf: true,
@@ -109,20 +111,20 @@ export class RTGEComponent extends React.Component {
             dataSurf: props.dataSurf,
             dataUnderSurf: props.dataUnderSurf,
             schematicalNetwork: props.schematicalNetwork,
-            rtgehometext: props.rtgehometext,
+            rtge_home_text: props.rtge_home_text,
             pluginIcon: props.pluginIcon,
             mailFormValidity: false
         };
         props.rtgeInitConfigs({
-            rtgegridlayerid: props.rtgegridlayerid,
-            rtgebackendurlprefix: props.rtgebackendurlprefix,
-            rtgegridlayername:props.rtgegridlayername,
-            rtgegridlayertitle: props.rtgegridlayertitle,
-            rtgegridlayerprojection: props.rtgegridlayerprojection,
-            rtgegridlayergeometryattribute: props.rtgegridlayergeometryattribute,
-            rtgeuserdetailsurl: props.rtgeuserdetailsurl,
-            rtgemaxtiles: props.rtgemaxtiles,
-            rtgetileidattribute: props.rtgetileidattribute,
+            rtge_grid_layer_id: props.rtge_grid_layer_id,
+            rtge_backend_url_prefix: props.rtge_backend_url_prefix,
+            rtge_grid_layer_name:props.rtge_grid_layer_name,
+            rtge_grid_layer_title: props.rtge_grid_layer_title,
+            rtge_grid_layer_projection: props.rtge_grid_layer_projection,
+            rtge_grid_layer_geometry_attribute: props.rtge_grid_layer_geometry_attribute,
+            rtge_user_details_url: props.rtge_user_details_url,
+            rtge_max_tiles: props.rtge_max_tiles,
+            rtge_tile_id_attribute: props.rtge_tile_id_attribute,
         });
     }
 
@@ -609,7 +611,7 @@ export class RTGEComponent extends React.Component {
     renderHomeTab() {
         return (
             <div id="RTGE_EXTENSION RTGE_scrollBar">
-                <div className="RTGE_paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtgehometext}}>
+                <div className="RTGE_paragraphs" dangerouslySetInnerHTML={{__html: this.props.rtge_home_text}}>
                 </div>
             </div>
         );
@@ -657,7 +659,7 @@ export class RTGEComponent extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} / {this.props.rtgemaxtiles} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
+                    <div className="col-sm-4 RTGE_left"><span>{this.props.selectedTiles.length} / {this.props.rtge_max_tiles} <Message msgId={'RTGE.selectionTab.tiles'}/></span></div>
                     <div className="col-sm-4 text-center">
                         <button className={this.props.activeSelection === 'Point'
                             ? "RTGE_selectorButton btn btn-success RTGE_tooltipMain"
@@ -701,7 +703,7 @@ export class RTGEComponent extends React.Component {
                 <div className="row RTGE_arrayOffset">
                     <div className="row RTGE_tableOffset RTGE_selectTitle text-center">
                         {
-                            this.props.rtgetilesattributes.map((val) => {
+                            this.props.rtge_tiles_attributes.map((val) => {
                                 return (
                                     <div className={val.colWidth + " RTGE_v-align RTGE_delimitor"}
                                         key={val.attribute}>
@@ -723,7 +725,7 @@ export class RTGEComponent extends React.Component {
                                     key={key}
                                     onClick={(e) => this.props.rtgeClickTable(val, e.ctrlKey, e.shiftKey)}>
                                         {
-                                            this.props.rtgetilesattributes.map((attributeVal) => {
+                                            this.props.rtge_tiles_attributes.map((attributeVal) => {
                                                 return (
                                                     <div className={attributeVal.colWidth + " RTGE_RowsOffset RTGE_tooltipMain"}
                                                         key={attributeVal.attribute}>
@@ -754,14 +756,14 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="row RTGE_rowTabs">
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === "RTGE:HOME"
+                    <button className={this.props.activeTab === tabTypes.HOME
                         ? "RTGE_homeButton RTGE_active"
-                        : "RTGE_homeButton"} onClick={() => {this.props.rtgeChangeTab(tabTypes.HOME); this.props.rtgeStopDraw()}}>
+                        : "RTGE_homeButton"} onClick={() => {this.props.rtgeChangeTab(tabTypes.HOME); if(this.props.selectionGeometryType !== undefined){this.props.rtgeStopDraw()}}}>
                         <Message msgId={'RTGE.welcome'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === "RTGE:SELECT"
+                    <button className={this.props.activeTab === tabTypes.SELECT
                         ? "RTGE_selectButton RTGE_active"
                         : "RTGE_selectButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.SELECT)}>
                         <Message msgId={'RTGE.selection'}/>
@@ -777,9 +779,9 @@ export class RTGEComponent extends React.Component {
                     </>
                     }
                     {this.props.selectedTiles.length > 0 &&
-                        <button className={this.props.activeTab === "RTGE:SEND"
+                        <button className={this.props.activeTab === tabTypes.SEND
                             ? "RTGE_sendButton RTGE_active"
-                            : "RTGE_sendButton" } onClick={() => {this.props.rtgeChangeTab(tabTypes.SEND); this.props.rtgeStopDraw()}}>
+                            : "RTGE_sendButton" } onClick={() => {this.props.rtgeChangeTab(tabTypes.SEND); if(this.props.selectionGeometryType !== undefined){this.props.rtgeStopDraw()}}}>
                             <Message msgId={'RTGE.send'}/>
                         </button>
                     }

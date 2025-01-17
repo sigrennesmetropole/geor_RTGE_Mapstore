@@ -64,7 +64,9 @@ import {
     drawSupportActiveSelector
 } from "@mapstore/selectors/draw";
 import { getLayerJSONFeature } from "@mapstore/observables/wfs";
+import {localConfigSelector} from '@mapstore/selectors/localConfig';
 import Proj4js from 'proj4';
+import {register} from "ol/proj/proj4.js";
 import { updateAdditionalLayer } from "@mapstore/actions/additionallayers";
 import { show } from "@mapstore/actions/notifications";
 import {
@@ -115,19 +117,21 @@ const styles = {
 var gridLayer = {};
 
 /**
- * TODO: revue de code ici avec https://github.com/sigrennesmetropole/geor_urbanisme_mapstore/blob/229b0325d6255cc85254a44010d95ad33471072a/js/extension/epics/urbanisme.js#L123-L126
  * initProjectionsEpic init plugin projection
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - empty observable
  */
-export const initProjectionsEpic = (actions$) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
-    if (!Proj4js.defs("EPSG:3948")) {
-        Proj4js.defs("EPSG:3948", "+proj=lcc +lat_0=48 +lon_0=3 +lat_1=47.25 +lat_2=48.75 +x_0=1700000 +y_0=7200000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs");
-    }
-    if (!Proj4js.defs("EPSG:4326")) {
-        Proj4js.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs +type=crs");
-    }
+export const initProjectionsEpic = (actions$, store) => actions$.ofType(actions.INIT_PROJECTIONS).switchMap(() => {
+    // adds custom projections from localConfig.json to avoid errors experienced with urbanisme mapstore config
+    // https://github.com/sigrennesmetropole/geor_urbanisme_mapstore/blob/229b0325d6255cc85254a44010d95ad33471072a/js/extension/epics/urbanisme.js#L123-L126
+    const {projectionDefs = []} = localConfigSelector(store.getState()) ?? {};
+    projectionDefs.forEach((proj) => {
+        if (!Proj4js.defs(proj.code)){
+            Proj4js.defs(proj.code, proj.def);
+        }
+    });
+    register(Proj4js);
     return Rx.Observable.empty();
 });
 
@@ -218,7 +222,6 @@ export const closeRTGEPanelEpic = (action$, store) => action$.ofType(TOGGLE_CONT
     });
 
 /**
- * TODO : remplacer les url par les valeurs de la config
  * displayRTGEGridEpic displays the grid on the map
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
@@ -344,7 +347,7 @@ export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DR
  */
 export const geometryChangeRTGEEpic = (action$, store) =>
     action$.ofType(GEOMETRY_CHANGED)
-    .filter((action) => 
+    .filter(() => 
         !!store.getState()
         && !!isOpen(store.getState())
     )
@@ -470,7 +473,10 @@ export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.
     if (action.geometryType === activeSelectionGeometryType) {
         return Rx.Observable.from([rtgeStopDraw()]);
     }
-    return Rx.Observable.from([rtgeStartDraw(action.geometryType)]);
+    else if(action.geometryType !== ''){
+        return Rx.Observable.from([rtgeStartDraw(action.geometryType)]);
+    }
+    return Rx.Observable.empty();
 });
 
 /**
@@ -478,6 +484,7 @@ export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.
  * @memberof rtge.epics
  * @param currentFeatures - current features
  * @param control - is the user pressing control key
+ * @param shift - is the user pressing shift key
  * @param intersectedFeature - all features clicked
  * @returns - return one or more feature with their style updated... or not
  */
@@ -529,9 +536,7 @@ function featureSelectionRTGE(currentFeatures, control, shift, intersectedFeatur
             row.style = styles.default;
         }
     });
-
     return currentFeatureList;
-
 }
 
 /**
@@ -542,29 +547,29 @@ function featureSelectionRTGE(currentFeatures, control, shift, intersectedFeatur
  * @returns - observable with tiles selected inside and their new styles
  */
 export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MAP)
-.filter((action) => 
-    !!store.getState()
-    && !!isOpen(store.getState())
-    )
-.switchMap((action) => {
-    //ajouter un filtre à l'ouverture pour s'assurer que c'est bien rtge qui ouvre
-    const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
-    const intersectedFeature = layer?.features[0];
-    const currentFeatures = getSelectedTiles(store.getState());
-    const vectorLayer = getSelectedTilesLayer(store.getState());
-    const features = featureSelectionRTGE(currentFeatures, action.point.modifiers.ctrl, false, intersectedFeature);
-    return Rx.Observable.from([updateAdditionalLayer(
-        selectedTilesLayerId,
-        "RTGE",
-        "overlay",
-        {
-            ...vectorLayer.options,
-            features
-        }
-    ),
-    // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
-    resizeMap(),
-    rtgeAddFeatures(features)]);
+    .filter(() => 
+        !!store.getState()
+        && !!isOpen(store.getState())
+        )
+    .switchMap((action) => {
+        //ajouter un filtre à l'ouverture pour s'assurer que c'est bien rtge qui ouvre
+        const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
+        const intersectedFeature = layer?.features[0];
+        const currentFeatures = getSelectedTiles(store.getState());
+        const vectorLayer = getSelectedTilesLayer(store.getState());
+        const features = featureSelectionRTGE(currentFeatures, action.point.modifiers.ctrl, false, intersectedFeature);
+        return Rx.Observable.from([updateAdditionalLayer(
+            selectedTilesLayerId,
+            "RTGE",
+            "overlay",
+            {
+                ...vectorLayer.options,
+                features
+            }
+        ),
+        // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
+        resizeMap(),
+        rtgeAddFeatures(features)]);
 });
 
 /**
@@ -726,22 +731,21 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
 });
 
 /**
- * TODO: revue de code - voir avec Raoul
  * getConfigsRTGEEpic get RTGE Configs and init them
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - empty observable
  */
 export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFIGS).switchMap((action) => {
-    gridLayerIdRTGE = action.configs.rtgegridlayerid;
-    backendURLPrefixRTGE = action.configs.rtgebackendurlprefix;
-    gridLayerNameRTGE = action.configs.rtgegridlayername;
-    rtgeGridLayerTitle = action.configs.rtgegridlayertitle;
-    rtgeGridLayerProjection = action.configs.rtgegridlayerprojection;
-    rtgeGridLayerGeometryAttribute = action.configs.rtgegridlayergeometryattribute;
-    rtgeUserDetailsUrl = action.configs.rtgeuserdetailsurl;
-    rtgeMaxTiles = action.configs.rtgemaxtiles;
-    rtgeTileIdAttribute = action.configs.rtgetileidattribute;
+    gridLayerIdRTGE = action.configs.rtge_grid_layer_id;
+    backendURLPrefixRTGE = action.configs.rtge_backend_url_prefix;
+    gridLayerNameRTGE = action.configs.rtge_grid_layer_name;
+    rtgeGridLayerTitle = action.configs.rtge_grid_layer_title;
+    rtgeGridLayerProjection = action.configs.rtge_grid_layer_projection;
+    rtgeGridLayerGeometryAttribute = action.configs.rtge_grid_layer_geometry_attribute;
+    rtgeUserDetailsUrl = action.configs.rtge_user_details_url;
+    rtgeMaxTiles = action.configs.rtge_max_tiles;
+    rtgeTileIdAttribute = action.configs.rtge_tile_id_attribute;
     /*update v2.0 : setting url for backend is now required*/ 
     if (backendURLPrefixRTGE != ""){
         setAPIURL(backendURLPrefixRTGE);

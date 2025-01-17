@@ -416,11 +416,11 @@ button.active .iconSize{
 	margin: auto;
 	height: 300px;
 	width: 300px;
-	border: 15px solid transparent !important;
-	border-top-color: rgba(7, 138, 163, 0.2) !important;
+	border: 15px;
+	/*border-top-color: rgba(7, 138, 163, 0.2) !important;
 	border-right-color: rgba(7, 138, 163, 0.2) !important;
 	border-bottom-color: rgba(7, 138, 163, 0.2) !important;
-	border-left-color: #078aa3 !important;
+	border-left-color: #078aa3 !important;*/
 }
 
 .RTGE_loadingContainer .RTGE_loading span {

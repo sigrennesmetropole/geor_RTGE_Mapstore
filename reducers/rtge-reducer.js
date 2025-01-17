@@ -7,6 +7,7 @@ const initialState = {
     activeTab: tabTypes.HOME,
     selectedTiles: [],
     selectedRows: [],
+    selectionGeometryType: undefined,
     mailRequestInProgress: false
 };
 
@@ -18,7 +19,7 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
-    //console.log(action);
+    //if (action.type.substring(0, 4) === 'RTGE'){console.log(action.type)};
     //console.log(state);
     switch (action.type) {
     case actions.CHANGE_TAB:

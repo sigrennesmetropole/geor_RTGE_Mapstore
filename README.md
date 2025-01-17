@@ -1,6 +1,6 @@
 # geor_RTGE_Mapstore
 
-:fr: [Version française](https://github.com/sigrennesmetropole/geor_RTGE_Mapstore/blob/main/docs/README_FR.MD)
+:fr: [Version française](docs/README_FR.MD)
 
 ## I - General Information
 
@@ -86,16 +86,16 @@ When the plugin is added to a MapStore context for geOrchestra, it needs to be c
 
 | Parameter Name | Default Value | Description |
 | ---      | ---      | ---      |
-| rtgebackendurlprefix | "" | Link to the back-end used by the plugin. This plugin currently works without a backend. |
-| rtgegridlayerid | "ref_topo:rtge_carroyage" | ID, in the map context, of the grid layer used to select data extraction zones. |
-| rtgegridlayername | "ref_topo:rtge_carroyage" | Name, in the map context, of the grid layer used to select data extraction zones. |
-| rtgegridlayertitle | "RTGE : Carroyage au 1/200" | Title, in the map context, gaved to the grid layer used to select the data extraction zones. |
-| rtgegridlayerprojection | "EPSG:3948" | EPSG code of the native projection system used by the grid layer. |
-| rtgegridlayergeometryattribute | "shape" | Name of the attribute of the grid layer containing the tile geometry. |
-| rtgeuserdetailsurl | "/console/account/userdetails" | Link to retrieve the logged-in user's information to pre-fill the form. |
-| rtgehometext | "" | Text (HTML) that is displayed on the home tab of the RTGE plugin. |
-| rtgemaxtiles | "50" | Maximum number of tiles that can be selected. |
-| rtgetileidattribute | "id_case" | Name of the attribute field containing the tiles Ids. These ids are sent as a text list in the extraction request email. |
-| rtgetilesattributes | [{<br>"attribute": "id",<br>"title":"Identifiant",<br>"colWidth": "col-sm-5"<br>},<br>{<br>"attribute":"date ",<br>"title": "Date MAJ",<br>"colWidth":"col-sm-3"<br>}] | List of attributes that will be displayed in the table of selected tiles. For each attribute :<br>-	Attribute : name of the attribute to display<br>-	Title : alias to be displayed in the column header<br>-	colWidth : column width value in the form "col-sm-X" where X is the desired width value.<br>It is recommended that the sum of the column width values does not exceed 12.|
+| rtge_backend_url_prefix | "" | Link to the back-end used by the plugin. This plugin currently works without a backend. |
+| rtge_grid_layer_id | "ref_topo:rtge_carroyage" | ID, in the map context, of the grid layer used to select data extraction zones. |
+| rtge_grid_layer_name | "ref_topo:rtge_carroyage" | Name, in the map context, of the grid layer used to select data extraction zones. |
+| rtge_grid_layer_title | "RTGE : Carroyage au 1/200" | Title, in the map context, gaved to the grid layer used to select the data extraction zones. |
+| rtge_grid_layer_projection | "EPSG:3948" | EPSG code of the native projection system used by the grid layer. |
+| rtge_grid_layer_geometry_attribute | "shape" | Name of the attribute of the grid layer containing the tile geometry. |
+| rtge_user_details_url | "/console/account/userdetails" | Link to retrieve the logged-in user's information to pre-fill the form. |
+| rtge_home_text | "" | Text (HTML) that is displayed on the home tab of the RTGE plugin. |
+| rtge_max_tiles | "50" | Maximum number of tiles that can be selected. |
+| rtge_tile_id_attribute | "id_case" | Name of the attribute field containing the tiles Ids. These ids are sent as a text list in the extraction request email. |
+| rtge_tiles_attributes | [{<br>"attribute": "id",<br>"title":"Identifiant",<br>"colWidth": "col-sm-5"<br>},<br>{<br>"attribute":"date ",<br>"title": "Date MAJ",<br>"colWidth":"col-sm-3"<br>}] | List of attributes that will be displayed in the table of selected tiles. For each attribute :<br>-	Attribute : name of the attribute to display<br>-	Title : alias to be displayed in the column header<br>-	colWidth : column width value in the form "col-sm-X" where X is the desired width value.<br>It is recommended that the sum of the column width values does not exceed 12.|
 
 The plugin is optimised for use in a map context using the EPSG:3857 projection system, and has been tested in an environment using the EPSG:3948 projection system.

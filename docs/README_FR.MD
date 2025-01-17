@@ -1,6 +1,6 @@
 # Plugin RTGE pour Mapstore2-geOrchestra
 
-:gb: [English version](https://github.com/sigrennesmetropole/geor_RTGE_Mapstore)
+:gb: [English version](../README.md)
 
 ## I - Généralités
 
@@ -88,16 +88,16 @@ Lors de l'ajout du plugin dans un contexte MapStore pour geOrchestra, celui-ci d
 
 | Parameter Name | Default Value | Description |
 | ---      | ---      | ---      |
-| rtgebackendurlprefix | "" | Lien d’accès au back utilisé par le plugin. À ce jour, ce plugin fonctionne sans back. |
-| rtgegridlayerid | "ref_topo:rtge_carroyage" | ID dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
-| rtgegridlayername | "ref_topo:rtge_carroyage" | Nom dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
-| rtgegridlayertitle | "RTGE : Carroyage au 1/200" | Titre dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
-| rtgegridlayerprojection | "EPSG:3948" | EPSG du système de projection natif utilisée par la couche de carroyage |
-| rtgegridlayergeometryattribute | "shape" | Nom de l'attribut de la couche de carroyage contenant la géométrie des dalles. |
-| rtgeuserdetailsurl | "/console/account/userdetails" | Lien à partir duquel les informations de l’utilisateur connecté sont récupérée pour pré-remplir le formulaire. |
-| rtgehometext | "" | Texte au format html qui sera affiché sur l'onglet accueil du plugin RTGE. |
-| rtgemaxtiles | "50" | Nombre maximal de dalles pouvant être sélectionnées. |
-| rtgetileidattribute | "id_case" | Nom du champ attributaire contenant l'identifiant de la dalle. Ce sont ces identifiants qui sont envoyés sous forme de liste dans le mail de demande d'extraction. |
-| rtgetilesattributes | [{<br>"attribute": "id",<br>"title":"Identifiant",<br>"colWidth": "col-sm-5"<br>},<br>{<br>"attribute":"date ",<br>"title": "Date MAJ",<br>"colWidth":"col-sm-3"<br>}] | Liste contenant les attributs qui seront affichés dans le tableau des dalles sélectionnées. Pour Chaque attributs : <br>-	Attribute : nom de l'attribut à afficher<br>-	Title : alias qui sera affiché en en-tête de colonne<br>-	colWidth : valeur de largeur de la colonne de la forme "col-sm-X" X étant la valeur de la largeur souhaitée. Il est recommandé que le total des valeurs de largeurs de colonnes ne dépasse pas 12. |
+| rtge_backend_url_prefix | "" | Lien d’accès au back utilisé par le plugin. À ce jour, ce plugin fonctionne sans back. |
+| rtge_grid_layer_id | "ref_topo:rtge_carroyage" | ID dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
+| rtge_grid_layer_name | "ref_topo:rtge_carroyage" | Nom dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
+| rtge_grid_layer_title | "RTGE : Carroyage au 1/200" | Titre dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
+| rtge_grid_layer_projection | "EPSG:3948" | EPSG du système de projection natif utilisée par la couche de carroyage |
+| rtge_grid_layer_geometry_attribute | "shape" | Nom de l'attribut de la couche de carroyage contenant la géométrie des dalles. |
+| rtge_user_details_url | "/console/account/userdetails" | Lien à partir duquel les informations de l’utilisateur connecté sont récupérée pour pré-remplir le formulaire. |
+| rtge_home_text | "" | Texte au format html qui sera affiché sur l'onglet accueil du plugin RTGE. |
+| rtge_max_tiles | "50" | Nombre maximal de dalles pouvant être sélectionnées. |
+| rtge_tile_id_attribute | "id_case" | Nom du champ attributaire contenant l'identifiant de la dalle. Ce sont ces identifiants qui sont envoyés sous forme de liste dans le mail de demande d'extraction. |
+| rtge_tiles_attributes | [{<br>"attribute": "id",<br>"title":"Identifiant",<br>"colWidth": "col-sm-5"<br>},<br>{<br>"attribute":"date ",<br>"title": "Date MAJ",<br>"colWidth":"col-sm-3"<br>}] | Liste contenant les attributs qui seront affichés dans le tableau des dalles sélectionnées. Pour Chaque attributs : <br>-	Attribute : nom de l'attribut à afficher<br>-	Title : alias qui sera affiché en en-tête de colonne<br>-	colWidth : valeur de largeur de la colonne de la forme "col-sm-X" X étant la valeur de la largeur souhaitée. Il est recommandé que le total des valeurs de largeurs de colonnes ne dépasse pas 12. |
 
 Le plugin est optimisé pour une utilisation dans un contexte de carte utilisant le système de projection EPSG:3857, et a été testé dans un environnement utilisant le système de projection EPSG:3948.
