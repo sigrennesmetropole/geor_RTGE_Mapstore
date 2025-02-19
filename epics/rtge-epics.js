@@ -11,6 +11,7 @@ import {
     rtgeStopDraw,
     rtgeUpdateUser,
     rtgeGetUserDetails,
+    rtgeSetUndergroundDataJustificationRequired,
     rtgeCloseRtge,
     rtgeChangeTab,
     tabTypes,
@@ -729,6 +730,31 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
             return Rx.Observable.empty();
         });
 });
+
+/**
+ * TODO : change when route available on backend
+ *      -> gestion du role underground + prise en compte de la collectivité (ajout state + variable de config pour une liste de nom de collectivité ?)
+ * getUserRolesRTGEEpic get user roles when called
+ * @memberof rtge.epics
+ * @param action$ - list of actions triggered in mapstore context
+ * @returns - empty observable or underground special role if needed
+ */
+/*export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER_ROLES).switchMap(() => {
+    return Rx.Observable.defer(() => axios.get(rtgeUserRolesUrl, {responseType: "json"}))
+        .switchMap((rolesResponse) => {
+            let includedRole = rolesResponse.data.User.groups.group.find(
+                (role) => rtgeUndergroundDataRoles.includes(role.groupName)
+            );
+            if (includedRole) {
+                return Rx.Observable.from([rtgeSetUndergroundDataJustificationRequired(false)]);
+            }
+            return Rx.Observable.empty();
+        })
+        .catch((e) => {
+            console.log(e);
+            return Rx.Observable.empty();
+        });
+});*/
 
 /**
  * getConfigsRTGEEpic get RTGE Configs and init them

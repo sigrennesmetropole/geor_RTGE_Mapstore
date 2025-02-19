@@ -19,6 +19,7 @@ export const actions = {
     CLICK_TABLE: 'RTGE:CLICK_TABLE',
     UPDATE_USER: 'RTGE:UPDATE_USER',
     GET_USER_DETAILS: 'RTGE:GET_USER_DETAILS',
+    UNDERGROUND_DATA_JUSTIFICATION_REQUIRED: "RTGE:UNDERGROUND_DATA_JUSTIFICATION_REQUIRED",
     INIT_CONFIGS: "RTGE:INIT_CONFIGS",
     CLOSE_RTGE: "RTGE:CLOSE_RTGE",
     REMOVE_ALL_TILES: "RTGE:REMOVE_ALL_TILES",
@@ -201,6 +202,18 @@ export function rtgeUpdateUser(newUserDetails) {
 export function rtgeGetUserDetails() {
     return {
         type: actions.GET_USER_DETAILS
+    };
+}
+
+/**
+ * rtgeSetUndergroundDataJustificationRequired action throw when you get the underground role for justification to obtain data
+ * @memberof rtge.actions
+ * @returns - action underground data justification required
+ */
+export function rtgeSetUndergroundDataJustificationRequired(undergroundDataIsRequired) {
+    return {
+        type: actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED,
+        undergroundDataIsRequired
     };
 }
 

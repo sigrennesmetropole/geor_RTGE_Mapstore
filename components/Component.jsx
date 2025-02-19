@@ -39,6 +39,7 @@ export class RTGEComponent extends React.Component {
         rtge_tiles_attributes: PropTypes.array,
         rtge_max_tiles: PropTypes.string,
         mailRequestInProgress: PropTypes.bool,
+        undergroundDataIsRequired: PropTypes.bool,
         pluginIcon: PropTypes.string,
         dataSurf: PropTypes.bool,
         dataUnderSurf: PropTypes.bool,
@@ -77,6 +78,7 @@ export class RTGEComponent extends React.Component {
         rtge_tiles_attributes: [],
         rtge_max_tiles: '',
         mailRequestInProgress: false,
+        undergroundDataIsRequired: true,
         pluginIcon: '',
         dataSurf: true,
         dataUnderSurf: false,
@@ -112,6 +114,7 @@ export class RTGEComponent extends React.Component {
             dataUnderSurf: props.dataUnderSurf,
             schematicalNetwork: props.schematicalNetwork,
             rtge_home_text: props.rtge_home_text,
+            undergroundDataIsRequired: props.undergroundDataIsRequired,
             pluginIcon: props.pluginIcon,
             mailFormValidity: false
         };
@@ -130,7 +133,8 @@ export class RTGEComponent extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (!Object.keys(prevProps.user).length
-        && this.props.user !== prevProps.user) {
+        && this.props.user !== prevProps.user
+        || this.props.undergroundDataIsRequired !== prevProps.undergroundDataIsRequired) {
             this.setLocalState();
         }
     }
@@ -540,6 +544,12 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-9 RTGE_notBold">
                             <Message msgId="RTGE.dataUnderSurf"/>
+                            {this.state.dataUnderSurf && this.state.undergroundDataIsRequired
+                                ? <div className="row RTGE_undergroundWarning text-center">
+                                    <Message msgId="RTGE.dataUnderSurfWarning"/>
+                                </div>
+                                : ''
+                            }
                         </div>
                     </div>
                 </FormGroup>
@@ -931,6 +941,7 @@ export class RTGEComponent extends React.Component {
             motivation: this.props.user.motivation || '',
             dataSurf: !!this.props.dataSurf,
             dataUnderSurf: !!this.props.dataUnderSurf,
+            undergroundDataIsRequired: this.props.undergroundDataIsRequired,
             schematicalNetwork: !!this.props.schematicalNetwork,
             pluginIcon: this.props.pluginIcon
         });
