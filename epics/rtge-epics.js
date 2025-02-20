@@ -12,6 +12,7 @@ import {
     rtgeUpdateUser,
     rtgeGetUserDetails,
     rtgeSetUndergroundDataJustificationRequired,
+    rtgeSetInternalUsageAllowance,
     rtgeCloseRtge,
     rtgeChangeTab,
     tabTypes,
@@ -47,7 +48,8 @@ import {
 import { head } from "lodash";
 import {
     setAPIURL,
-    postNewRequest
+    postNewRequest,
+    getUserInfos
 } from '../api/api';
 import {
     addLayer,
@@ -74,7 +76,6 @@ import {
     CLICK_ON_MAP,
     resizeMap
 } from "@mapstore/actions/map";
-import axios from 'axios';
 
 var gridLayerIdRTGE;
 var backendURLPrefixRTGE;
@@ -82,7 +83,8 @@ var gridLayerNameRTGE;
 var rtgeGridLayerTitle;
 var rtgeGridLayerProjection;
 var rtgeGridLayerGeometryAttribute;
-var rtgeUserDetailsUrl;
+var rtgeUndergroundDataRoles;
+var rtgeOrganismAllowedForInternalUse;
 var rtgeMaxTiles;
 var rtgeTileIdAttribute;
 var currentLayout;
@@ -681,7 +683,6 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
         postNewRequest(datas)
     ).switchMap((response) => {
         response = response[0];
-        console.log(response);
         if (response.status === 200){
             return Rx.Observable.from([
                 rtgeAddFeatures([]),
@@ -703,58 +704,44 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
 });
 
 /**
- * TODO : change when route available on backend
  * getUserDetailsEpic get user details when called
  * @memberof rtge.epics
  * @param action$ - list of actions triggered in mapstore context
  * @returns - observable which update the user object
  */
 export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_USER_DETAILS).switchMap(() => {
-    return Rx.Observable.defer(() => axios.get(rtgeUserDetailsUrl))
-        .switchMap((response) => {
-            let text = response.data;
-            let parser = new DOMParser();
-            let html = parser.parseFromString(text, "text/html");
+    return Rx.Observable.forkJoin(
+        getUserInfos()
+    ).switchMap((response) => {    
+        let userInfos = response[0].data;
+        
+        //gestion des informations utilisateur pour le formulaire
+        let newUserDetails = {
+            prenom: userInfos.prenom,
+            nom: userInfos.nom,
+            collectivite: userInfos.collectivite,
+            courriel: userInfos.courriel,
+            telephone: ''
+        };
 
-            let newUserDetails = {
-                prenom: html.getElementById("firstName").value,
-                nom: html.getElementById("surname").value,
-                collectivite: html.getElementsByClassName("form-group")[5].children[1].firstElementChild.innerHTML.trim(),
-                courriel: html.getElementsByClassName("form-group")[2].children[1].firstElementChild.innerHTML.trim(),
-                telephone: html.getElementById("phone").value
-            };
-            return Rx.Observable.from([rtgeUpdateUser(newUserDetails)]);
-        })
-        .catch((e) => {
-            console.log(e);
-            return Rx.Observable.empty();
-        });
+        //gestion du rôle SSOL - on substring de 5 char pour retirer le préfixe ajouté par le header georchestra au nom du rôle
+        let undergroundDataAuthorization = !!userInfos.roles.find( (role) => rtgeUndergroundDataRoles.includes(role.substring(5)));
+
+        //TODO gestion des utilisateurs RM ou externe
+        let internalUsageAllowance = !!rtgeOrganismAllowedForInternalUse.includes(userInfos.collectivite);
+
+        return Rx.Observable.from([
+            rtgeUpdateUser(newUserDetails),
+            rtgeSetUndergroundDataJustificationRequired(!undergroundDataAuthorization),
+            rtgeSetInternalUsageAllowance(internalUsageAllowance)
+        ]);
+
+    })
+    .catch((e) => {
+        console.log(e);
+        return Rx.Observable.empty();
+    });
 });
-
-/**
- * TODO : change when route available on backend
- *      -> gestion du role underground + prise en compte de la collectivité (ajout state + variable de config pour une liste de nom de collectivité ?)
- * getUserRolesRTGEEpic get user roles when called
- * @memberof rtge.epics
- * @param action$ - list of actions triggered in mapstore context
- * @returns - empty observable or underground special role if needed
- */
-/*export const getUserRolesRTGEEpic = (action$) => action$.ofType(actions.GET_USER_ROLES).switchMap(() => {
-    return Rx.Observable.defer(() => axios.get(rtgeUserRolesUrl, {responseType: "json"}))
-        .switchMap((rolesResponse) => {
-            let includedRole = rolesResponse.data.User.groups.group.find(
-                (role) => rtgeUndergroundDataRoles.includes(role.groupName)
-            );
-            if (includedRole) {
-                return Rx.Observable.from([rtgeSetUndergroundDataJustificationRequired(false)]);
-            }
-            return Rx.Observable.empty();
-        })
-        .catch((e) => {
-            console.log(e);
-            return Rx.Observable.empty();
-        });
-});*/
 
 /**
  * getConfigsRTGEEpic get RTGE Configs and init them
@@ -769,7 +756,8 @@ export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFI
     rtgeGridLayerTitle = action.configs.rtge_grid_layer_title;
     rtgeGridLayerProjection = action.configs.rtge_grid_layer_projection;
     rtgeGridLayerGeometryAttribute = action.configs.rtge_grid_layer_geometry_attribute;
-    rtgeUserDetailsUrl = action.configs.rtge_user_details_url;
+    rtgeUndergroundDataRoles = action.configs.rtge_underground_data_roles;    
+    rtgeOrganismAllowedForInternalUse = action.configs.rtge_organism_allowed_for_internal_use;
     rtgeMaxTiles = action.configs.rtge_max_tiles;
     rtgeTileIdAttribute = action.configs.rtge_tile_id_attribute;
     /*update v2.0 : setting url for backend is now required*/ 

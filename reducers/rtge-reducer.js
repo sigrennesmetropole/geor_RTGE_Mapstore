@@ -9,6 +9,7 @@ const initialState = {
     selectedRows: [],
     selectionGeometryType: undefined,
     undergroundDataIsRequired: true,
+    internalUsageIsAllowed: false,
     mailRequestInProgress: false
 };
 
@@ -39,6 +40,8 @@ export default (state = initialState, action) => {
         return assign({}, state, { configs: action.configs });
     case actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED:
             return assign({}, state, { undergroundDataIsRequired: action.undergroundDataIsRequired });
+    case actions.INTERNAL_USAGE_ALLOWED:
+            return assign({}, state, { internalUsageIsAllowed: action.internalUsageIsAllowed });
     case actions.SEND_MAIL:
         return assign({}, state, { mailRequestInProgress: true });
     case actions.MAIL_SENT:

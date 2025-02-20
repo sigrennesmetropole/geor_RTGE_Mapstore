@@ -20,6 +20,7 @@ export const actions = {
     UPDATE_USER: 'RTGE:UPDATE_USER',
     GET_USER_DETAILS: 'RTGE:GET_USER_DETAILS',
     UNDERGROUND_DATA_JUSTIFICATION_REQUIRED: "RTGE:UNDERGROUND_DATA_JUSTIFICATION_REQUIRED",
+    INTERNAL_USAGE_ALLOWED: "RTGE:INTERNAL_USAGE_ALLOWED",
     INIT_CONFIGS: "RTGE:INIT_CONFIGS",
     CLOSE_RTGE: "RTGE:CLOSE_RTGE",
     REMOVE_ALL_TILES: "RTGE:REMOVE_ALL_TILES",
@@ -214,6 +215,18 @@ export function rtgeSetUndergroundDataJustificationRequired(undergroundDataIsReq
     return {
         type: actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED,
         undergroundDataIsRequired
+    };
+}
+
+/**
+ * rtgeSetInternalUsageAllowance action throw when you get the underground role for justification to obtain data
+ * @memberof rtge.actions
+ * @returns - action underground data justification required
+ */
+export function rtgeSetInternalUsageAllowance(internalUsageIsAllowed) {
+    return {
+        type: actions.INTERNAL_USAGE_ALLOWED,
+        internalUsageIsAllowed
     };
 }
 

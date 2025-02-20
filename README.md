@@ -92,7 +92,8 @@ When the plugin is added to a MapStore context for geOrchestra, it needs to be c
 | rtge_grid_layer_title | "RTGE : Carroyage au 1/200" | Title, in the map context, gaved to the grid layer used to select the data extraction zones. |
 | rtge_grid_layer_projection | "EPSG:3948" | EPSG code of the native projection system used by the grid layer. |
 | rtge_grid_layer_geometry_attribute | "shape" | Name of the attribute of the grid layer containing the tile geometry. |
-| rtge_user_details_url | "/console/account/userdetails" | Link to retrieve the logged-in user's information to pre-fill the form. |
+| rtge_underground_data_roles | [ "EL_APPLIS_RMTR_SSOL" ] | List containing the name(s) of user role(s) authorized to view restricted data. |
+| rtge_organism_allowed_for_internal_use | [ ] | List containing the name(s) of organization(s) authorized to carry out extraction requests for internal use. |
 | rtge_home_text | "" | Text (HTML) that is displayed on the home tab of the RTGE plugin. |
 | rtge_max_tiles | "50" | Maximum number of tiles that can be selected. |
 | rtge_tile_id_attribute | "id_case" | Name of the attribute field containing the tiles Ids. These ids are sent as a text list in the extraction request email. |

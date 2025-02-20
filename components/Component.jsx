@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
 import { RTGE_PANEL_WIDTH } from "../constants/rtge-constants.js";
 import { tabTypes } from "../actions/rtge-action.js";
-import { getHealth } from "../api/api";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
 import {
@@ -40,6 +39,7 @@ export class RTGEComponent extends React.Component {
         rtge_max_tiles: PropTypes.string,
         mailRequestInProgress: PropTypes.bool,
         undergroundDataIsRequired: PropTypes.bool,
+        internalUsageIsAllowed: PropTypes.bool,
         pluginIcon: PropTypes.string,
         dataSurf: PropTypes.bool,
         dataUnderSurf: PropTypes.bool,
@@ -79,6 +79,7 @@ export class RTGEComponent extends React.Component {
         rtge_max_tiles: '',
         mailRequestInProgress: false,
         undergroundDataIsRequired: true,
+        internalUsageIsAllowed: false,
         pluginIcon: '',
         dataSurf: true,
         dataUnderSurf: false,
@@ -114,7 +115,10 @@ export class RTGEComponent extends React.Component {
             dataUnderSurf: props.dataUnderSurf,
             schematicalNetwork: props.schematicalNetwork,
             rtge_home_text: props.rtge_home_text,
+            rtge_underground_data_roles: props.rtge_underground_data_roles,
             undergroundDataIsRequired: props.undergroundDataIsRequired,
+            rtge_organism_allowed_for_internal_use: props.rtge_organism_allowed_for_internal_use,
+            internalUsageIsAllowed: props.internalUsageIsAllowed,
             pluginIcon: props.pluginIcon,
             mailFormValidity: false
         };
@@ -125,7 +129,8 @@ export class RTGEComponent extends React.Component {
             rtge_grid_layer_title: props.rtge_grid_layer_title,
             rtge_grid_layer_projection: props.rtge_grid_layer_projection,
             rtge_grid_layer_geometry_attribute: props.rtge_grid_layer_geometry_attribute,
-            rtge_user_details_url: props.rtge_user_details_url,
+            rtge_underground_data_roles: props.rtge_underground_data_roles,
+            rtge_organism_allowed_for_internal_use: props.rtge_organism_allowed_for_internal_use,
             rtge_max_tiles: props.rtge_max_tiles,
             rtge_tile_id_attribute: props.rtge_tile_id_attribute,
         });
@@ -178,6 +183,7 @@ export class RTGEComponent extends React.Component {
                                 value={this.state.prenom}
                                 required
                                 onChange={(e) => this.handleTextFieldChange(e, 'prenom')}
+                                readOnly
                             />
                         </div>
                     </InputGroup>
@@ -207,6 +213,7 @@ export class RTGEComponent extends React.Component {
                                 value={this.state.nom}
                                 required
                                 onChange={(e) => this.handleTextFieldChange(e, 'nom')}
+                                readOnly
                             />
                         </div>
                     </InputGroup>
@@ -236,6 +243,7 @@ export class RTGEComponent extends React.Component {
                                 value={this.state.collectivite}
                                 required
                                 onChange={(e) => this.handleTextFieldChange(e, 'collectivite')}
+                                readOnly={this.props.internalUsageIsAllowed}
                             />
                         </div>
                     </InputGroup>
@@ -353,7 +361,7 @@ export class RTGEComponent extends React.Component {
                                 onChange={(e) => {this.handleTextFieldChange(e, 'finalUse');}} 
                                 style={this.state.finalUse === '' ? {"borderColor": "red"} : {"borderColor": "inherit"}}>
                                     <option key='optDefault' className="RTGE_finalUseFormDropDown" value=''>{getMessageById(this.context.messages, 'RTGE.finalUseSelectValue')}</option>
-                                    <option key='optInt' className="RTGE_finalUseFormDropDown" value='Interne'>{getMessageById(this.context.messages, 'RTGE.internalUsage')}</option>
+                                    {this.props.internalUsageIsAllowed && <option key='optInt' className="RTGE_finalUseFormDropDown" value='Interne'>{getMessageById(this.context.messages, 'RTGE.internalUsage')}</option>}
                                     <option key='optExt' className="RTGE_finalUseFormDropDown" value='Externe'>{getMessageById(this.context.messages, 'RTGE.externalUsage')}</option>
                             </FormControl>
                         </div>
@@ -942,6 +950,7 @@ export class RTGEComponent extends React.Component {
             dataSurf: !!this.props.dataSurf,
             dataUnderSurf: !!this.props.dataUnderSurf,
             undergroundDataIsRequired: this.props.undergroundDataIsRequired,
+            internalUsageIsAllowed: this.props.internalUsageIsAllowed,
             schematicalNetwork: !!this.props.schematicalNetwork,
             pluginIcon: this.props.pluginIcon
         });

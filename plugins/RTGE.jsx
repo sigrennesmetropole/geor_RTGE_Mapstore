@@ -30,6 +30,7 @@ import {
     getSelectedRow,
     rtgeGetUserDetails,
     isUndergroundDataRequired,
+    isInternalUsageAllowed,
     getRequestStarted,
     getMailRequestInProgress
 } from "../selectors/rtge-selectors";
@@ -49,6 +50,7 @@ export default createPlugin(name, {
         selectedRows: getSelectedRow(state),
         requestStarted: getRequestStarted(state),
         undergroundDataIsRequired: isUndergroundDataRequired(state),
+        internalUsageIsAllowed: isInternalUsageAllowed(state),
         pluginIcon,
         mailRequestInProgress: getMailRequestInProgress(state)
     }), {

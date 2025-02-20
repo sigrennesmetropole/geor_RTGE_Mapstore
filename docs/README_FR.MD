@@ -94,7 +94,8 @@ Lors de l'ajout du plugin dans un contexte MapStore pour geOrchestra, celui-ci d
 | rtge_grid_layer_title | "RTGE : Carroyage au 1/200" | Titre dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
 | rtge_grid_layer_projection | "EPSG:3948" | EPSG du système de projection natif utilisée par la couche de carroyage |
 | rtge_grid_layer_geometry_attribute | "shape" | Nom de l'attribut de la couche de carroyage contenant la géométrie des dalles. |
-| rtge_user_details_url | "/console/account/userdetails" | Lien à partir duquel les informations de l’utilisateur connecté sont récupérée pour pré-remplir le formulaire. |
+| rtge_underground_data_roles | [ "EL_APPLIS_RMTR_SSOL" ] | Liste contenant le(s) nom(s) de rôle(s) utilisateur autorisé(s) à consulter les données à accès restreint. |
+| rtge_organism_allowed_for_internal_use | [ ] | Liste contenant les noms d'organismes autorisés à effectuer des demandes d'extraction à usage internes. |
 | rtge_home_text | "" | Texte au format html qui sera affiché sur l'onglet accueil du plugin RTGE. |
 | rtge_max_tiles | "50" | Nombre maximal de dalles pouvant être sélectionnées. |
 | rtge_tile_id_attribute | "id_case" | Nom du champ attributaire contenant l'identifiant de la dalle. Ce sont ces identifiants qui sont envoyés sous forme de liste dans le mail de demande d'extraction. |

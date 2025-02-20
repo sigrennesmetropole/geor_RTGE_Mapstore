@@ -112,6 +112,14 @@ export const getRequestStarted = (state) => get(state, 'rtge.requestStarted');
 export const isUndergroundDataRequired = (state) => get(state, 'rtge.undergroundDataIsRequired');
 
 /**
+ * isInternalUsageAllowed gets underground data role
+ * @memberof rtge.selectors
+ * @param state - application state
+ * @returns - returns the internal usage allowance
+ */
+export const isInternalUsageAllowed = (state) => get(state, 'rtge.internalUsageIsAllowed');
+
+/**
  * getMailRequestInProgress gets if the request is in progress
  * @memberof rtge.selectors
  * @param state - application state
