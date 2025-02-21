@@ -195,10 +195,8 @@ button.RTGE_active{
 /* ==== Array selectedTiles ==== */
 
 .RTGE_selectTitle{
-    /* font-weight: bold; */
     border-bottom: 1px solid #ddd;
     background: darkgray;
-    /* height: 40px; */
     font-size: small;
     color: white;
 }
@@ -251,10 +249,6 @@ button.RTGE_active{
     margin-left: 0px!important;
     margin-top: 10px;
 }
-
-/* .RTGE_RowsOffset{
-    padding-right: 1px;
-} */
 
 /* ==== Form Area ==== */
 
@@ -310,17 +304,6 @@ button.RTGE_active{
     margin-top: -5px!important;
 }
 
-.RTGE_errorZone {
-    background-color: red;
-    display: grid;
-    align-items: center;
-    text-align: center;
-    height: 50px;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
 .RTGE_inputGroupStyles {
     display:flex!important;
     align-items: center;
@@ -333,6 +316,10 @@ button.RTGE_active{
 
 .RTGE_inputGroupStyles .RTGE_PhoneInput {
     margin-left: 10px;
+}
+
+.RTGE_inputGroupStyles .form-control[readOnly]{
+    background-color: #f6f6f6 !important
 }
 
 .RTGE_form-group {
@@ -388,20 +375,6 @@ button.active .iconSize{
 
 /* ==== Loading Bar ==== */
 
-.plui-evolution-panel .plui-loading-container {
-	width: 100%;
-	height: 100%;
-	overflow: visible;
-	margin: auto;
-	position: absolute;
-	display: block;
-	vertical-align: center;
-	left: 0;
-	top: 0;
-	background: rgba(0, 0, 0, .60);
-	z-index: 999;
-}
-
 .RTGE_loadingContainer .RTGE_loading {
 	position: absolute;
 	top: 50%;
@@ -416,11 +389,7 @@ button.active .iconSize{
 	margin: auto;
 	height: 300px;
 	width: 300px;
-	border: 15px;
-	/*border-top-color: rgba(7, 138, 163, 0.2) !important;
-	border-right-color: rgba(7, 138, 163, 0.2) !important;
-	border-bottom-color: rgba(7, 138, 163, 0.2) !important;
-	border-left-color: #078aa3 !important;*/
+	border-width: 15px;
 }
 
 .RTGE_loadingContainer .RTGE_loading span {

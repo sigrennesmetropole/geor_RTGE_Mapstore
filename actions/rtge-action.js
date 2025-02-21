@@ -277,7 +277,7 @@ export function rtgeMailSent() {
 }
 
 /**
- * rtgeMailNotSent actions to tell mail has been sent, stop the spinner
+ * rtgeMailNotSent actions to tell mail has not been sentyet, and kepps spinner active
  * @memberof rtge.actions
  * @returns - action mail sent
  */

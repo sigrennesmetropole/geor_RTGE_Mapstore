@@ -19,7 +19,6 @@ export function getHealth(){
 export function getUserInfos(){
     var slug = `${rtgeAPIURL}` + "/headerinfos";
     return axios.get(slug).then(function (response) {
-        //TEST response.data.collectivite = null;
         return response;
     })
     .catch(function (error) {
