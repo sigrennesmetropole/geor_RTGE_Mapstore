@@ -86,7 +86,7 @@ When the plugin is added to a MapStore context for geOrchestra, it needs to be c
 
 | Parameter Name | Default Value | Description |
 | ---      | ---      | ---      |
-| rtge_backend_url_prefix | "" | Link to the back-end used by the plugin. This plugin currently works without a backend. |
+| rtge_backend_url_prefix | "/rtge" | Link to the back-end used by the plugin. Since v2.0, this plugin works with a dedicated plugin. |
 | rtge_grid_layer_id | "ref_topo:rtge_carroyage" | ID, in the map context, of the grid layer used to select data extraction zones. |
 | rtge_grid_layer_name | "ref_topo:rtge_carroyage" | Name, in the map context, of the grid layer used to select data extraction zones. |
 | rtge_grid_layer_title | "RTGE : Carroyage au 1/200" | Title, in the map context, gaved to the grid layer used to select the data extraction zones. |

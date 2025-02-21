@@ -88,7 +88,7 @@ Lors de l'ajout du plugin dans un contexte MapStore pour geOrchestra, celui-ci d
 
 | Parameter Name | Default Value | Description |
 | ---      | ---      | ---      |
-| rtge_backend_url_prefix | "" | Lien d’accès au back utilisé par le plugin. À ce jour, ce plugin fonctionne sans back. |
+| rtge_backend_url_prefix | "/rtge" | Lien d’accès au back utilisé par le plugin. Depuis la v.2.0 ce plugin est destiné à être utilisé avec un plugin dédié. |
 | rtge_grid_layer_id | "ref_topo:rtge_carroyage" | ID dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
 | rtge_grid_layer_name | "ref_topo:rtge_carroyage" | Nom dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
 | rtge_grid_layer_title | "RTGE : Carroyage au 1/200" | Titre dans le contexte de carte, de la couche de carroyage utilisée pour la sélection des zones d'extraction des données. |
