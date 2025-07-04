@@ -288,12 +288,19 @@ button.RTGE_active{
     border-radius: 0px !important;
 }
 
-.RTGE_ExtUserInfoLabel{ margin-bottom:15px!important;}
+.RTGE_ExtUserInfoLabel{ 
+    margin-bottom:15px!important;
+    margin-left: 10% !important;
+}
 
 .RTGE_formUnit textarea {
     width: 100%!important;
     height: 110px!important;
     cursor: pointer!important;
+}
+
+.RTGE_formUnit textarea{
+    cursor:text !important;
 }
 
 .RTGE_formUnit textarea:placeholder-shown {

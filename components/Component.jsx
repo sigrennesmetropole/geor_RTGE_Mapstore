@@ -378,9 +378,9 @@ export class RTGEComponent extends React.Component {
     renderFinalUser() {
         return (
             <>
-            {this.state.finalUse === "Externe" && 
+            {this.state.finalUse === "Externe" &&
             <>
-            <div className="col-sm-1"></div><div className="col-sm-11 RTGE_ExtUserInfoLabel">{getMessageById(this.context.messages, 'RTGE.finalUserInfoLabel')}</div>
+            <div className="RTGE_ExtUserInfoLabel"><Message msgId="RTGE.finalUserInfoLabel" /></div>
             <div className="RTGE_formUnit">
                 <FormGroup controlId="rtgeForm.finalUser" className="RTGE_form-group">
                     <InputGroup className="RTGE_inputGroupStyles">
