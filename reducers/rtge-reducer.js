@@ -1,13 +1,14 @@
 /* eslint-disable no-console */
-import { actions, tabTypes } from "../actions/rtge-action";
+import { actions, rtgeTabTypes } from "../actions/rtge-action";
 import assign from 'object-assign';
 
 const initialState = {
     value: 1,
-    activeTab: tabTypes.HOME,
+    activeTab: rtgeTabTypes.HOME,
     selectedTiles: [],
     selectedRows: [],
     selectionGeometryType: undefined,
+    modalDisplay: false,
     undergroundDataIsRequired: true,
     internalUsageIsAllowed: false,
     mailRequestInProgress: false
@@ -21,8 +22,8 @@ const initialState = {
  * @returns - returns the current actions to be made from the current action
  */
 export default (state = initialState, action) => {
-    //if (action.type.substring(0, 4) === 'RTGE'){console.log(action.type)};
-    //console.log(state);
+    // if (action.type.substring(0, 4) === 'RTGE'){console.log(action.type)};
+    // console.log(state);
     switch (action.type) {
     case actions.CHANGE_TAB:
         return assign({}, state, { activeTab: action.tab });
@@ -38,10 +39,12 @@ export default (state = initialState, action) => {
         return assign({}, state, { user: action.newUserDetails });
     case actions.INIT_CONFIGS:
         return assign({}, state, { configs: action.configs });
+    case actions.MODAL_DISPLAY:
+        return assign({}, state, { modalDisplay: action.bool, modalType: action.modalType });
     case actions.UNDERGROUND_DATA_JUSTIFICATION_REQUIRED:
-            return assign({}, state, { undergroundDataIsRequired: action.undergroundDataIsRequired });
+        return assign({}, state, { undergroundDataIsRequired: action.undergroundDataIsRequired });
     case actions.INTERNAL_USAGE_ALLOWED:
-            return assign({}, state, { internalUsageIsAllowed: action.internalUsageIsAllowed });
+        return assign({}, state, { internalUsageIsAllowed: action.internalUsageIsAllowed });
     case actions.SEND_MAIL:
         return assign({}, state, { mailRequestInProgress: true });
     case actions.MAIL_SENT:

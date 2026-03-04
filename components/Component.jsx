@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import Message from "@mapstore/components/I18N/Message";
 import { RTGE_PANEL_WIDTH } from "../constants/rtge-constants.js";
-import { tabTypes } from "../actions/rtge-action.js";
+import { rtgeTabTypes } from "../actions/rtge-action.js";
 import ResponsivePanel from "@mapstore/components/misc/panels/ResponsivePanel";
 
 import {
@@ -15,7 +15,7 @@ import {
     Checkbox
 } from 'react-bootstrap';
 import 'react-phone-number-input/style.css';
-/*import PhoneInput from 'react-phone-number-input';*/
+/* import PhoneInput from 'react-phone-number-input';*/
 import LoadingSpinner from '@mapstore/components/misc/LoadingSpinner';
 import {getMessageById} from '@mapstore/utils/LocaleUtils';
 export class RTGEComponent extends React.Component {
@@ -34,6 +34,8 @@ export class RTGEComponent extends React.Component {
         user: PropTypes.object,
         finalUser: PropTypes.object,
         selectedRows: PropTypes.array,
+        modalDisplay: PropTypes.bool,
+        modalType: PropTypes.string,
         rtge_home_text: PropTypes.string,
         rtge_tiles_attributes: PropTypes.array,
         rtge_max_tiles: PropTypes.string,
@@ -50,13 +52,14 @@ export class RTGEComponent extends React.Component {
         rtgeSwitchDraw: PropTypes.func,
         rtgeRemoveSelectedTiles: PropTypes.func,
         rtgeRemoveAllTiles: PropTypes.func,
+        rtgeModalDisplay: PropTypes.func,
         rtgeClickTable: PropTypes.func,
         rtgeSendMail: PropTypes.func,
         formValidationError: PropTypes.func,
         rtgeInitConfigs: PropTypes.func,
         rtgeStopDraw: PropTypes.func
     }
-    
+
     static contextTypes = {
         messages: PropTypes.object
     };
@@ -68,13 +71,15 @@ export class RTGEComponent extends React.Component {
         dockStyle: {zIndex: 100},
         panelClassName: 'rtge-panel',
         width: RTGE_PANEL_WIDTH,
-        activeTab: tabTypes.HOME,
+        activeTab: rtgeTabTypes.HOME,
         selectedTiles: [],
         selectionGeometryType: undefined,
         user: {},
         finalUser: {},
         activeSelection: '',
         selectedRows: [],
+        modalDisplay: false,
+        modalType: '',
         rtge_tiles_attributes: [],
         rtge_max_tiles: '',
         mailRequestInProgress: false,
@@ -90,6 +95,7 @@ export class RTGEComponent extends React.Component {
         rtgeSwitchDraw: ()=>{},
         rtgeRemoveSelectedTiles: ()=>{},
         rtgeRemoveAllTiles: ()=>{},
+        rtgeModalDisplay: ()=>{},
         rtgeClickTable: ()=>{},
         rtgeSendMail: ()=>{},
         formValidationError: ()=>{},
@@ -125,14 +131,14 @@ export class RTGEComponent extends React.Component {
         props.rtgeInitConfigs({
             rtge_grid_layer_id: props.rtge_grid_layer_id,
             rtge_backend_url_prefix: props.rtge_backend_url_prefix,
-            rtge_grid_layer_name:props.rtge_grid_layer_name,
+            rtge_grid_layer_name: props.rtge_grid_layer_name,
             rtge_grid_layer_title: props.rtge_grid_layer_title,
             rtge_grid_layer_projection: props.rtge_grid_layer_projection,
             rtge_grid_layer_geometry_attribute: props.rtge_grid_layer_geometry_attribute,
             rtge_underground_data_roles: props.rtge_underground_data_roles,
             rtge_organism_allowed_for_internal_use: props.rtge_organism_allowed_for_internal_use,
             rtge_max_tiles: props.rtge_max_tiles,
-            rtge_tile_id_attribute: props.rtge_tile_id_attribute,
+            rtge_tile_id_attribute: props.rtge_tile_id_attribute
         });
     }
 
@@ -353,16 +359,16 @@ export class RTGEComponent extends React.Component {
                         </div>
                         <div className="col-sm-8">
                             <FormControl componentClass="select"
-                                className="RTGE_finalUseFormValues" 
+                                className="RTGE_finalUseFormValues"
                                 name="finalUse"
                                 placeholder=""
                                 required
                                 value={this.state.finalUse}
-                                onChange={(e) => {this.handleTextFieldChange(e, 'finalUse');}} 
+                                onChange={(e) => {this.handleTextFieldChange(e, 'finalUse');}}
                                 style={this.state.finalUse === '' ? {"borderColor": "red"} : {"borderColor": "inherit"}}>
-                                    <option key='optDefault' className="RTGE_finalUseFormDropDown" value=''>{getMessageById(this.context.messages, 'RTGE.finalUseSelectValue')}</option>
-                                    {this.props.internalUsageIsAllowed && <option key='optInt' className="RTGE_finalUseFormDropDown" value='Interne'>{getMessageById(this.context.messages, 'RTGE.internalUsage')}</option>}
-                                    <option key='optExt' className="RTGE_finalUseFormDropDown" value='Externe'>{getMessageById(this.context.messages, 'RTGE.externalUsage')}</option>
+                                <option key='optDefault' className="RTGE_finalUseFormDropDown" value=''>{getMessageById(this.context.messages, 'RTGE.finalUseSelectValue')}</option>
+                                {this.props.internalUsageIsAllowed && <option key='optInt' className="RTGE_finalUseFormDropDown" value='Interne'>{getMessageById(this.context.messages, 'RTGE.internalUsage')}</option>}
+                                <option key='optExt' className="RTGE_finalUseFormDropDown" value='Externe'>{getMessageById(this.context.messages, 'RTGE.externalUsage')}</option>
                             </FormControl>
                         </div>
                     </InputGroup>
@@ -378,29 +384,29 @@ export class RTGEComponent extends React.Component {
     renderFinalUser() {
         return (
             <>
-            {this.state.finalUse === "Externe" &&
+                {this.state.finalUse === "Externe" &&
             <>
-            <div className="RTGE_ExtUserInfoLabel"><Message msgId="RTGE.finalUserInfoLabel" /></div>
-            <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.finalUser" className="RTGE_form-group">
-                    <InputGroup className="RTGE_inputGroupStyles">
-                        <div className="col-sm-1"></div>
-                        <div className="col-sm-4">
-                            <Message msgId="RTGE.finalUser" />
-                        </div>
-                        <div className="col-sm-7">
-                            <FormControl
-                                name="finalUser"
-                                type="text"
-                                placeholder=""
-                                value={this.state.finalUser}
-                                required
-                                onChange={(e) => this.handleTextFieldChange(e, 'finalUser')}
-                            />
-                        </div>
-                    </InputGroup>
-                </FormGroup>
-            </div>
+                <div className="RTGE_ExtUserInfoLabel"><Message msgId="RTGE.finalUserInfoLabel" /></div>
+                <div className="RTGE_formUnit">
+                    <FormGroup controlId="rtgeForm.finalUser" className="RTGE_form-group">
+                        <InputGroup className="RTGE_inputGroupStyles">
+                            <div className="col-sm-1"></div>
+                            <div className="col-sm-4">
+                                <Message msgId="RTGE.finalUser" />
+                            </div>
+                            <div className="col-sm-7">
+                                <FormControl
+                                    name="finalUser"
+                                    type="text"
+                                    placeholder=""
+                                    value={this.state.finalUser}
+                                    required
+                                    onChange={(e) => this.handleTextFieldChange(e, 'finalUser')}
+                                />
+                            </div>
+                        </InputGroup>
+                    </FormGroup>
+                </div>
             </>}
             </>
         );
@@ -573,33 +579,33 @@ export class RTGEComponent extends React.Component {
     renderSchematicalNetwork() {
         return (
             <>
-            {this.state.dataUnderSurf && 
+                {this.state.dataUnderSurf &&
             <>
-            <div className="RTGE_formUnit">
-                <FormGroup controlId="rtgeForm.schematicalNetwork"  className="RTGE_form-group">
-                    <div className="col-sm-4"></div>
-                    <div className="col-sm-8">
-                        <div className="col-sm-3 RTGE_v-align">
-                            <Checkbox
-                                name="ReseauxSchematiques"
-                                defaultChecked={this.state.schematicalNetwork}
-                                onChange={() => this.handleBooleanFieldChange('schematicalNetwork')}
-                                className="RTGE_checkbox"
-                                disabled={!this.state.dataUnderSurf}
-                            />
+                <div className="RTGE_formUnit">
+                    <FormGroup controlId="rtgeForm.schematicalNetwork"  className="RTGE_form-group">
+                        <div className="col-sm-4"></div>
+                        <div className="col-sm-8">
+                            <div className="col-sm-3 RTGE_v-align">
+                                <Checkbox
+                                    name="ReseauxSchematiques"
+                                    defaultChecked={this.state.schematicalNetwork}
+                                    onChange={() => this.handleBooleanFieldChange('schematicalNetwork')}
+                                    className="RTGE_checkbox"
+                                    disabled={!this.state.dataUnderSurf}
+                                />
+                            </div>
+                            <div className="col-sm-9 RTGE_notBold">
+                                <Message msgId="RTGE.schematicalNetwork"/>
+                                {this.state.schematicalNetwork
+                                    ? <div className="row RTGE_undergroundWarning text-center">
+                                        <Message msgId="RTGE.schematicalNetworkWarning"/>
+                                    </div>
+                                    : ''
+                                }
+                            </div>
                         </div>
-                        <div className="col-sm-9 RTGE_notBold">
-                            <Message msgId="RTGE.schematicalNetwork"/>
-                            {this.state.schematicalNetwork
-                                ? <div className="row RTGE_undergroundWarning text-center">
-                                    <Message msgId="RTGE.schematicalNetworkWarning"/>
-                                </div>
-                                : ''
-                            }
-                        </div>
-                    </div>
-                </FormGroup>
-            </div>
+                    </FormGroup>
+                </div>
             </>}
             </>
         );
@@ -619,7 +625,7 @@ export class RTGEComponent extends React.Component {
         && this.state.motivation !== ''
         && (this.state.dataSurf !== false || this.state.dataUnderSurf !== false);
         this.setState(this.state);
-        }
+    }
 
     /**
      * renderHomeTab home tab content
@@ -650,7 +656,7 @@ export class RTGEComponent extends React.Component {
                     {this.renderCollectiviteField()}
                     {this.renderService()}
                     {this.renderCourriel()}
-                    {this.renderTelephone()}                    
+                    {this.renderTelephone()}
                     {this.renderFinalUse()}
                     {this.renderFinalUser()}
                     {this.renderFinalUserEMail()}
@@ -660,7 +666,7 @@ export class RTGEComponent extends React.Component {
                     {this.renderDataUnderSurf()}
                     {this.renderSchematicalNetwork()}
                     {<button className="RTGE_buttonForm RTGE_label-default RTGE_buttonToRight btn btn-primary"
-                       onClick={(e) => {this.rtgeSendMail(e);}}><Message msgId={'RTGE.sendTab.button'} />
+                        onClick={(e) => {this.rtgeSendMail(e);}}><Message msgId={'RTGE.sendTab.button'} />
                     </button>
                     }
                 </Form>
@@ -705,14 +711,14 @@ export class RTGEComponent extends React.Component {
                         <button className={this.getSelectedRows().length === 0
                             ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain"
                             : "RTGE_selectorButton btn-primary RTGE_tooltipMain"}
-                        onClick={() => this.getSelectedRows().length === 0 ? '' : this.props.rtgeRemoveSelectedTiles()}>
+                        onClick={() => this.getSelectedRows().length === 0 ? '' : this.props.rtgeModalDisplay(true, 'deleteSelected')}>
                             <Glyphicon glyph="trash-square RTGE_trashSquare"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrashSquare'}/></span>
                         </button>
                         <button className={this.props.selectedTiles.length === 0
                             ? "RTGE_selectorButton empty btn-active RTGE_tooltipMain trash"
                             : "RTGE_selectorButton btn-primary RTGE_tooltipMain RTGE_trashSquare trash"}
-                        onClick={() => this.props.rtgeRemoveAllTiles()}>
+                        onClick={() => this.props.selectedTiles.length === 0 ? '' : this.props.rtgeModalDisplay(true, 'deleteAll')}>
                             <Glyphicon glyph="trash"/>
                             <span className="RTGE_tooltipContentLeft"><Message msgId={'RTGE.tooltips.tooltipTrash'}/></span>
                         </button>
@@ -761,6 +767,7 @@ export class RTGEComponent extends React.Component {
                         }
                     </div>
                 </div>
+                {this.renderRTGEModal()}
             </div>
         );
     }
@@ -774,16 +781,16 @@ export class RTGEComponent extends React.Component {
         return (
             <div className="row RTGE_rowTabs">
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === tabTypes.HOME
+                    <button className={this.props.activeTab === rtgeTabTypes.HOME
                         ? "RTGE_homeButton RTGE_active"
-                        : "RTGE_homeButton"} onClick={() => {this.props.rtgeChangeTab(tabTypes.HOME); if(this.props.selectionGeometryType !== undefined){this.props.rtgeStopDraw()}}}>
+                        : "RTGE_homeButton"} onClick={() => {this.props.rtgeChangeTab(rtgeTabTypes.HOME); if (this.props.selectionGeometryType !== undefined) {this.props.rtgeStopDraw();}}}>
                         <Message msgId={'RTGE.welcome'}/>
                     </button>
                 </div>
                 <div className="col-sm-4 text-center">
-                    <button className={this.props.activeTab === tabTypes.SELECT
+                    <button className={this.props.activeTab === rtgeTabTypes.SELECT
                         ? "RTGE_selectButton RTGE_active"
-                        : "RTGE_selectButton"} onClick={() => this.props.rtgeChangeTab(tabTypes.SELECT)}>
+                        : "RTGE_selectButton"} onClick={() => this.props.rtgeChangeTab(rtgeTabTypes.SELECT)}>
                         <Message msgId={'RTGE.selection'}/>
                     </button>
                 </div>
@@ -797,9 +804,9 @@ export class RTGEComponent extends React.Component {
                     </>
                     }
                     {this.props.selectedTiles.length > 0 &&
-                        <button className={this.props.activeTab === tabTypes.SEND
+                        <button className={this.props.activeTab === rtgeTabTypes.SEND
                             ? "RTGE_sendButton RTGE_active"
-                            : "RTGE_sendButton" } onClick={() => {this.props.rtgeChangeTab(tabTypes.SEND); if(this.props.selectionGeometryType !== undefined){this.props.rtgeStopDraw()}}}>
+                            : "RTGE_sendButton" } onClick={() => {this.props.rtgeChangeTab(rtgeTabTypes.SEND); if (this.props.selectionGeometryType !== undefined) {this.props.rtgeStopDraw();}}}>
                             <Message msgId={'RTGE.send'}/>
                         </button>
                     }
@@ -825,6 +832,52 @@ export class RTGEComponent extends React.Component {
     }
 
     /**
+     * renderRTGEModal renders the selection tabs to get all plkugins sub parts
+     * @memberof rtge.component
+     * @returns - a modal when deletion buttons are clicked
+     */
+    renderRTGEModal() {
+        if (this.props.modalDisplay) {
+            if (this.props.modalType === "deleteAll") {
+                return (
+                    <div id="RTGE_modal">
+                        <div className="RTGE_mask"></div>
+                        <div className="container auto">
+                            <div className="message"><Message msgId={'RTGE.modal.deleteAll'}/></div>
+                            <div onClick={() => this.props.rtgeModalDisplay(false, '')} className="RTGE_close">x</div>
+                            <div>
+                                <div className="col-sm-2"></div>
+                                <button onClick={() => this.props.rtgeRemoveAllTiles()} className="btn-primary col-sm-3 RTGE_customBtn RTGE_button_margin_bottom"><Message msgId={'RTGE.ok'}/></button>
+                                <div className="col-sm-2"></div>
+                                <button onClick={() => this.props.rtgeModalDisplay(false, '')} className="col-sm-3 btn-primary RTGE_customBtn RTGE_button_margin_bottom"><Message msgId={'RTGE.cancel'}/></button>
+                                <div className="col-sm-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+            if (this.props.modalType === "deleteSelected") {
+                return (
+                    <div id="RTGE_modal">
+                        <div className="RTGE_mask"></div>
+                        <div className="container auto">
+                            <div className="message"><Message msgId={'RTGE.modal.deleteSelected'}/></div>
+                            <div onClick={() => this.props.rtgeModalDisplay(false, '')} className="RTGE_close">x</div>
+                            <div>
+                                <div className="col-sm-2"></div>
+                                <button onClick={() => this.props.rtgeRemoveSelectedTiles()} className="btn-primary col-sm-3 RTGE_customBtn RTGE_button_margin_bottom"><Message msgId={'RTGE.ok'}/></button>
+                                <div className="col-sm-2"></div>
+                                <button onClick={() => this.props.rtgeModalDisplay(false, '')} className="col-sm-3 btn-primary RTGE_customBtn RTGE_button_margin_bottom"><Message msgId={'RTGE.cancel'}/></button>
+                                <div className="col-sm-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        }
+    }
+
+    /**
      * renderContent organise which tab is active
      * @memberof rtge.component
      * @returns - tab dom content
@@ -832,13 +885,13 @@ export class RTGEComponent extends React.Component {
     renderContent = () => {
         var content;
         switch (this.props.activeTab) {
-        case tabTypes.HOME:
+        case rtgeTabTypes.HOME:
             content = this.renderHomeTab();
             break;
-        case tabTypes.SELECT:
+        case rtgeTabTypes.SELECT:
             content = this.renderSelectionTab();
             break;
-        case tabTypes.SEND:
+        case rtgeTabTypes.SEND:
             if (this.props.mailRequestInProgress) {
                 content = this.renderSpinner("RTGE.spinnerMsg");
             } else {
@@ -892,7 +945,7 @@ export class RTGEComponent extends React.Component {
         this.setState({
             ...this.state,
             [fieldName]: e.target.value
-        })
+        });
     }
 
     /**
@@ -906,7 +959,7 @@ export class RTGEComponent extends React.Component {
         this.setState({
             ...this.state,
             [fieldName]: !this.state[fieldName]
-        })
+        });
     }
 
     /**

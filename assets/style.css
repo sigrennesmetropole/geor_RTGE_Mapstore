@@ -169,6 +169,66 @@ button.RTGE_active{
     bottom: 3px;
 }
 
+/*Modals du plugin*/
+#RTGE_modal{
+	position: fixed;
+	z-index: 99999;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+#RTGE_modal .RTGE_mask{
+	background: black;
+	opacity: 0.8;
+	position: absolute;
+	top: 0;
+	right: -55px;
+  width: 110%;
+  height: 100%;
+}
+
+#RTGE_modal .container{
+	position: relative;
+	background: white;
+	top: 30%;
+	left: 48%;
+	transform: translateX(-50%) translateY(-50%);
+	width: 400px;
+	height: auto;
+	min-height: 50px;
+  border: solid 1px lightgrey;
+}
+
+#RTGE_modal .container .message{
+	padding: 10% 5% 5% 5%;
+}
+
+#RTGE_modal .container div.RTGE_close{
+	position: absolute;
+	right: 3%;
+	top:0%;
+	color: #444;
+	font-size: 30px;
+  cursor:  pointer !important;
+}
+#RTGE_modal .container div.RTGE_close:hover{		
+	color: var(--ms-success,#7da09d);
+}
+
+.RTGE_customBtn{
+  max-height: auto;
+  max-width: 115%;
+  margin-top: 5px!important;
+  padding: 5px;
+  border: none;
+ }
+ .RTGE_button_margin_bottom{
+  margin-bottom: 30px !important;
+  margin-top: 15px !important;
+}
+
 /*Section sélection du plugin*/
 
 .RTGE_selectorButton{
@@ -338,8 +398,7 @@ button.RTGE_active{
 }
 
 .RTGE_buttonForm {
-    border-radius: 5px;
-    border-width: 0px;
+    border: none;
     padding: 8px;
     margin-right: 15px;
     font-weight: bold;

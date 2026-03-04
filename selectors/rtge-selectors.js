@@ -80,6 +80,22 @@ export const getActiveSelection = (state) => get(state, 'rtge.activeSelection');
 export const getSelectedRow = (state) => get(state, 'rtge.selectedRows');
 
 /**
+* getModalDisplay checks which modal to display
+* @memberof rtge.selectors
+* @param state - application state
+* @returns - returns the modal state
+*/
+export const getModalDisplay = (state) => get(state, 'rtge.modalDisplay');
+
+/**
+* getModalType checks which type of Modal
+* @memberof rtge.selectors
+* @param state - application state
+* @returns - returns the modal type state
+*/
+export const getModalType = (state) => get(state, 'rtge.modalType');
+
+/**
  * rtgeGetUserDetails get user object in state
  * @memberof rtge.selectors
  * @param state - application state

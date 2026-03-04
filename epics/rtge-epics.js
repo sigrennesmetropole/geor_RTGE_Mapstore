@@ -15,7 +15,8 @@ import {
     rtgeSetInternalUsageAllowance,
     rtgeCloseRtge,
     rtgeChangeTab,
-    tabTypes,
+    rtgeTabTypes,
+    rtgeModalDisplay,
     rtgeClickTable,
     rtgeSwitchDraw,
     rtgeMailSent,
@@ -130,7 +131,7 @@ export const initProjectionsEpic = (actions$, store) => actions$.ofType(actions.
     // https://github.com/sigrennesmetropole/geor_urbanisme_mapstore/blob/229b0325d6255cc85254a44010d95ad33471072a/js/extension/epics/urbanisme.js#L123-L126
     const {projectionDefs = []} = localConfigSelector(store.getState()) ?? {};
     projectionDefs.forEach((proj) => {
-        if (!Proj4js.defs(proj.code)){
+        if (!Proj4js.defs(proj.code)) {
             Proj4js.defs(proj.code, proj.def);
         }
     });
@@ -246,7 +247,7 @@ export const displayRTGEGridEpic = (action$, store) =>
                 type: "wms",
                 search: {
                     type: "wfs",
-                    url: "/geoserver/"+geoserverWorkspace+"/ows"
+                    url: "/geoserver/" + geoserverWorkspace + "/ows"
                 },
                 params: {
                     exceptions: 'application/vnd.ogc.se_xml'
@@ -254,7 +255,7 @@ export const displayRTGEGridEpic = (action$, store) =>
                 allowedSRS: rtgeGridLayerProjection,
                 format: "image/png",
                 singleTile: false,
-                url: "/geoserver/"+geoserverWorkspace+"/wms",
+                url: "/geoserver/" + geoserverWorkspace + "/wms",
                 visibility: true,
                 featureInfo: {
                     format: "PROPERTIES"
@@ -350,10 +351,10 @@ export const startDrawingRTGEEpic = (action$) => action$.ofType(actions.START_DR
  */
 export const geometryChangeRTGEEpic = (action$, store) =>
     action$.ofType(GEOMETRY_CHANGED)
-    .filter(() => 
-        !!store.getState()
+        .filter(() =>
+            !!store.getState()
         && !!isOpen(store.getState())
-    )
+        )
         .switchMap( (action) => {
             let geometrySelection = {};
             if (action.features && action.features.length > 0) {
@@ -475,8 +476,7 @@ export const switchDrawingRTGEEpic = (action$, store) => action$.ofType(actions.
     const activeSelectionGeometryType = getSelectionGeometryType(store.getState());
     if (action.geometryType === activeSelectionGeometryType) {
         return Rx.Observable.from([rtgeStopDraw()]);
-    }
-    else if(action.geometryType !== ''){
+    } else if (action.geometryType !== '') {
         return Rx.Observable.from([rtgeStartDraw(action.geometryType)]);
     }
     return Rx.Observable.empty();
@@ -550,12 +550,12 @@ function featureSelectionRTGE(currentFeatures, control, shift, intersectedFeatur
  * @returns - observable with tiles selected inside and their new styles
  */
 export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MAP)
-    .filter(() => 
+    .filter(() =>
         !!store.getState()
         && !!isOpen(store.getState())
-        )
+    )
     .switchMap((action) => {
-        //ajouter un filtre à l'ouverture pour s'assurer que c'est bien rtge qui ouvre
+        // ajouter un filtre à l'ouverture pour s'assurer que c'est bien rtge qui ouvre
         const layer = action.point.intersectedFeatures?.find(l => l.id === selectedTilesLayerId);
         const intersectedFeature = layer?.features[0];
         const currentFeatures = getSelectedTiles(store.getState());
@@ -573,7 +573,7 @@ export const clickOnMapRTGEEpic = (action$, store) => action$.ofType(CLICK_ON_MA
         // ce resizemap est présent parceque sinon les 2 premières sélections de cases plantent
         resizeMap(),
         rtgeAddFeatures(features)]);
-});
+    });
 
 /**
  * clickTableEpic on table click, selects the row selected and highlight it on the map
@@ -612,6 +612,7 @@ export const removeSelectedFeaturesRTGEEpic = (action$, store) => action$.ofType
     const vectorLayer = getSelectedTilesLayer(store.getState());
     let emptiedFeatures = currentFeatures.filter(l => l.properties.selected === false);
     return Rx.Observable.from([
+        rtgeModalDisplay(false, ''),
         updateAdditionalLayer(
             selectedTilesLayerId,
             "RTGE",
@@ -650,7 +651,7 @@ function getFormattedTiles(state) {
  * @returns - empty observable
  */
 export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_MAIL).switchMap((action) => {
-    //gestion des datas
+    // gestion des datas
     let datas = [];
     let formatedTiles = getFormattedTiles(store.getState());
     datas.push(
@@ -669,37 +670,37 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
     let schematical = (action.form.dataUnderSurf) ? action.form.schematicalNetwork : false;
     datas.push(schematical);
     // - gestion infos utilisateur externe
-    datas.push(action.form.finalUse)
-    if (action.form.finalUse === 'Externe'){
+    datas.push(action.form.finalUse);
+    if (action.form.finalUse === 'Externe') {
         datas.push(
             action.form.finalUser,
             action.form.finalUserEMail,
             action.form.finalUserAddress
-        )
+        );
     }
 
-    //send request
+    // send request
     return Rx.Observable.forkJoin(
         postNewRequest(datas)
     ).switchMap((response) => {
         response = response[0];
-        if (response.status === 200){
+        if (response.status === 200) {
             return Rx.Observable.from([
                 rtgeAddFeatures([]),
-                rtgeChangeTab(tabTypes.HOME),
+                rtgeChangeTab(rtgeTabTypes.HOME),
                 rtgeClickTable("", false),
                 rtgeMailSent(),
                 show({ title: "RTGE.sendMailSuccess.title", message: "RTGE.sendMailSuccess.message" }, "success"),
                 rtgeCloseRtge()
             ]);
         }
-        else {
-            var popUpMessage = 'Error '+response.status.toString()+': '+response.statusText;
-            return Rx.Observable.from([
-                rtgeMailNotSent(),
-                show({ title: "RTGE.sendMailFailure.title", message: popUpMessage }, "error")
-            ]);
-        }
+
+        var popUpMessage = 'Error ' + response.status.toString() + ': ' + response.statusText;
+        return Rx.Observable.from([
+            rtgeMailNotSent(),
+            show({ title: "RTGE.sendMailFailure.title", message: popUpMessage }, "error")
+        ]);
+
     });
 });
 
@@ -712,10 +713,10 @@ export const sendMailRTGEEpic = (action$, store) => action$.ofType(actions.SEND_
 export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_USER_DETAILS).switchMap(() => {
     return Rx.Observable.forkJoin(
         getUserInfos()
-    ).switchMap((response) => {    
+    ).switchMap((response) => {
         let userInfos = response[0].data;
-        
-        //gestion des informations utilisateur pour le formulaire
+
+        // gestion des informations utilisateur pour le formulaire
         let newUserDetails = {
             prenom: userInfos.prenom,
             nom: userInfos.nom,
@@ -724,10 +725,10 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
             telephone: ''
         };
 
-        //gestion du rôle SSOL - on substring de 5 char pour retirer le préfixe ajouté par le header georchestra au nom du rôle
+        // gestion du rôle SSOL - on substring de 5 char pour retirer le préfixe ajouté par le header georchestra au nom du rôle
         let undergroundDataAuthorization = !!userInfos.roles.find( (role) => rtgeUndergroundDataRoles.includes(role.substring(5)));
 
-        //TODO gestion des utilisateurs RM ou externe
+        // TODO gestion des utilisateurs RM ou externe
         let internalUsageAllowance = !!rtgeOrganismAllowedForInternalUse.includes(userInfos.collectivite);
 
         return Rx.Observable.from([
@@ -737,10 +738,10 @@ export const getUserDetailsRTGEEpic = (action$) => action$.ofType(actions.GET_US
         ]);
 
     })
-    .catch((e) => {
-        console.log(e);
-        return Rx.Observable.empty();
-    });
+        .catch((e) => {
+            console.log(e);
+            return Rx.Observable.empty();
+        });
 });
 
 /**
@@ -756,12 +757,12 @@ export const getConfigsRTGEEpic = (action$) => action$.ofType(actions.INIT_CONFI
     rtgeGridLayerTitle = action.configs.rtge_grid_layer_title;
     rtgeGridLayerProjection = action.configs.rtge_grid_layer_projection;
     rtgeGridLayerGeometryAttribute = action.configs.rtge_grid_layer_geometry_attribute;
-    rtgeUndergroundDataRoles = action.configs.rtge_underground_data_roles;    
+    rtgeUndergroundDataRoles = action.configs.rtge_underground_data_roles;
     rtgeOrganismAllowedForInternalUse = action.configs.rtge_organism_allowed_for_internal_use;
     rtgeMaxTiles = action.configs.rtge_max_tiles;
     rtgeTileIdAttribute = action.configs.rtge_tile_id_attribute;
-    /*update v2.0 : setting url for backend is now required*/ 
-    if (backendURLPrefixRTGE != ""){
+    /* update v2.0 : setting url for backend is now required*/
+    if (backendURLPrefixRTGE != "") {
         setAPIURL(backendURLPrefixRTGE);
     }
     return Rx.Observable.empty();
@@ -809,14 +810,17 @@ export function onUpdatingLayoutWhenRTGEPanelOpenedEpic(action$, store) {
 export const removeAllFeaturesRTGEEpic = (action$, store) => action$.ofType(actions.REMOVE_ALL_TILES).switchMap(() => {
     const vectorLayer = getSelectedTilesLayer(store.getState());
     let emptiedFeatures = [];
-    return Rx.Observable.from([updateAdditionalLayer(
-        selectedTilesLayerId,
-        "RTGE",
-        "overlay",
-        {
-            ...vectorLayer.options,
-            features: emptiedFeatures
-        }
-    ),
-    rtgeAddFeatures(emptiedFeatures)]);
+    return Rx.Observable.from([
+        rtgeModalDisplay(false, ''),
+        updateAdditionalLayer(
+            selectedTilesLayerId,
+            "RTGE",
+            "overlay",
+            {
+                ...vectorLayer.options,
+                features: emptiedFeatures
+            }
+        ),
+        rtgeAddFeatures(emptiedFeatures)
+    ]);
 });

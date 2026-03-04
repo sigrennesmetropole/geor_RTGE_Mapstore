@@ -15,6 +15,7 @@ export const actions = {
     ADD_FEATURES: 'RTGE:ADD_FEATURES',
     SWITCH_DRAW: 'RTGE:SWITCH_DRAW',
     REMOVE_SELECTED_TILES: 'RTGE:REMOVE_SELECTED_TILES',
+    MODAL_DISPLAY: "RTGE:MODAL_DISPLAY",
     SEND_MAIL: 'RTGE:SEND_MAIL',
     CLICK_TABLE: 'RTGE:CLICK_TABLE',
     UPDATE_USER: 'RTGE:UPDATE_USER',
@@ -28,7 +29,7 @@ export const actions = {
     MAIL_NOT_SENT: "RTGE:MAIL_NOT_SENT"
 };
 
-export const tabTypes = {
+export const rtgeTabTypes = {
     HOME: 'RTGE:HOME',
     SELECT: 'RTGE:SELECT',
     SEND: 'RTGE:SEND'
@@ -151,6 +152,21 @@ export function rtgeSwitchDraw(geometryType) {
 export function rtgeRemoveSelectedTiles() {
     return {
         type: actions.REMOVE_SELECTED_TILES
+    };
+}
+
+/**
+ * rtgeModalDisplay start action to change modal to display
+ * @memberof plugin.actions
+ * @param bool - modal bool
+ * @param modalType - modal type
+ * @returns - action modal display
+ */
+export function rtgeModalDisplay(bool, modalType) {
+    return {
+        type: actions.MODAL_DISPLAY,
+        bool,
+        modalType
     };
 }
 
