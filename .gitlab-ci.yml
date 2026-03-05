@@ -17,3 +17,5 @@ trigger_job:
   trigger:
     project: sig/ed/mapstore/MapStoreExtension
     branch: RM/RTGE_main
+  when: manual
+
